@@ -1,5 +1,5 @@
 ---
-title: "My Course Template, Session 1"
+title: "Shiny, Session 1"
 subtitle: " <html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html> Bioinformatics Resource Center - Rockefeller University"
 author: 
   - "http://rockefelleruniversity.github.io/RU_course_template/"
