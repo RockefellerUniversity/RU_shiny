@@ -4,7 +4,7 @@ Title: Introduction To Shiny
 Version: 1.0.0
 Author: Doug Barrows, Matt Paul and Thomas Carroll.
 Maintainer: Thomas Carroll <tc.infomatics@gmail>
-Description: This pacakge contains training materials for a Shiny course
+Description: This package contains training materials for a Shiny course
 License: What license is it under?
 LazyData: TRUE
 biocViews: Training
