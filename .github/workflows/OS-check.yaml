@@ -48,7 +48,7 @@ jobs:
       - name: Query dependencies
         run: |
           install.packages('remotes')
-          saveRDS(remotes::dev_package_deps("RU_shiny/",dependencies = TRUE), ".github/depends.Rds", version = 2)
+          saveRDS(remotes::dev_package_deps("RUshiny/",dependencies = TRUE), ".github/depends.Rds", version = 2)
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
         shell: Rscript {0}
 
@@ -79,7 +79,7 @@ jobs:
       - name: Install Linux system dependencies
         if: runner.os == 'Linux'
         run: |
-          sysreqs=$(Rscript -e 'cat("apt-get update -y && apt-get install -y", paste(gsub("apt-get install -y ", "", remotes::system_requirements("ubuntu-22.04", package=unlist(strsplit(read.dcf("RU_shiny/DESCRIPTION")[,"Depends"],", |\n")))), collapse = " "))')
+          sysreqs=$(Rscript -e 'cat("apt-get update -y && apt-get install -y", paste(gsub("apt-get install -y ", "", remotes::system_requirements("ubuntu-22.04", package=unlist(strsplit(read.dcf("RUshiny/DESCRIPTION")[,"Depends"],", |\n")))), collapse = " "))')
           echo $sysreqs
           sudo -s eval "$sysreqs"
           sudo apt -y install libfontconfig1-dev
@@ -111,7 +111,7 @@ jobs:
 
       - name: Install dependencies 1
         run: |
-          remotes::install_deps("RU_shiny/",dependencies = TRUE)
+          remotes::install_deps("RUshiny/",dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
           remotes::install_cran("BiocManager", force = TRUE)
         shell: Rscript {0}
@@ -143,13 +143,13 @@ jobs:
       - name: Install package
         if: github.ref == 'refs/heads/master' 
         run: |
-          devtools::install("RU_shiny/",dependencies = TRUE, quick = TRUE)
+          devtools::install("RUshiny/",dependencies = TRUE, quick = TRUE)
         shell: Rscript {0}
 
       - name: CompileCourse
         run: |
           require(compileCourses)
-          compileCourses::compileSingleCourseMaterial(repo="RockefellerUniversity",subdir="RU_shiny",branch="master")
+          compileCourses::compileSingleCourseMaterial(repo="RockefellerUniversity",subdir="RUshiny",branch="master")
         shell: Rscript {0}
 
       - name: Upload check results
