@@ -31,7 +31,7 @@ knitr::opts_chunk$set(echo = TRUE, tidy = T)
 
 ```{r, results='asis',include=TRUE,echo=FALSE}
 if(params$isSlides != "yes"){
-  cat("# ???My Course name (session1)???
+  cat("# Intro to Shiny
 
 ---
 "    
@@ -132,7 +132,7 @@ setwd("/PathToMyDownload/RU_Course_template/r_course")
 if(params$isSlides == "yes"){
   cat("class: inverse, center, middle
 
-# Another section header
+## What is Shiny? <br> Why do we use it?
 
 <html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
 
@@ -140,7 +140,7 @@ if(params$isSlides == "yes"){
 "    
   )
 }else{
-  cat("# Another section header
+  cat("## What is Shiny? Why do we use it?
 
 ---
 "    
@@ -150,50 +150,3511 @@ if(params$isSlides == "yes"){
 
 ```
 
-## Slide Structure
-
-We use the a double has/pound for slides. This is important for hierarchy. If you use 1 it will work for the slides, but will mess up the single page version.
 
 
-## Left/Right alignment
+```{r, echo=F, eval=T, message = F}
+library(shiny)
+library(bslib)
+library(ggplot2)
+library(DT)
 
-To show things side by side on a slide you can use pull left/right. t is important to keep the tab on the second square bracket. On single page it will just be one after the other:
+```
+
+---
+
+
+## Basic componenets of Shiny app
+A shiny app consists of the user interface (UI) and the server function
+* the UI object defines what will be seen on the page
+* the server function contains code that combines R code with inputs (eg info from user, databases, or files) and provides instructions for generating outputs
+* the *shinyApp* function builds the shiny app from the the UI object and server function
+
+<img src="imgs/shiny_ui_server.png"height="300" width="800">
+
+Neth, H. (2025) *Introduction to Data Science* (https://bookdown.org/hneth/i2ds/)
+
+---
+
+## Shiny - how to get started
+
+A Shiny app is generally contained within one R script to define the UI object and the server function.
+
+```{r first_app, echo=T, eval=F}
+library(shiny)
+library(bslib)
+
+ui = page_fluid(
+  textOutput(outputId = "app_info")
+)
+
+server = function(input, output) {
+  output$app_info = renderText("Our first app!")
+}
+
+shinyApp(ui = ui, server = server)
+
+```
+<img src="imgs/first_app.png"height="400" width="500">
+
+
+---
+
+## Shiny - how to get started
+
+When you run the *shinyApp* function, your RStudio console will be busy and you'll see a message with a URL. This is the port within your computer that the app is running. 
+
+<img src="imgs/listening_app.png"height="100" width="400">
+
+A window should pop up automatically showing the app. You can also copy and paste this address into a browser to open an instance of the app. 
+
+To close the app and free up the console, you can:
+* click on the console to hit the *ESC* button or Ctrl+C
+* click on the *Stop* button on the top right corner of the console
+
+---
+
+## Shiny - how to get started
+
+Pretty much any Shiny app will start with the code below. Just paste this code into a fresh R script to get started.
+
+TIP: Open a new R script, type *shinyapp*, then hit Shift+Tab, and the template will appear. 
+
+Boiler plate Shiny app code:
+```{r template, eval=F, echo=T}
+library(shiny)
+
+ui <- page_fluid()
+
+server <- function(input, output, session) {
+  
+}
+
+shinyApp(ui, server)
+```
+
+
+---
+
+## Shiny - how to get started
+
+Shiny is well integrated into R Studio and there are a few additional features that make running apps easier.
+
+If you open a blank R script and add the shiny template code (see previous slide), once you save the file you should see a button in the upper right corner of the script that says *Run App*. 
+
+This will automatically launch the app. 
+
+
+<img src="imgs/runApp_button_pp.png"height="200" width="800">
+
+---
+
+## Shiny - how to get started
+
+
+How that app is launched (e.g. in browser or a window within RStudio) can be changed by the dropdown that is part of the *Run App* button
+
+
+<img src="imgs/runApp_dropdown.png"height="200" width="800">
+
+
+---
+
+## Shiny - how to get started
 
 .pull-left[
-This will be on left of slide
-  ] 
-  
+You can also start a new app by opening a new file in R Studio and selecting the *Shiny Web App* option. 
+
+The *Application name* you enter will be the name of a newly created directory that contains the app.R file and your Shiny app.
+
+]
+
 .pull-right[
-This will be on right
 
- ]
+<img src="imgs/shiny_file_dropdown.png"height="400" width="350">
+]
+---
 
 
-## Data from external sources
+## Shiny resources for inputs and outputs 
 
-everything in the rmd is relative to the inst/extdata directory so you have some data to load in, just put it in the data directory, read it in along the path. 
-The structure is maintained for those attending the course and download the package using the instructions. The same rules are followed for imgs and scripts that you may call.
-```{r,echo=T}
-Table <- read.table("data/readThisTable.csv",sep=",",header=T)
+The Shiny [cheatsheet](https://shiny.posit.co/r/articles/start/cheatsheet/) is a great resource demonstrating built-in input and output options
+
+ADD IMAGE OF INPUTS FREOM CHEATSHEET!
+
+or go through inputs like mastering shiny book
+
+or go through the [posit widget gallery](https://shiny.posit.co/r/gallery/widgets/widget-gallery/)
+---
+
+
+## Build a basic app
+
+**Talk about outputs and how outputs are paired with render functions**
+```{r, echo=T, eval=T, out.width="75%"}
+ui = page_fluid(
+  textOutput(outputId = "app_info")
+)
+
+print(as.character(ui))
+```
+
+---
+
+## Build a basic app
+
+server function and launch app
+```{r basic, echo=T, eval=T, out.width="75%"}
+
+
+server = function(input, output) {
+  output$app_info = renderText("Our first app!")
+}
 
 ```
 
-## Big Processes
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui, server = server)
+```
 
-If what you want to do is super intense computationally you can use the eval=F arguments to prevent it being done during compilation.
+<img src="imgs/basic.png"height="400" width="500">
 
-```{r,echo=T, eval=F}
-#Intense computation
-myresult<-10^6 +1
+---
+
+## Adding global variables to app
+
+Global variables can be assigned in the script outside of the UI object and server function. This code is run once upon initiating the app and global variables and settings are available within the app.
+
+```{r, echo=T, eval=T, out.width="75%"}
+# read in table
+#de_table <- read.csv("shPTBP1_vs_control_DEG.csv")
+de_table <- read.csv("shP53_vs_control_DEG.csv")
+
+# view table (would not be part of shiny script)
+head(de_table, 3)
+```
+
+---
+
+## App with datatable from DT package
+
+UI object - add the table using the *dataTableOutput* function from the DT package
+```{r, echo=T, eval=T, out.width="75%"}
+library(DT)
+
+ui_simple = page_fluid(
+  
+  textOutput(outputId = "app_info"),
+  
+  DT::DTOutput(outputId = "de_data")
+)
+
 
 ```
 
-You can then just load in the result of the computation, and keep using the result after that. If you do want them to evaluate the intense computation, then you can hide this intermediate file that you are loading in with echo=F. 
+---
 
-```{r,echo=F, eval=T}
-load("data/myresult.RData")
+## App with datatable from DT package
+
+Make the server function and launch app
+
+Here we use the *renderDataTable* function, which will put the table in the UI where we specified with the *dataTableOutput* function
+```{r, echo=T, eval=T, out.width="75%"}
+
+server_simple = function(input, output) {
+  output$app_info = renderText("This is an app showing differential gene expression data")
+  
+  output$de_data = renderDataTable({
+    datatable(de_table) 
+  })
+}
 
 ```
+
+
+
+---
+
+## App with datatable from DT package
+
+```{r addDT, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_simple, server = server_simple)
+```
+<img src="imgs/addDT.png"height="350" width="750">
+
+---
+
+## Customize datatable
+
+The DT package allows for a lot of customization of the html datatable. [This link](https://rstudio.github.io/DT/) shows some of the capabilities. 
+
+Below we will add custom filters on top of each column and round the values to improve the appearance. 
+
+```{r, echo=T, eval=T, out.width="75%"}
+
+
+server_simple2 = function(input, output) {
+  output$app_info = renderText("This is an app showing differential gene expression data")
+  
+  output$de_data = renderDataTable({
+    datatable(de_table,
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+}
+
+```
+
+
+
+---
+
+## Customize datatable
+
+```{r customizeDT, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_simple, server = server_simple2)
+```
+<img src="imgs/customizeDT.png"height="350" width="750">
+
+---
+
+## Other options for displaying tables
+
+  * [rhandsontable](https://jrowen.github.io/rhandsontable/) - based on javascript handsontable
+    + an excel like table that is easily editable by the user
+  * [reactable](https://glin.github.io/reactable/) - based on java script React Table
+    + similar to DT. depends on use case.  
+
+---
+
+## Add plots to app
+
+Add an MA plot and a Volcano plot to the page. First add the outputs to the UI object
+
+```{r, echo=T, eval=T, out.width="75%"}
+ui_data = page_fluid(
+  textOutput(outputId = "app_info"),
+  
+  dataTableOutput(outputId = "de_data"),
+  
+  plotOutput("ma_plot"),
+  
+  plotOutput("volcano_plot")
+)
+
+```
+
+---
+
+## Add plots to app
+
+Then make the server function containing the *render* functions that tell shiny how to make the outputs from the IU object.
+
+```{r, echo=T, eval=T, out.width="75%"}
+
+
+server_data = function(input, output) {
+  output$app_info = renderText("This is an app showing differential gene expression data")
+  
+  output$de_data = renderDataTable({
+    datatable(de_table,filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+  output$ma_plot = renderPlot({
+    ggplot(de_table, aes(x = baseMean, y = log2FoldChange)) +
+      geom_point() +
+      scale_x_log10() +
+      xlab("baseMean (log scale)") +
+      theme_bw() +
+      ggtitle("MA plot")
+  })
+  
+  output$volcano_plot = renderPlot({
+    ggplot(de_table, aes(x = log2FoldChange, y = -log10(pvalue))) +
+      geom_point() +
+      theme_bw() +
+      ggtitle("Volcano plot")
+  })
+}
+
+```
+
+
+---
+
+## Add plots to app
+
+```{r addPlots, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_data, server = server_data)
+```
+
+<img src="imgs/addPlots.png"height="450" width="400">
+---
+
+```{r, results='asis',include=TRUE,echo=FALSE}
+if(params$isSlides == "yes"){
+  cat("class: inverse, center, middle
+
+# App layouts
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
+
+---
+"    
+  )
+}else{
+  cat("# App layouts
+
+---
+"    
+  )
+  
+}
+
+```
+
+## Tidy up app appearance with cards
+
+bslib has many functions that allow customizing the formatting of the page. Here we add 'cards', which are boxes that allow grouping of UI components
+
+```{r, echo=T, eval=F, out.width="75%"}
+
+ui_fillable <- page_fillable(
+
+  card(card_header("Table of DE results"),
+       dataTableOutput(outputId = "de_data")),
+  card(card_header("MA plot"),
+       plotOutput("ma_plot")),
+  card(card_header("Volcano plot"),
+       plotOutput("volcano_plot"))
+)
+
+```
+
+---
+
+
+
+## Tidy up app appearance with cards
+
+```{r addCards, echo=T, eval=F, out.width="75%"}
+#same server function as previous
+shinyApp(ui = ui_fillable, server = server_data)
+```
+
+<img src="imgs/addCards.png"height=450" width="400">
+
+---
+
+## Collapsable boxes with accordians
+
+We can add the ability to hide certain boxes with accordians from the bslib package
+```{r, echo=T, eval=F, out.width="75%"}
+
+ui_accordian <- page_fillable(
+  accordion(
+    accordion_panel("Table of DE results",
+                    dataTableOutput(outputId = "de_data")),
+    
+    accordion_panel("MA plot",
+                    plotOutput("ma_plot")),
+    
+    accordion_panel("Volcano plot",
+                    plotOutput("volcano_plot"))
+  )
+)
+
+```
+
+---
+
+## Collapsable boxes with accordians
+
+```{r accordian, echo=T, eval=F, out.width="75%"}
+#same server function as previous
+shinyApp(ui = ui_accordian, server = server_data)
+```
+
+<img src="imgs/accordian.png"height="500" width="750">
+
+---
+
+## Collapsable boxes with accordians
+
+Control over which panels can be opened initially can be set in the *accordian* function
+```{r, echo=T, eval=F, out.width="75%"}
+
+ui_accordian <- page_fillable(
+  accordion(
+    accordion_panel("Table of DE results",
+                    dataTableOutput(outputId = "de_data")),
+    
+    accordion_panel("MA plot",
+                    plotOutput("ma_plot")),
+    
+    accordion_panel("Volcano plot",
+                    plotOutput("volcano_plot")),
+    
+    open = TRUE # will open all panels
+  )
+)
+
+```
+
+---
+
+## Collapsable boxes with accordians
+
+```{r, echo=T, eval=F, out.width="75%"}
+#same server function as previous
+shinyApp(ui = ui_accordian, server = server_data)
+```
+<img src="imgs/accordian_open.png"height="400" width="350">
+
+---
+
+## Customize layout with columns
+
+The *layout_columns* function from bslib creates columns on the page
+```{r, echo=T, eval=F, out.width="75%"}
+
+ui_column <- page_fillable(
+  layout_columns(
+    col_widths = c(4,4,4),
+    card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))),
+    
+    card(card_header("MA plot",plotOutput("ma_plot"))),
+    
+    card(card_header("Volcano plot",plotOutput("volcano_plot")))
+    )
+  )
+
+```
+
+---
+
+## Customize layout with columns
+
+```{r columns, echo=T, eval=F, out.width="75%"}
+#same server function as previous
+shinyApp(ui = ui_column, server = server_data)
+```
+
+<img src="imgs/columns.png"height="450" width="750">
+---
+
+## Multiple rows
+The 'col_widths' argument of the *layout_columns* function will control with width of the column. The bootstrap grid system is made up of 12 columns. A numeric vector is provided with widths for each card. Once the elements combined width goes above 12, then the elements are wrapped to the next row.
+```{r, echo=T, eval=F, out.width="75%"}
+
+ui_twoRow <- page_fillable(
+  layout_columns(
+    card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))),
+    
+    card(card_header("MA plot",plotOutput("ma_plot"))),
+    
+    card(card_header("Volcano plot",plotOutput("volcano_plot"))),
+    
+    col_widths = c(12,6,6)
+  ),
+)
+
+```
+
+---
+
+## Multiple rows
+
+```{r multiple_rows, echo=T, eval=F, out.width="75%"}
+#same server function as previous
+shinyApp(ui = ui_twoRow, server = server_data)
+```
+
+<img src="imgs/multiple_rows.png"height="400" width="600">
+
+---
+
+## Page layout options
+
+The previous app demonstrates how *page_fillable* will automatically fill the whole page (both vertically and horizontally). This can be controlled with the 'col_widths' and 'row_heights' arguments of the *layout_columns* function
+
+bslib has two other options for the base of the page layout, *page_fixed* and *page_fluid*. The *page_fixed* function will use a fixed width that will vary based on the settings of the device, and the *page_fluid* function will extend to fill the whole width of the webpage. 
+
+Both *page_fixed* and *page_fluid* will choose a sensible default height that can be set with the 'row_heights' argument of the *layout_columns* function. 
+
+---
+
+## Fixed page
+
+```{r, echo=T, eval=F, out.width="75%"}
+
+ui_fixed <- page_fixed(
+  layout_columns(
+    card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))),
+    
+    card(card_header("MA plot",plotOutput("ma_plot"))),
+    
+    card(card_header("Volcano plot",plotOutput("volcano_plot"))),
+    
+    col_widths = c(12,6,6)
+  )
+)
+
+```
+
+---
+
+## Fixed page
+
+```{r fixed_page, echo=T, eval=F, out.width="75%"}
+#same server function as previous
+shinyApp(ui = ui_fixed, server = server_data)
+```
+
+<img src="imgs/fixed_page.png"height="500" width="700">
+
+
+---
+
+## Fluid page
+
+```{r, echo=T, eval=F, out.width="75%"}
+
+ui_fluid <- page_fluid(
+  layout_columns(
+    card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))),
+    
+    card(card_header("MA plot",plotOutput("ma_plot"))),
+    
+    card(card_header("Volcano plot",plotOutput("volcano_plot"))),
+    
+    col_widths = c(12,6,6)
+  )
+)
+
+```
+
+
+---
+
+## Fluid page
+
+```{r fluid_page, echo=T, eval=F, out.width="75%"}
+#same server function as previous
+shinyApp(ui = ui_fluid, server = server_data)
+```
+
+<img src="imgs/fluid_page.png"height="400" width="550">
+
+---
+## Nested rows within a column
+
+More complicated layouts can be achieved by nesting *layout_columns* functions. Here we add a tall card as a new row below the table and then nest the plots within this row next to the card. 
+
+```{r, echo=T, eval=F, out.width="75%"}
+
+ui_nested <- page_fluid(
+  layout_columns(
+    col_widths = 12,
+    card(card_header("Table of DE results", dataTableOutput(outputId = "de_data")))),
+  
+  layout_columns(
+    col_widths = 6,
+    card(card_header("This is a tall box")),
+    
+    layout_columns(
+      col_widths = c(12,12),
+      card(card_header("MA plot",plotOutput("ma_plot"))),
+      
+      card(card_header("Volcano plot",plotOutput("volcano_plot")))
+    )
+  ),
+)
+
+```
+
+---
+## Nested rows within a column
+
+```{r nested, echo=T, eval=F, out.width="75%"}
+#same server function as previous
+shinyApp(ui = ui_nested, server = server_data)
+```
+
+<img src="imgs/nested.png"height="400" width="500">
+
+---
+
+## Add a sidebar to the page
+
+Sidebars are retractable and will remain static as you scroll up and down the page. They are often nice for user inputs or information that you always want the user to see. The width can be set within the function.
+
+```{r, echo=T, eval=T, out.width="75%"}
+
+ui_sidebar <- page_sidebar(
+  title = "RNAseq tools",
+  
+  sidebar = sidebar(
+    "This is a sidebar",
+    width = 300,
+  ),
+  
+  layout_columns(
+    card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
+    card(card_header("MA plot"),plotOutput("ma_plot")),
+    card(card_header("Volcano plot"),plotOutput("volcano_plot")),
+    col_widths = c(12,6,6), row_heights = c("750px", "500px")
+  )
+)
+
+```
+
+---
+
+## Add a sidebar to the page
+
+```{r sidebar, echo=T, eval=F, out.width="75%"}
+#same server function as previous
+shinyApp(ui = ui_sidebar, server = server_data)
+```
+
+<img src="imgs/sidebar.png"height="400" width="550">
+
+---
+
+## Use a navbar layout for multi-page app
+
+```{r, echo=T, eval=T, out.width="75%"}
+
+ui_navbar <- page_navbar(
+  title = "RNAseq tools",
+  nav_panel(
+    title = "DE Analysis",
+    layout_sidebar(
+      sidebar = sidebar(
+        "This is a sidebar",
+        width = 300,
+      ),
+      
+      layout_columns(
+        card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
+        card(card_header("MA plot"),plotOutput("ma_plot")),
+        card(card_header("Volcano plot"),plotOutput("volcano_plot")),
+        col_widths = c(12,6,6), row_heights = c("750px", "500px")
+      )
+    )
+  ),
+  nav_panel(
+    title = "Next steps",
+    "The next step in our analysis will be..."
+  ),
+  nav_spacer(),
+  nav_menu(
+    title = "Links",
+    align = "right",
+    nav_item(
+      tags$a(
+        shiny::icon("chart-simple"), "RU BRC - Learn more!",
+        href = "https://rockefelleruniversity.github.io/",
+        target = "_blank"
+      )
+    )
+  )
+)
+
+```
+
+---
+
+
+## Use a navbar layout for multi-page app
+
+```{r, echo=T, eval=F, out.width="75%"}
+#same server function as previous
+shinyApp(ui = ui_navbar, server = server_data)
+```
+
+---
+```{r, results='asis',include=TRUE,echo=FALSE}
+if(params$isSlides == "yes"){
+  cat("class: inverse, center, middle
+
+# Themes
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
+
+---
+"    
+  )
+}else{
+  cat("# Themes
+
+---
+"    
+  )
+  
+}
+
+```
+
+
+## Themes
+
+It's easy to modify the look of the app using the bslib package. The *page_sidebar* function (and other payout functions) has a 'theme' argument that takes a *bs_theme* object.
+
+bslib has builtin themes that can be easily used. The themes can be previewed (here)[https://bootswatch.com/], and the string to use in the 'bootswatch argument' of the *bs_theme* function can be picked from the vector returned by *bootswatch_themes()*
+
+```{r}
+bootswatch_themes()
+```
+
+---
+
+## Themes - Cerulean
+
+```{r, echo=T, eval=T, out.width="75%"}
+
+ui_cerulean <- page_navbar(
+  title = "RNAseq tools",
+  theme = bs_theme(version = 5, bootswatch = "cerulean"),
+  nav_panel(
+    title = "DE Analysis",
+    layout_sidebar(
+      sidebar = sidebar(
+        "This is a sidebar",
+        width = 300,
+      ),
+      
+      layout_columns(
+        card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
+        card(card_header("MA plot"),plotOutput("ma_plot")),
+        card(card_header("Volcano plot"),plotOutput("volcano_plot")),
+        col_widths = c(12,6,6), row_heights = c("750px", "500px")
+      )
+    )
+  ),
+  nav_panel(
+    title = "Next steps",
+    "The next step in our analysis will be..."
+  ),
+  nav_spacer(),
+  nav_menu(
+    title = "Links",
+    align = "right",
+    nav_item(
+      tags$a(
+        shiny::icon("chart-simple"), "RU BRC - Learn more!",
+        href = "https://rockefelleruniversity.github.io/",
+        target = "_blank"
+      )
+    )
+  )
+)
+
+```
+
+---
+
+## Themes - Cerulean
+
+```{r, echo=T, eval=F, out.width="75%"}
+#same server function as previous
+shinyApp(ui = ui_cerulean, server = server_data)
+```
+
+---
+
+## Themes - Darkly
+
+```{r, echo=T, eval=T, out.width="75%"}
+
+ui_darkly <- page_navbar(
+  title = "RNAseq tools",
+  theme = bs_theme(version = 5, bootswatch = "darkly"),
+  nav_panel(
+    title = "DE Analysis",
+    layout_sidebar(
+      sidebar = sidebar(
+        "This is a sidebar",
+        width = 300,
+      ),
+      
+      layout_columns(
+        card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
+        card(card_header("MA plot"),plotOutput("ma_plot")),
+        card(card_header("Volcano plot"),plotOutput("volcano_plot")),
+        col_widths = c(12,6,6), row_heights = c("750px", "500px")
+      )
+    )
+  ),
+  nav_panel(
+    title = "Next steps",
+    "The next step in our analysis will be..."
+  ),
+  nav_spacer(),
+  nav_menu(
+    title = "Links",
+    align = "right",
+    nav_item(
+      tags$a(
+        shiny::icon("chart-simple"), "RU BRC - Learn more!",
+        href = "https://rockefelleruniversity.github.io/",
+        target = "_blank"
+      )
+    )
+  )
+)
+
+```
+
+---
+
+## Themes - Darkly
+
+```{r, echo=T, eval=F, out.width="75%"}
+#same server function as previous
+shinyApp(ui = ui_darkly, server = server_data)
+```
+
+---
+
+## Custom themes
+
+A big benefit of the *bs_theme* function is the ability to highly customize the app theme. This can be done with the arguments to the function, or with additional CSS. We use custom CSS to modify the header of the cards throughout the app and manually set the main color options. 
+```{r, echo=T, eval=T, out.width="75%"}
+
+custom_css <- "
+  .card-header {
+    background-color: #d3dff1;
+    border-bottom: 2px solid #273449;
+  }
+"
+
+# Create theme with custom CSS
+custom_theme <- bs_theme(
+  version = 5,
+  bg = "white",
+  fg = "#273449",
+  primary = "#5886b2",
+  secondary = "#95a5a6",
+  success = "#18bc9c",
+  info = "#3498db",
+  warning = "#f39c12",
+  danger = "#e74c3c",
+  preset = "bootstrap",
+  "navbar-bg" = "#5886b2"
+) |> bs_add_rules(custom_css)
+
+```
+
+---
+
+## Custom themes
+
+This custom theme object can then be used in the 'theme' argument of *page_sidebar*. 
+
+```{r, echo=T, eval=T, out.width="75%"}
+
+ui_custom <- page_navbar(
+  title = "RNAseq tools",
+  theme = custom_theme,
+  nav_panel(
+    title = "DE Analysis",
+    layout_sidebar(
+      sidebar = sidebar(
+        "This is a sidebar",
+        width = 300,
+      ),
+      
+      layout_columns(
+        card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
+        card(card_header("MA plot"),plotOutput("ma_plot")),
+        card(card_header("Volcano plot"),plotOutput("volcano_plot")),
+        col_widths = c(12,6,6), row_heights = c("750px", "500px")
+      )
+    )
+  ),
+  nav_panel(
+    title = "Next steps",
+    "The next step in our analysis will be..."
+  ),
+  nav_spacer(),
+  nav_menu(
+    title = "Links",
+    align = "right",
+    nav_item(
+      tags$a(
+        shiny::icon("chart-simple"), "RU BRC - Learn more!",
+        href = "https://rockefelleruniversity.github.io/",
+        target = "_blank"
+      )
+    )
+  )
+)
+
+```
+---
+
+## Themes
+
+```{r, echo=T, eval=F, out.width="75%"}
+#same server function as previous
+shinyApp(ui = ui_custom, server = server_data)
+```
+
+---
+```{r, results='asis',include=TRUE,echo=FALSE}
+if(params$isSlides == "yes"){
+  cat("class: inverse, center, middle
+
+# Inputs
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
+
+---
+"    
+  )
+}else{
+  cat("# Inputs
+
+---
+"    
+  )
+  
+}
+
+```
+
+## Inputs - text boxes
+
+should probably explain in detail how the input functons work in general (Arguments, etc)
+```{r text_boxes, echo=T, eval=F}
+ui_textInputs = page_fluid(
+  textInput(inputId = "text_box", label = "Experiment name:"),
+  textAreaInput(inputId = "big_text_box", "Describe your experiment:", rows = 3)
+)
+
+```
+
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_textInputs, server = function(input, output){})
+```
+
+<img src="imgs/text_boxes.png"height="250" width="350">
+
+---
+
+## Inputs - dropdowns
+
+
+```{r dropdowns, echo=T, eval=T}
+ui_selInputs <- page_fluid(
+  selectInput("dropdown", "Select a gene:", 
+              choices = c("TP53", "PTEN", "HRAS", "PI3K")),
+  
+  selectInput("dropdown", "Select a gene from this really wide box!", 
+              choices = c("TP53", "PTEN", "HRAS", "PI3K"),
+              width = "100%"),
+  
+  selectInput("dropdown2", "Select more than one gene if you want:", 
+              choices = c("TP53", "PTEN", "HRAS", "PI3K"), 
+              selected = c("PTEN", "HRAS"), multiple = T),
+)
+```
+
+---
+
+## Inputs - dropdowns
+
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_selInputs, server = function(input, output){})
+```
+
+<img src="imgs/dropdowns.png"height="350" width="650">
+
+---
+
+## Inputs - selection of choices
+
+
+```{r pickInputs, echo=T, eval=T}
+ui_pickInputs <- page_fluid(
+
+  "If you want the user to only select one option from a list, radioButtons work well",
+  radioButtons("radio", "Select only one gene from the radio selections:", 
+              choices = c("TP53", "PTEN", "HRAS", "PI3K"), 
+              selected = "HRAS"),
+  
+  "To allow the user to select multiple options, use checkboxGroupInput",
+  checkboxGroupInput("checkbox_group", "Check one or more boxes next to a gene:", 
+                     choices = c("TP53", "PTEN", "HRAS", "PI3K")),
+
+  "OR if you only want a binary yes/no, you can use checkboxInput",
+  checkboxInput("checkbox", "Do you agree to the terms and conditions?"),
+)
+
+```
+
+---
+
+## Inputs - selection of choices
+
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_pickInputs, server = function(input, output){})
+```
+
+<img src="imgs/pickInputs.png"height="400" width="550">
+
+---
+
+## Inputs - numeric
+
+
+```{r numInputs, echo=T, eval=T}
+ui_numInputs <- page_fluid(
+  
+  numericInput("numeric", "Number of samples", value = 1, min = 0, max = 100),
+  
+  sliderInput("num_slider", "Number of samples", value = 10, min = 0, max = 25),
+  
+  sliderInput("num_slider", "Range of sample numbers", value = c(10,20), min = 0, max = 25)
+)
+
+
+```
+
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_numInputs, server = function(input, output){})
+```
+
+<img src="imgs/numInputs.png"height="250" width="350">
+
+---
+
+## Inputs - dates
+
+
+```{r dateInputs, echo=T, eval=T}
+ui_dateInputs <- page_fluid(
+  dateInput("date", "Choose a date:"),
+  
+  dateRangeInput("date_range", "Choose a range of dates:")
+)
+
+```
+
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_dateInputs, server = function(input, output){})
+```
+
+<img src="imgs/dateInputs.png"height="300" width="250">
+
+---
+
+## Inputs - action buttons
+
+To have the user trigger downstream events by clicking a button, we can use an *actionButton*
+```{r, echo=T, eval=T}
+ui_button <- page_fluid(
+  actionButton("button", "Click me!"),
+)
+
+```
+
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_button, server = function(input, output){})
+```
+<img src="imgs/actionButton.png"height="100" width="250">
+
+
+---
+
+```{r, results='asis',include=TRUE,echo=FALSE}
+if(params$isSlides == "yes"){
+  cat("class: inverse, center, middle
+
+# Reactivity
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
+
+---
+"    
+  )
+}else{
+  cat("# Reactivity
+
+---
+"    
+  )
+  
+}
+
+```
+
+## Reactive use of inputs
+
+We have seen many types of inputs, but these would be pointless if we can't detect when they change or know what is selected.
+
+Every input returns some kind of value, and changes in this value can be recorded by shiny. This introduces the concept of 'reactivity', the key element of shiny that makes apps useful and cool.
+
+---
+
+## Using reactivity
+
+If we include an output and it's corresponding render function that uses inputs we have created, we can see the return value of the input.
+
+This is an example of simple reactivity, we change the gene, and the *gene_name* output detects this and displays the new gene name. 
+
+```{r, echo=T, eval=T}
+ui_gene <- page_fluid(
+  radioButtons("gene", "Select only one gene from the radio selections:", 
+              choices = c("TP53", "PTEN", "HRAS", "PI3K"), 
+              selected = "HRAS"),
+  
+  textOutput("gene_text")
+)
+
+server_gene = function(input, output){
+   output$gene_text <- renderText({
+     paste0("We will study ", input$gene)
+   })
+ }
+
+```
+
+
+
+---
+
+## Using reactivity
+
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_gene, server = server_gene)
+```
+
+.pull-left[
+<img src="imgs/hras.png"height="200" width="250">
+]
+
+.pull-right[
+
+<img src="imgs/pi3k.png"height="200" width="250">
+]
+
+---
+
+## Reactive graph
+
+<img src="imgs/input_output.png"height="300" width="700">
+
+---
+
+## Reactive contexts
+
+Inputs are considered a 'reactive value'. This means that when that value changes, anything that relies on this value will also change. 
+
+The requires special handling, and a reactive value can only be used in certain contexts.  For example, we get an error if we just try and print *input$gene* without putting it inside a reactive handler, such as *renderText*. 
+
+We will learn more about other reactive contexts later on. 
+```{r, echo=T, eval=F}
+
+server_geneBad = function(input, output){
+    print(paste0("We will study ", input$gene))
+ }
+
+```
+
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_gene, server = server_geneBad)
+```
+
+<img src="imgs/reactive_error.png"height="65" width="500">
+
+---
+
+## Reactivity
+
+Here is a slightly more complicated reactive situation where we have more than one input being used by an output, including a calculation involving two separate inputs.
+
+```{r, echo=T, eval=T}
+ui_gene2 <- page_fluid(
+  radioButtons("gene", "Select only one gene from the radio selections:", 
+              choices = c("TP53", "PTEN", "HRAS", "PI3K"), 
+              selected = "HRAS"),
+  
+  sliderInput("conditions", "Number of samples", value = 10, min = 0, max = 25),
+  
+  numericInput("replicates", "Number of replicates", value = 1, min = 0, max = 100),
+  
+  textOutput("study_summary")
+)
+
+server_gene2 = function(input, output){
+   output$study_summary <- renderText({
+     paste0("We will study ", input$gene, " and use ", input$conditions, " samples, with ", input$replicates, " replicates of each. This will give ", input$conditions*input$replicates, " total samples.")
+   })
+ }
+
+```
+
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_gene2, server = server_gene2)
+```
+
+---
+
+## Reactivity
+ This sets up a reactive graph where we have one output, *output$study_summary*, that depends on three inputs and a separate calculation that involves the two numeric inputs. 
+
+<img src="imgs/no_reactive_graph1.png"height="300" width="400">
+
+---
+
+## Reactivity
+
+While this code will work, it is not the most efficient way to write this app. Because *output$study_summary* depends directly on the sample calculation, it will re-run it any time that **any one of these inputs change**, even if it is not involved in that calculation, such as *input$gene*. 
+
+This is okay for this situation, but if a more intensive calculation was being done, this would slow the app considerably.
+
+<img src="imgs/no_reactive_graph2.png"height="300" width="800">
+
+---
+## Lazy evaluation of reactive functions
+
+A key aspect of reactivity in Shiny is that evaluation in a shiny app is generally 'lazy'. This means that any code in the app is only evaluated when it is needed, typically when a dependency changes. This is different than a typical R script that runs from top to bottom.
+
+We will introduce a new shiny function that helps to make reactivity much more efficient and utilizes the advantage of lazy code evaluation in shiny. 
+
+That would be the *reactive* function, which creates a reactive expression. A reactive expression usually takes inputs as dependencies and it's value is often used by an output.
+
+<img src="imgs/reactive_intro.png"height="250" width="700">
+
+---
+
+## Reactive expressions
+
+Key aspects of a reactive function:
+
+  * It usually depends on one or more reactive inputs
+  * If one of these dependencies changes, then it is invalidated and the next time that reactive expression is called it will be computed again.
+  * The output of the function is cached and is available for use within the app. 
+  * When the expression is called in the app and the value of a reactive function is valid, this value is retrieved without any further computation. 
+
+
+---
+
+## Reactive expressions
+
+A *reactive* function takes a chunk of R code and returns a value like a regular R function. To use the result, use the name of the expression followed by parenthesis, e.g. total_samples() below. It will return the object made by the last line, or you can use the *return* function, just like any other function in R.
+
+```{r, echo=T, eval=T}
+server_geneGood = function(input, output){
+  
+  total_samples <- reactive({
+    input$conditions*input$replicates
+  })
+  
+   output$study_summary <- renderText({
+     paste0("We will study ", input$gene, " and use ", input$conditions, " samples, with ", input$replicates, " replicates of each. This will give ", total_samples(), " total samples.")
+   })
+}
+
+```
+
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_gene2, server = server_geneGood)
+```
+
+
+---
+## Reactive expressions
+
+Applied to our previous example, *output$study_summary* calls *total_samples()*, which takes dependencies on the two numeric inputs to make this calculation. 
+
+
+
+<img src="imgs/reactivity_with_reactive1.png"height="300" width="500">
+
+---
+## Reactive expressions
+
+*total_samples()* is only calculated if *input$conditions* or *input$replicates* has changed since the last time this text was rendered. 
+
+If the *input$gene* is changed, then the cached value of *total_samples()* is used and it does not need to be re-calculated.
+
+<img src="imgs/reactivity_with_reactive2.png"height="300" width="750">
+
+
+
+---
+## Reactive expressions
+
+As a reminder, when this calculation was previously housed within the *renderText* function and not in a reactive expression, the total number of samples would be recalculated if *input$gene* changed, even though the calculation doesn't depend on it.  
+
+<img src="imgs/no_reactive_graph2.png"height="300" width="800">
+
+---
+## Add reactivity to RNAseq app
+
+Now we can use some of these inputs and reactivity to improve our RNAseq analysis app.
+
+We have a blank sidebar, but this would be a good place to add some inputs to make our app more interactive.
+```{r, echo=T, eval=F, out.width="75%"}
+# sidebar app we previously made
+shinyApp(ui = ui_custom, server = server_data)
+```
+
+<img src="imgs/sidebar.png"height="400" width="550">
+
+---
+## Add a filter for the DE table - UI object 
+
+We can add numeric inputs for the user to add cutoff values for adjusted pvalue and log2 fold change.
+
+In the UI we will add numeric inputs to allow the user to select the cut off values:
+```{r, echo=T, eval=T, results = 'hide'}
+sidebar = sidebar(
+  width = 300,
+  numericInput("padj_filter", label = "Cutoff for padj:", value = 1, min = 0, max = 1, step = 0.001),
+  
+  numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1)
+)
+```
+
+---
+## Add a filter for the DE table - server 
+
+If we were to launch the app after adding these inputs to the UI, the filters would appear, but nothing would happen when we change the values. We need to use these values in the app's server function.
+
+We will add a reactive expression that will take these values and make a filtered version of the differential expression table.
+
+```{r, echo=T, eval=T, results = 'hide'}
+filtered_de <- reactive({
+    de_table %>%
+      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
+  })
+```
+
+We also need to use this reactive expression in the render* function that creates the table output. Remember, reactive expressions are used as if they are function calls with parenthesis.
+```{r, echo=T, eval=F, results = 'hide'}
+output$de_data = renderDataTable({
+    datatable(filtered_de(), 
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+```
+
+
+---
+## Add the filter to the full app - UI
+
+
+We include these inputs in the sidebar of the UI object.
+
+```{r, echo=T, eval=T}
+
+ui_filter <- page_navbar(
+  title = "RNAseq tools",
+  theme = custom_theme,
+  nav_panel(
+    title = "DE Analysis",
+    layout_sidebar(
+      sidebar = sidebar(
+        width = 300,
+        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        numericInput("padj_filter", label = "Cutoff for padj:", value = 1, min = 0, max = 1, step = 0.001),
+    
+        numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1)
+        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+      ),
+      
+      layout_columns(
+        card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
+        card(card_header("MA plot"),plotOutput("ma_plot")),
+        card(card_header("Volcano plot"),plotOutput("volcano_plot")),
+        col_widths = c(12,6,6), row_heights = c("750px", "500px")
+      )
+    )
+  ),
+  nav_panel(
+    title = "Next steps",
+    "The next step in our analysis will be..."
+  ),
+  nav_spacer(),
+  nav_menu(
+    title = "Links",
+    align = "right",
+    nav_item(
+      tags$a(
+        shiny::icon("chart-simple"), "RU BRC - Learn more!",
+        href = "https://rockefelleruniversity.github.io/",
+        target = "_blank"
+      )
+    )
+  )
+)
+
+```
+
+ 
+
+
+---
+## Add the filter to the full app - server 
+
+```{r, echo=T, eval=T, out.width="75%"}
+server_filter = function(input, output){ 
+  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  filtered_de <- reactive({
+    de_table %>%
+      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
+  })
+  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+  output$de_data = renderDataTable({
+    # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    datatable(filtered_de(), 
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+    # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  })
+  
+  output$ma_plot = renderPlot({
+    ggplot(de_table, aes(x = baseMean, y = log2FoldChange)) +
+      geom_point() +
+      scale_x_log10() +
+      xlab("baseMean (log scale)") +
+      theme_bw() +
+      ggtitle("MA plot")
+  })
+  
+  output$volcano_plot = renderPlot({
+    ggplot(de_table, aes(x = log2FoldChange, y = -log10(pvalue))) +
+      geom_point() +
+      theme_bw() +
+      ggtitle("Volcano plot")
+  })
+  
+}
+
+```
+
+---
+## Add a filter for the DE table 
+
+```{r sidebar_DEfilter, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_filter, server = server_filter)
+```
+
+<img src="imgs/sidebar_DEfilter.png"height="600" width="650">
+
+---
+## Using a button to control filtering 
+
+You'll notice the table is reacting in real time as we change the values. This might be what you want, but a cleaner solution could be to wait to apply the filter until the user explicitly wants to.
+
+We can to this by pairing an *actionButton* with a new function, *bindEvent*. This modifies the reactive expression and instead of updating when any reactive value it depends on changes, it will only update based on a specific event (e.g. when a button is pressed)
+
+<img src="imgs/de_app_button.png"height="300" width="400">
+
+---
+## Using a button to control filtering
+
+The *actionButton* function is used in the UI object: 
+
+```{r, echo=T, eval=T, results = 'hide'}
+actionButton("de_filter", "Apply filter")
+```
+
+Modify the reactive expression to be dependent on this button we just added. We wrap the reactive (or add using a pipe) in the *bindEvent* function and include the dependency *input$de_filter* as the first argument. 
+
+This will make this reactive expression only trigger when the button is pressed 
+```{r, echo=T, eval=T, results = 'hide'}
+filtered_de <- reactive({
+    de_table %>%
+      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
+  }) %>%
+    bindEvent(input$de_filter)
+```
+
+
+---
+## Add button to app UI
+
+```{r, echo=T, eval=T}
+
+ui_filterButton <- page_navbar(
+  title = "RNAseq tools",
+  theme = custom_theme,
+  nav_panel(
+    title = "DE Analysis",
+    layout_sidebar(
+      sidebar = sidebar(
+        width = 300,
+        numericInput("padj_filter", label = "Cutoff for padj:", value = 1, min = 0, max = 1, step = 0.001),
+    
+        numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1),
+        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        actionButton("de_filter", "Apply filter")
+        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+      ),
+      
+      layout_columns(
+        card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
+        card(card_header("MA plot"),plotOutput("ma_plot")),
+        card(card_header("Volcano plot"),plotOutput("volcano_plot")),
+        col_widths = c(12,6,6), row_heights = c("750px", "500px")
+      )
+    )
+  ),
+  nav_panel(
+    title = "Next steps",
+    "The next step in our analysis will be..."
+  ),
+  nav_spacer(),
+  nav_menu(
+    title = "Links",
+    align = "right",
+    nav_item(
+      tags$a(
+        shiny::icon("chart-simple"), "RU BRC - Learn more!",
+        href = "https://rockefelleruniversity.github.io/",
+        target = "_blank"
+      )
+    )
+  )
+)
+
+```
+
+
+---
+## Add button to app server
+
+```{r, echo=T, eval=T, out.width="75%"}
+server_filterButton = function(input, output) {
+  filtered_de <- reactive({
+    de_table %>%
+      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
+  }) %>%
+    bindEvent(input$de_filter) # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+  output$de_data = renderDataTable({
+    datatable(filtered_de(),
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+  output$ma_plot = renderPlot({
+    ggplot(de_table, aes(x = baseMean, y = log2FoldChange)) +
+      geom_point() +
+      scale_x_log10() +
+      xlab("baseMean (log scale)") +
+      theme_bw() +
+      ggtitle("MA plot")
+  })
+  
+  output$volcano_plot = renderPlot({
+    ggplot(de_table, aes(x = log2FoldChange, y = -log10(pvalue))) +
+      geom_point() +
+      theme_bw() +
+      ggtitle("Volcano plot")
+  })
+  
+}
+
+```
+
+
+---
+## Launch app with button
+
+You'll notice that the table doesn't appear initially, and only appears once we click the button. By default, *bindEvent* does not run when a button still has a value of 0 (meaning it hasn't been clicked).
+
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_filterButton, server = server_filterButton)
+```
+<img src="imgs/button_ignoreNULL_issue.png"height="600" width="650">
+
+
+---
+## Initialize table before first button click
+
+The *bindEvent* function has an argument 'ignoreNULL' that tells it whether to not update the reactive expression when the value is NULL, or 0 for an actionButton. We can turn this setting off and the reactive will update when the button initializes and has a value of 0.
+
+```{r, echo=T, eval=T, out.width="75%"}
+server_filterButton2 = function(input, output) {
+  filtered_de <- reactive({
+    de_table %>%
+      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
+  }) %>%
+    bindEvent(input$de_filter, ignoreNULL = FALSE) # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+  output$de_data = renderDataTable({
+    datatable(filtered_de(),
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+  output$ma_plot = renderPlot({
+    ggplot(de_table, aes(x = baseMean, y = log2FoldChange)) +
+      geom_point() +
+      scale_x_log10() +
+      xlab("baseMean (log scale)") +
+      theme_bw() +
+      ggtitle("MA plot")
+  })
+  
+  output$volcano_plot = renderPlot({
+    ggplot(de_table, aes(x = log2FoldChange, y = -log10(pvalue))) +
+      geom_point() +
+      theme_bw() +
+      ggtitle("Volcano plot")
+  })
+  
+}
+
+```
+
+---
+## Initialize table before first button click
+
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_filterButton, server = server_filterButton2)
+```
+
+<img src="imgs/button_ignoreNULL_resolved.png"height="600" width="650">
+
+---
+## Add a tab to a card - UI
+
+Currently, we show the filtered table, but if we also want to give the user the full data as well, having mutliple tabs within the card can be a nice clean way to do this.
+
+To do this, we change the card that we want to contain tabs to use the function *navset_card_tab*, which will then have multiple *nav_panel* function calls for each individual tab. 
+
+Old card containing only one table (with filtered gene set):
+```{r, echo=T, eval=T, results='hide'}
+card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data"))
+```
+
+New card with tabs:
+```{r, echo=T, eval=T, results='hide'}
+navset_card_tab(
+  title = "DE result tables",
+  
+  nav_panel(card_header("DEGs"), dataTableOutput(outputId = "de_data")),
+  
+  nav_panel(card_header("All genes"), dataTableOutput(outputId = "all_data"))
+)
+```
+
+---
+## Add a tab to a card - server
+
+We then need to add a corresponding render function for the second tab containing the full table. 
+
+This will be added to the server function:
+```{r, echo=T, eval=F}
+output$all_data = renderDataTable({
+    datatable(de_table,
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+```
+
+
+---
+## Add a tab main app - UI
+
+```{r, echo=T, eval=T}
+
+ui_tab <- page_navbar(
+  title = "RNAseq tools",
+  theme = custom_theme,
+  nav_panel(
+    title = "DE Analysis",
+    layout_sidebar(
+      sidebar = sidebar(
+        width = 300,
+        numericInput("padj_filter", label = "Cutoff for padj:", value = 1, min = 0, max = 1, step = 0.001),
+    
+        numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1),
+ 
+        actionButton("de_filter", "Apply filter")
+      ),
+      # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+      layout_columns(
+        navset_card_tab(
+          title = "DE result tables",
+          nav_panel(card_header("DEGs"), dataTableOutput(outputId = "de_data")),
+          nav_panel(card_header("All genes"), dataTableOutput(outputId = "all_data"))
+        ),
+        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        card(card_header("MA plot"),plotOutput("ma_plot")),
+        card(card_header("Volcano plot"),plotOutput("volcano_plot")),
+        col_widths = c(12,6,6), row_heights = c("750px", "500px")
+      )
+    )
+  ),
+  nav_panel(
+    title = "Next steps",
+    "The next step in our analysis will be..."
+  ),
+  nav_spacer(),
+  nav_menu(
+    title = "Links",
+    align = "right",
+    nav_item(
+      tags$a(
+        shiny::icon("chart-simple"), "RU BRC - Learn more!",
+        href = "https://rockefelleruniversity.github.io/",
+        target = "_blank"
+      )
+    )
+  )
+)
+
+```
+
+---
+## Add a tab main app - server
+
+The output object and render function for the full data table are added to the server function. 
+
+```{r, echo=T, eval=T, out.width="75%"}
+server_tab = function(input, output) {
+  
+  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  output$all_data = renderDataTable({
+    datatable(de_table,
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  
+  filtered_de <- reactive({
+    de_table %>%
+      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
+  }) %>%
+    bindEvent(input$de_filter, ignoreNULL = FALSE)
+
+  output$de_data = renderDataTable({
+    datatable(filtered_de(),
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+  output$ma_plot = renderPlot({
+    ggplot(de_table, aes(x = baseMean, y = log2FoldChange)) +
+      geom_point() +
+      scale_x_log10() +
+      xlab("baseMean (log scale)") +
+      theme_bw() +
+      ggtitle("MA plot")
+  })
+  
+  output$volcano_plot = renderPlot({
+    ggplot(de_table, aes(x = log2FoldChange, y = -log10(pvalue))) +
+      geom_point() +
+      theme_bw() +
+      ggtitle("Volcano plot")
+  })
+  
+}
+
+```
+
+---
+## Launch app with tabs
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_tab, server = server_tab)
+```
+
+---
+## Color the DE genes in plots
+
+We can also make the plots responsive to the cutoffs by coloring the points that exceed the thresholds. 
+
+Like the table, we will make the colors of the points dependent on the filter button. The UI object will not change since the plot objects already exist on the page. The server logic will have to be modified to make the plots reponsive to changes to the thershold inputs.
+
+---
+## Color the DE genes - server code
+
+Multiple steps are required to do this:
+* Since the plots will now be dependent on the filtering inputs, it's good practice to make the ggplot objects reactive expressions
+* Add the inputs to the newly created *reactive* function that creates the ggplot object 
+* Wrap with or add a pipe to a *bindEvent* function so that the *reactive* function with the plot takes a dependency on the button
+* Use the reactive expression in the render function
+
+```{r, echo=T, eval=F}
+ma_plot_reac <- reactive({
+    de_table %>%
+      dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%
+      ggplot(aes(x = baseMean, y = log2FoldChange, color = sig)) +
+      geom_point() +
+      scale_x_log10() +
+      scale_color_manual(name = "DE status", values = c("red", "grey")) +
+      xlab("baseMean (log scale)") +
+      theme_bw() +
+      ggtitle("MA plot")
+  })  %>%
+    bindEvent(input$de_filter, ignoreNULL = FALSE)
+  
+    output$ma_plot = renderPlot({
+      ma_plot_reac()
+    }) 
+```
+
+---
+## Color the DE genes in main app
+
+```{r, echo=T, eval=T, out.width="75%"}
+
+
+server_deColor = function(input, output) {
+  output$all_data = renderDataTable({
+    datatable(de_table,
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+  filtered_de <- reactive({
+    de_table %>%
+      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
+  }) %>%
+    bindEvent(input$de_filter, ignoreNULL = FALSE)
+
+  output$de_data = renderDataTable({
+    datatable(filtered_de(),
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  ma_plot_reac <- reactive({
+    de_table %>%
+      dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%
+      ggplot(aes(x = baseMean, y = log2FoldChange, color = sig)) +
+      geom_point() +
+      scale_x_log10() +
+      scale_color_manual(name = "DE status", values = c("red", "grey")) +
+      xlab("baseMean (log scale)") +
+      theme_bw() +
+      ggtitle("MA plot")
+  })  %>%
+    bindEvent(input$de_filter, ignoreNULL = FALSE)
+  
+    output$ma_plot = renderPlot({
+      ma_plot_reac()
+    }) 
+  
+    volcano_plot_reac <- reactive({
+      de_table %>%
+        dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%
+        ggplot(de_table_wSig, aes(x = log2FoldChange, y = -log10(pvalue), color = sig)) +
+        geom_point() +
+        scale_color_manual(name = "DE status", values = c("red", "grey")) +
+        theme_bw() +
+        ggtitle("Volcano plot")
+    }) %>%
+      bindEvent(input$de_filter, ignoreNULL = FALSE)
+    
+    
+  output$volcano_plot = renderPlot({
+    volcano_plot_reac()
+  }) 
+  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+}
+
+```
+
+---
+## Launch app with reactive plots
+
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_tab, server = server_deColor)
+```
+
+REPLACE WITH TAB APP!!!!!!!
+ <img src="imgs/color_filter_nocheck.png"height="400" width="500">
+ 
+---
+## Separate reactivity for plot colors - UI
+
+If we want to make it so the plots color is determined separately from the table filter, then we can add more input options that control the color of each plot.
+
+We will use the *checkboxInput* function for a simple way to toggle back and forth between coloring the points.
+
+The input functions are added to the cards within the UI object:
+
+```{r, echo=T, eval=F}
+card(card_header("MA plot"),
+     checkboxInput("ma_plot_color", "Color DE genes"), 
+     plotOutput("ma_plot"))
+```
+
+```{r, echo=T, eval=F}
+card(card_header("Volcano plot"),
+     checkboxInput("volcano_plot_color", "Color DE genes"),
+     plotOutput("volcano_plot"))
+```
+
+---
+## Separate reactivity for plot colors - server
+
+The reactive expression that makes the ggplot object is modified to make the plot with colors or the orginal plot with not colors. This choice depends on the check box we just added, named *input$ma_plot_color*.
+
+```{r, echo=T, eval=F}
+ma_plot_reac <- reactive({
+    if(input$ma_plot_color == 1){
+      de_table %>%
+        dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%
+        ggplot(aes(x = baseMean, y = log2FoldChange, color = sig)) +
+        geom_point() +
+        scale_x_log10() +
+        scale_color_manual(values = c("red","grey"), labels = c(paste0("p<", input$padj_filter, " & L2FC>", input$lfc_filter), "not_DE")) +
+        xlab("baseMean (log scale)") +
+        theme_bw() +
+        theme(legend.position="bottom", legend.text=element_text(size=12)) +
+        ggtitle("MA plot")
+    }else{
+      ggplot(de_table, aes(x = baseMean, y = log2FoldChange)) +
+        geom_point() +
+        scale_x_log10() +
+        xlab("baseMean (log scale)") +
+        theme_bw() +
+        ggtitle("MA plot")
+    }
+    
+  })  %>%
+    bindEvent(input$de_filter, input$ma_plot_color, ignoreNULL = FALSE)
+```
+
+---
+## Add check boxes to main app UI
+
+```{r, echo=T, eval=T}
+
+ui_colorCheck <- page_navbar(
+  title = "RNAseq tools",
+  theme = custom_theme,
+  nav_panel(
+    title = "DE Analysis",
+    layout_sidebar(
+      sidebar = sidebar(
+        width = 300,
+        numericInput("padj_filter", label = "Cutoff for padj:", value = 1, min = 0, max = 1, step = 0.001),
+    
+        numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1),
+ 
+        actionButton("de_filter", "Apply filter")
+      ),
+      
+      layout_columns(
+        navset_card_tab(
+          title = "DE result tables",
+          nav_panel(card_header("DEGs"), dataTableOutput(outputId = "de_data")),
+          nav_panel(card_header("All genes"), dataTableOutput(outputId = "all_data"))
+        ),
+        card(card_header("MA plot"),
+             checkboxInput("ma_plot_color", "Color DE genes"), # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+             plotOutput("ma_plot")),
+        card(card_header("Volcano plot"),
+             checkboxInput("volcano_plot_color", "Color DE genes"), # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+             plotOutput("volcano_plot")),
+        col_widths = c(12,6,6), row_heights = c("750px", "500px")
+      )
+    )
+  ),
+  nav_panel(
+    title = "Next steps",
+    "The next step in our analysis will be..."
+  ),
+  nav_spacer(),
+  nav_menu(
+    title = "Links",
+    align = "right",
+    nav_item(
+      tags$a(
+        shiny::icon("chart-simple"), "RU BRC - Learn more!",
+        href = "https://rockefelleruniversity.github.io/",
+        target = "_blank"
+      )
+    )
+  )
+)
+
+```
+
+---
+## Modify server in main app for check boxes
+
+```{r, echo=T, eval=T, out.width="75%"}
+
+server_deColorCheck = function(input, output) {
+  output$all_data = renderDataTable({
+    datatable(de_table,
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+  filtered_de <- reactive({
+    de_table %>%
+      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
+  }) %>%
+    bindEvent(input$de_filter, ignoreNULL = FALSE)
+
+  output$de_data = renderDataTable({
+    datatable(filtered_de(),
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+  ma_plot_reac <- reactive({
+    # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    if(input$ma_plot_color == 1){
+      de_table %>%
+        dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%
+        ggplot(aes(x = baseMean, y = log2FoldChange, color = sig)) +
+        geom_point() +
+        scale_x_log10() +
+        scale_color_manual(values = c("red","grey"), labels = c(paste0("p<", input$padj_filter, " & L2FC>", input$lfc_filter), "not_DE")) +
+        xlab("baseMean (log scale)") +
+        theme_bw() +
+        theme(legend.position="bottom", legend.text=element_text(size=12)) +
+        ggtitle("MA plot")
+    }else{
+      ggplot(de_table, aes(x = baseMean, y = log2FoldChange)) +
+        geom_point() +
+        scale_x_log10() +
+        xlab("baseMean (log scale)") +
+        theme_bw() +
+        ggtitle("MA plot")
+    }
+    
+  })  %>%
+    bindEvent(input$de_filter, input$ma_plot_color, ignoreNULL = FALSE) 
+  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    output$ma_plot = renderPlot({
+      ma_plot_reac()
+    }) 
+  
+    volcano_plot_reac <- reactive({
+      # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+      if(input$volcano_plot_color == 1){
+        de_table %>%
+          dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%
+          ggplot(aes(x = log2FoldChange, y = -log10(pvalue), color = sig)) +
+          geom_point() +
+          scale_color_manual(values = c("red","grey"), labels = c(paste0("p<", input$padj_filter, " & L2FC>", input$lfc_filter), "not_DE")) +
+          theme_bw() +
+          theme(legend.position="bottom", legend.text=element_text(size=12)) +
+          ggtitle("Volcano plot")
+      }else{
+        ggplot(de_table, aes(x = log2FoldChange, y = -log10(pvalue))) +
+          geom_point() +
+          theme_bw() +
+          ggtitle("Volcano plot")
+      }
+      
+    }) %>%
+      bindEvent(input$de_filter, input$volcano_plot_color, ignoreNULL = FALSE) 
+    # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+   
+    
+  output$volcano_plot = renderPlot({
+    volcano_plot_reac()
+  }) 
+  
+}
+
+```
+
+---
+## Launch app with check boxes
+
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_colorCheck, server = server_deColorCheck)
+```
+ 
+ REPLACE WITH TAB APP!!!!
+ <img src="imgs/color_check.png"height="400" width="500">
+
+---
+
+```{r, results='asis',include=TRUE,echo=FALSE}
+if(params$isSlides == "yes"){
+  cat("class: inverse, center, middle
+
+# Downloading and uploading files
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
+
+---
+"    
+  )
+}else{
+  cat("# Downloading and uploading files
+
+---
+"    
+  )
+  
+}
+
+```
+
+## Downloading plots and tables
+
+Shiny makes it easy to download components of the app in the same way you would save any R object. To do this we use a special kind of button, called a *downloadButton*. 
+
+In the code below we add download buttons to save PDF versions of the plots. We include separate download buttons within each card for each plot.  
+NOTE: the download button does not have a 'width' argument like the action button, so we set this by giving inline CSS commands to the 'style' argument. We won't get into CSS much in this course, but it can be a powerful way to highly customize any UI components in your Shiny app if you know how to use it. You will also likely often see people using it on message boards.
+
+Code added to UI object (ma plot as example):
+```{r, echo=T, eval=F}
+card(card_header("MA plot"),
+             checkboxInput("ma_plot_color", "Color DE genes"),
+             plotOutput("ma_plot"),
+             downloadButton("download_ma_plot", "Download MA plot", style = "width:40%;"))
+```
+
+```{r, echo=T, eval=F}
+card(card_header("Volcano plot"),
+             checkboxInput("volcano_plot_color", "Color DE genes"),
+             plotOutput("volcano_plot"),
+             downloadButton("download_volcano_plot", "Download volcano plot", style = "width:40%;"))
+```
+
+---
+## Downloading plots and tables
+
+```{r, echo=T, eval=T}
+
+ui_download <- page_navbar(
+  title = "RNAseq tools",
+  theme = custom_theme,
+  nav_panel(
+    title = "DE Analysis",
+    layout_sidebar(
+      sidebar = sidebar(
+        width = 300,
+        numericInput("padj_filter", label = "Cutoff for padj:", value = 1, min = 0, max = 1, step = 0.001),
+    
+        numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1),
+ 
+        actionButton("de_filter", "Apply filter")
+      ),
+      
+      layout_columns(
+        navset_card_tab(
+          title = "DE result tables",
+          nav_panel(card_header("DEGs"), dataTableOutput(outputId = "de_data")),
+          nav_panel(card_header("All genes"), dataTableOutput(outputId = "all_data"))
+        ),
+        card(card_header("MA plot"),
+             checkboxInput("ma_plot_color", "Color DE genes"),
+             plotOutput("ma_plot"),
+             downloadButton("download_ma_plot", "Download MA plot", style = "width:40%;")), # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        card(card_header("Volcano plot"),
+             checkboxInput("volcano_plot_color", "Color DE genes"),
+             plotOutput("volcano_plot"),
+             downloadButton("download_volcano_plot", "Download volcano plot", style = "width:40%;")), # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        col_widths = c(12,6,6), row_heights = c("750px", "500px")
+      )
+    )
+  ),
+  nav_panel(
+    title = "Next steps",
+    "The next step in our analysis will be..."
+  ),
+  nav_spacer(),
+  nav_menu(
+    title = "Links",
+    align = "right",
+    nav_item(
+      tags$a(
+        shiny::icon("chart-simple"), "RU BRC - Learn more!",
+        href = "https://rockefelleruniversity.github.io/",
+        target = "_blank"
+      )
+    )
+  )
+)
+
+```
+
+---
+## Downloading plots and tables
+
+```{r, echo=T, eval=T, out.width="75%"}
+
+server_download = function(input, output) {
+  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  output$download_ma_plot <- downloadHandler(
+    filename = function() {
+      "maplot.pdf"
+    },
+    content = function(file) {
+      ggsave(filename = file, plot = ma_plot_reac())
+    }
+  )
+  
+  output$download_volcano_plot <- downloadHandler(
+    filename = function() {
+      "volcanoplot.pdf"
+    },
+    content = function(file) {
+      ggsave(filename = file, plot = volcano_plot_reac())
+    }
+  )
+  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  output$all_data = renderDataTable({
+    datatable(de_table,
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+  filtered_de <- reactive({
+    de_table %>%
+      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
+  }) %>%
+    bindEvent(input$de_filter, ignoreNULL = FALSE)
+
+  output$de_data = renderDataTable({
+    datatable(filtered_de(),
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+  ma_plot_reac <- reactive({
+    if(input$ma_plot_color == 1){
+      de_table %>%
+        dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%
+        ggplot(aes(x = baseMean, y = log2FoldChange, color = sig)) +
+        geom_point() +
+        scale_x_log10() +
+        scale_color_manual(values = c("red","grey"), labels = c(paste0("p<", input$padj_filter, " & L2FC>", input$lfc_filter), "not_DE")) +
+        xlab("baseMean (log scale)") +
+        theme_bw() +
+        theme(legend.position="bottom", legend.text=element_text(size=12)) +
+        ggtitle("MA plot")
+    }else{
+      ggplot(de_table, aes(x = baseMean, y = log2FoldChange)) +
+        geom_point() +
+        scale_x_log10() +
+        xlab("baseMean (log scale)") +
+        theme_bw() +
+        ggtitle("MA plot")
+    }
+    
+  })  %>%
+    bindEvent(input$de_filter, input$ma_plot_color, ignoreNULL = FALSE) 
+
+    output$ma_plot = renderPlot({
+      ma_plot_reac()
+    }) 
+  
+    volcano_plot_reac <- reactive({
+      if(input$volcano_plot_color == 1){
+        de_table %>%
+          dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%
+          ggplot(aes(x = log2FoldChange, y = -log10(pvalue), color = sig)) +
+          geom_point() +
+          scale_color_manual(values = c("red","grey"), labels = c(paste0("p<", input$padj_filter, " & L2FC>", input$lfc_filter), "not_DE")) +
+          theme_bw() +
+          theme(legend.position="bottom", legend.text=element_text(size=12)) +
+          ggtitle("Volcano plot")
+      }else{
+        ggplot(de_table, aes(x = log2FoldChange, y = -log10(pvalue))) +
+          geom_point() +
+          theme_bw() +
+          ggtitle("Volcano plot")
+      }
+      
+    }) %>%
+      bindEvent(input$de_filter, input$volcano_plot_color, ignoreNULL = FALSE) 
+  
+}
+
+```
+
+---
+## Downloading plots and tables
+
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_download, server = server_download)
+```
+
+---
+
+## Starting with an uploaded file
+
+So far we have been starting with the same data. But this app would be more useful if you could use any file on your computer with differential expression results.
+
+We can use the *fileInput* function to allow the user to input a file.
+
+We need to add a few things to make this work:
+  * use the *fileInput* function in the UI object
+  * add a reactive that will take the input file path as a dependency and read in the table
+  * change the reactive elements that depend on the table to use the reactive expression, not the static table we were previously reading using
+  * add the new reactive expression to the *bindEvent* functions of the table output, and the plot outputs
+  
+---
+
+## Starting with an uploaded file
+
+The input function is added to the UI object. We use the 'accept' argument to limit the type of file the user can try to upload.
+
+```{r, echo=T, eval=T}
+
+ui_fileInput <- page_navbar(
+  title = "RNAseq tools",
+  theme = custom_theme,
+  nav_panel(
+    title = "DE Analysis",
+    layout_sidebar(
+      sidebar = sidebar(
+        width = 300,
+        fileInput("de_file", "Upload a DE file", accept = c(".csv", ".tsv", "xlsx", "xls")), # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        
+        numericInput("padj_filter", label = "Cutoff for padj:", value = 1, min = 0, max = 1, step = 0.001),
+    
+        numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1),
+ 
+        actionButton("de_filter", "Apply filter")
+      ),
+      
+      layout_columns(
+        navset_card_tab(
+          title = "DE result tables",
+          nav_panel(card_header("DEGs"), dataTableOutput(outputId = "de_data")),
+          nav_panel(card_header("All genes"), dataTableOutput(outputId = "all_data"))
+        ),
+        card(card_header("MA plot"),
+             checkboxInput("ma_plot_color", "Color DE genes"),
+             plotOutput("ma_plot"),
+             downloadButton("download_ma_plot", "Download MA plot", style = "width:40%;")), 
+        card(card_header("Volcano plot"),
+             checkboxInput("volcano_plot_color", "Color DE genes"),
+             plotOutput("volcano_plot"),
+             downloadButton("download_volcano_plot", "Download volcano plot", style = "width:40%;")), 
+        col_widths = c(12,6,6), row_heights = c("750px", "500px")
+      )
+    )
+  ),
+  nav_panel(
+    title = "Next steps",
+    "The next step in our analysis will be..."
+  ),
+  nav_spacer(),
+  nav_menu(
+    title = "Links",
+    align = "right",
+    nav_item(
+      tags$a(
+        shiny::icon("chart-simple"), "RU BRC - Learn more!",
+        href = "https://rockefelleruniversity.github.io/",
+        target = "_blank"
+      )
+    )
+  )
+)
+```
+
+---
+## Starting with an uploaded file
+
+If you look at the help page for fileInput (?fileInput), you'll see that once a file is loaded, then the value returned to the server is a data frame, and one of the columns is the path to the temporary file path where Shiny is holding the file.
+
+This path is used below in the *de_table_in* reactive expression to read in the dataframe. It's necessary to add de_table_in() to the *bindEvent* attached to the filtered table so that the filtered table is updated when a new dataset is uploaded. 
+```{r, echo=T, eval=T, out.width="75%"}
+
+server_fileInput = function(input, output) {
+
+  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  de_table_in <- reactive({
+    rio::import(input$de_file$datapath)
+  })
+  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  
+  output$download_ma_plot <- downloadHandler(
+    filename = function() {
+      "maplot.pdf"
+    },
+    content = function(file) {
+      ggsave(filename = file, plot = ma_plot_reac())
+    }
+  )
+  
+  output$download_volcano_plot <- downloadHandler(
+    filename = function() {
+      "volcanoplot.pdf"
+    },
+    content = function(file) {
+      ggsave(filename = file, plot = volcano_plot_reac())
+    }
+  )
+  
+  output$all_data = renderDataTable({
+    datatable(de_table_in(),
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+  filtered_de <- reactive({
+    de_table_in() %>% 
+      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
+  }) %>%
+    bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE) # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+  output$de_data = renderDataTable({
+    datatable(filtered_de(), 
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+   ma_plot_reac <- reactive({
+    if(input$ma_plot_color == 1){
+      de_table_wSig <- de_table_in() %>% # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE"))
+      ggplot(de_table_wSig, aes(x = baseMean, y = log2FoldChange, color = sig)) +
+        geom_point() +
+        scale_x_log10() +
+        scale_color_manual(values = c("red","grey"), labels = c(paste0("p<", input$padj_filter, " & L2FC>", input$lfc_filter), "not_DE")) +
+        xlab("baseMean (log scale)") +
+        theme_bw() +
+        theme(legend.position="bottom", legend.text=element_text(size=12)) +
+        ggtitle("MA plot")
+    }else{
+      ggplot(de_table_in(), aes(x = baseMean, y = log2FoldChange)) +
+        geom_point() +
+        scale_x_log10() +
+        xlab("baseMean (log scale)") +
+        theme_bw() +
+        ggtitle("MA plot")
+    }
+    
+  })  %>%
+    bindEvent(input$de_filter, input$ma_plot_color, de_table_in(), ignoreNULL = FALSE) # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    output$ma_plot = renderPlot({
+      ma_plot_reac()
+    }) 
+  
+    volcano_plot_reac <- reactive({
+      if(input$volcano_plot_color == 1){
+        de_table_wSig <- de_table_in() %>% # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+          dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE"))
+        ggplot(de_table_wSig, aes(x = log2FoldChange, y = -log10(pvalue), color = sig)) +
+          geom_point() +
+          scale_color_manual(values = c("red","grey"), labels = c(paste0("p<", input$padj_filter, " & L2FC>", input$lfc_filter), "not_DE")) +
+          theme_bw() +
+          theme(legend.position="bottom", legend.text=element_text(size=12)) +
+          ggtitle("Volcano plot")
+      }else{
+        ggplot(de_table_in(), aes(x = log2FoldChange, y = -log10(pvalue))) +
+          geom_point() +
+          theme_bw() +
+          ggtitle("Volcano plot")
+      }
+    }) %>%
+      bindEvent(input$de_filter, input$volcano_plot_color, de_table_in(), ignoreNULL = FALSE) # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    
+    
+  output$volcano_plot = renderPlot({
+    volcano_plot_reac()
+  }) 
+  
+}
+
+```
+
+---
+## Starting with an uploaded file
+
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_fileInput, server = server_fileInput)
+```
+
+---
+
+```{r, results='asis',include=TRUE,echo=FALSE}
+if(params$isSlides == "yes"){
+  cat("class: inverse, center, middle
+
+# Conditional control of UI components
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
+
+---
+"    
+  )
+}else{
+  cat("# Conditional control of UI components
+
+---
+"    
+  )
+  
+}
+
+```
+
+## Using the req() function to prevent errors
+
+In the previous UI, the user sees an error until a file is uploaded. This is because the file path is NULL and the *rio::import* function throws the error.
+
+Shiny has a handy function, *req*, that can be added to a reactive context and the reactive or output function won't run if the value passed to *req* is NULL.
+
+```{r, echo=T, eval=T, out.width="75%"}
+
+server_fileInputReq = function(input, output) {
+
+  de_table_in <- reactive({
+    req(input$de_file) # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    rio::import(input$de_file$datapath)
+  })
+
+  output$download_ma_plot <- downloadHandler(
+    filename = function() {
+      "maplot.pdf"
+    },
+    content = function(file) {
+      ggsave(filename = file, plot = ma_plot_reac())
+    }
+  )
+  
+  output$download_volcano_plot <- downloadHandler(
+    filename = function() {
+      "volcanoplot.pdf"
+    },
+    content = function(file) {
+      ggsave(filename = file, plot = volcano_plot_reac())
+    }
+  )
+  
+  output$all_data = renderDataTable({
+    datatable(de_table_in(),
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+  filtered_de <- reactive({
+    de_table_in() %>% 
+      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
+  }) %>%
+    bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE) 
+
+  output$de_data = renderDataTable({
+    datatable(filtered_de(), 
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+   ma_plot_reac <- reactive({
+    if(input$ma_plot_color == 1){
+      de_table_wSig <- de_table_in() %>% 
+        dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE"))
+      ggplot(de_table_wSig, aes(x = baseMean, y = log2FoldChange, color = sig)) +
+        geom_point() +
+        scale_x_log10() +
+        scale_color_manual(values = c("red","grey"), labels = c(paste0("p<", input$padj_filter, " & L2FC>", input$lfc_filter), "not_DE")) +
+        xlab("baseMean (log scale)") +
+        theme_bw() +
+        theme(legend.position="bottom", legend.text=element_text(size=12)) +
+        ggtitle("MA plot")
+    }else{
+      ggplot(de_table_in(), aes(x = baseMean, y = log2FoldChange)) +
+        geom_point() +
+        scale_x_log10() +
+        xlab("baseMean (log scale)") +
+        theme_bw() +
+        ggtitle("MA plot")
+    }
+    
+  })  %>%
+    bindEvent(input$de_filter, input$ma_plot_color, de_table_in(), ignoreNULL = FALSE)
+
+    output$ma_plot = renderPlot({
+      ma_plot_reac()
+    }) 
+  
+    volcano_plot_reac <- reactive({
+      if(input$volcano_plot_color == 1){
+        de_table_wSig <- de_table_in() %>% 
+          dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE"))
+        ggplot(de_table_wSig, aes(x = log2FoldChange, y = -log10(pvalue), color = sig)) +
+          geom_point() +
+          scale_color_manual(values = c("red","grey"), labels = c(paste0("p<", input$padj_filter, " & L2FC>", input$lfc_filter), "not_DE")) +
+          theme_bw() +
+          theme(legend.position="bottom", legend.text=element_text(size=12)) +
+          ggtitle("Volcano plot")
+      }else{
+        ggplot(de_table_in(), aes(x = log2FoldChange, y = -log10(pvalue))) +
+          geom_point() +
+          theme_bw() +
+          ggtitle("Volcano plot")
+      }
+    }) %>%
+      bindEvent(input$de_filter, input$volcano_plot_color, de_table_in(), ignoreNULL = FALSE) 
+    
+    
+  output$volcano_plot = renderPlot({
+    volcano_plot_reac()
+  }) 
+}
+
+```
+
+---
+## Using the req() function to prevent errors
+
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_fileInput, server = server_fileInputReq)
+```
+
+---
+## Using the uiOutput/renderUI to control timing of UI components
+
+We still have empty boxes when the app starts even though we don't have any data to fill that space. A nice way to deal with this is the *uiOutput* function, which allows you to change the user interface **after the app is running** based on other inputs or code in the server function.
+
+So far our user interface is set up at the start and while the contents might change beased on other reactives, we havent been able to make new inputs or outputs after the app has been started.
+
+---
+## Using the uiOutput/renderUI to control timing of UI components
+
+We could improve the flow of our app by making the filter inputs in the sidebar only appear once a user has loded in a differential table. These filter inputs aren't relevant until the data is loaded, so we will only make them appear once the *input$de_file$datapath* value is a character sting, suggesting a file is loaded. 
+
+```{r, echo=T, eval=T}
+
+ui_renderUIside <- page_navbar(
+  title = "RNAseq tools",
+  theme = custom_theme,
+  nav_panel(
+    title = "DE Analysis",
+    layout_sidebar(
+      sidebar = sidebar(
+        width = 300,
+        fileInput("de_file", "Upload a DE file", accept = c(".csv", ".tsv", "xlsx", "xls")), 
+        
+        uiOutput("sidebar_filters_UI") # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+      ),
+      
+      layout_columns(
+        navset_card_tab(
+          title = "DE result tables",
+          nav_panel(card_header("DEGs"), dataTableOutput(outputId = "de_data")),
+          nav_panel(card_header("All genes"), dataTableOutput(outputId = "all_data"))
+        ),
+        card(card_header("MA plot"),
+             checkboxInput("ma_plot_color", "Color DE genes"),
+             plotOutput("ma_plot"),
+             downloadButton("download_ma_plot", "Download MA plot", style = "width:40%;")), 
+        card(card_header("Volcano plot"),
+             checkboxInput("volcano_plot_color", "Color DE genes"),
+             plotOutput("volcano_plot"),
+             downloadButton("download_volcano_plot", "Download volcano plot", style = "width:40%;")), 
+        col_widths = c(12,6,6), row_heights = c("750px", "500px")
+      )
+    )
+  ),
+  nav_panel(
+    title = "Next steps",
+    "The next step in our analysis will be..."
+  ),
+  nav_spacer(),
+  nav_menu(
+    title = "Links",
+    align = "right",
+    nav_item(
+      tags$a(
+        shiny::icon("chart-simple"), "RU BRC - Learn more!",
+        href = "https://rockefelleruniversity.github.io/",
+        target = "_blank"
+      )
+    )
+  )
+)
+
+```
+
+---
+## Using the uiOutput/renderUI to control timing of UI components
+
+Here we add the UI components for the filter inputs in a *renderUI* function that only shows up once the *de_table_in()* reactive is a data frame, meaning a table has successfully been uploaded.
+
+EXPLAIN the DIV function!
+```{r, echo=T, eval=T, out.width="75%"}
+
+server_renderUIside = function(input, output) {
+  
+  de_table_in <- reactive({
+    req(input$de_file)
+    rio::import(input$de_file$datapath)
+  })
+  
+  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  output$sidebar_filters_UI <- renderUI({
+    if(is(de_table_in(), "data.frame")){
+      div(
+        "DE filters",
+        numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.001),
+        
+        numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 1, min = 0, step = 0.1),
+        
+        actionButton("de_filter", "Apply filter")
+      )
+      
+    }
+  })
+  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  
+  output$download_ma_plot <- downloadHandler(
+    filename = function() {
+      "maplot.pdf"
+    },
+    content = function(file) {
+      ggsave(filename = file, plot = ma_plot_reac())
+    }
+  )
+  
+  output$download_volcano_plot <- downloadHandler(
+    filename = function() {
+      "volcanoplot.pdf"
+    },
+    content = function(file) {
+      ggsave(filename = file, plot = volcano_plot_reac())
+    }
+  )
+  
+  output$all_data = renderDataTable({
+    datatable(de_table_in(),
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+  filtered_de <- reactive({
+    de_table_in() %>% 
+      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
+  }) %>%
+    bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE)
+
+  output$de_data = renderDataTable({
+    datatable(filtered_de(),
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+   ma_plot_reac <- reactive({
+    if(input$ma_plot_color == 1){
+      de_table_wSig <- de_table_in() %>%
+        dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE"))
+      ggplot(de_table_wSig, aes(x = baseMean, y = log2FoldChange, color = sig)) +
+        geom_point() +
+        scale_x_log10() +
+        scale_color_manual(values = c("red","grey"), labels = c(paste0("p<", input$padj_filter, " & L2FC>", input$lfc_filter), "not_DE")) +
+        xlab("baseMean (log scale)") +
+        theme_bw() +
+        theme(legend.position="bottom", legend.text=element_text(size=12)) +
+        ggtitle("MA plot")
+    }else{
+      ggplot(de_table_in(), aes(x = baseMean, y = log2FoldChange)) +
+        geom_point() +
+        scale_x_log10() +
+        xlab("baseMean (log scale)") +
+        theme_bw() +
+        ggtitle("MA plot")
+    }
+    
+  })  %>%
+    bindEvent(input$de_filter, input$ma_plot_color, de_table_in(), ignoreNULL = FALSE)
+
+    output$ma_plot = renderPlot({
+      ma_plot_reac()
+    }) 
+  
+    volcano_plot_reac <- reactive({
+      if(input$volcano_plot_color == 1){
+        de_table_wSig <- de_table_in() %>%
+          dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE"))
+        ggplot(de_table_wSig, aes(x = log2FoldChange, y = -log10(pvalue), color = sig)) +
+          geom_point() +
+          scale_color_manual(values = c("red","grey"), labels = c(paste0("p<", input$padj_filter, " & L2FC>", input$lfc_filter), "not_DE")) +
+          theme_bw() +
+          theme(legend.position="bottom", legend.text=element_text(size=12)) +
+          ggtitle("Volcano plot")
+      }else{
+        ggplot(de_table_in(), aes(x = log2FoldChange, y = -log10(pvalue))) +
+          geom_point() +
+          theme_bw() +
+          ggtitle("Volcano plot")
+      }
+      
+    }) %>%
+      bindEvent(input$de_filter, input$volcano_plot_color, de_table_in(), ignoreNULL = FALSE)
+    
+    
+  output$volcano_plot = renderPlot({
+    volcano_plot_reac()
+  }) 
+
+}
+
+```
+
+---
+## Using the uiOutput/renderUI to control timing of UI components
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_renderUIside, server = server_renderUIside)
+```
+
+---
+## Using the uiOutput/renderUI to control timing of UI components
+
+We also don't need the boxes for the tables and plots until the data is loaded, so we will add a *uiOutput* for those as well.
+
+```{r, echo=T, eval=T}
+ui_renderUIall <- page_navbar(
+  title = "RNAseq tools",
+  theme = custom_theme,
+  nav_panel(
+    title = "DE Analysis",
+    layout_sidebar(
+      sidebar = sidebar(
+        width = 300,
+        fileInput("de_file", "Upload a DE file", accept = c(".csv", ".tsv", "xlsx", "xls")), 
+        
+        uiOutput("sidebar_filters_UI") 
+      ),
+      # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+      uiOutput("table_plots_UI"), 
+      uiOutput("message_UI") 
+      # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    )
+  ),
+  nav_panel(
+    title = "Next steps",
+    "The next step in our analysis will be..."
+  ),
+  nav_spacer(),
+  nav_menu(
+    title = "Links",
+    align = "right",
+    nav_item(
+      tags$a(
+        shiny::icon("chart-simple"), "RU BRC - Learn more!",
+        href = "https://rockefelleruniversity.github.io/",
+        target = "_blank"
+      )
+    )
+  )
+)
+
+```
+
+---
+## Using the uiOutput/renderUI to control timing of UI components
+
+Similar to the sidebar, we add a *renderUI* function that only appears if the *de_table_in()* reactive is a data frame, meaning that there is a file loaded. Also, using *renderUI*, we can add a text note to the user if no data is uploaded that they should do so.
+
+```{r, echo=T, eval=T, out.width="75%"}
+
+server_renderUIall = function(input, output) {
+  
+  de_table_in <- reactive({
+    req(input$de_file)
+    rio::import(input$de_file$datapath)
+  })
+  
+  output$all_data = renderDataTable({
+    datatable(de_table_in(),
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  output$message_UI <- renderUI({
+    if(!is(input$de_file$datapath, "character")){
+      layout_columns(
+        "No data has been loaded! Upload a DE table with the following columns: 'baseMean', 'log2FoldChange', 'lfcSE', 'stat', 'pvalue', 'padj'"
+      )
+    }
+  })
+  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  
+  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  output$table_plots_UI <- renderUI({
+    if(is(de_table_in(), "data.frame")){
+      layout_columns(
+        navset_card_tab(
+          title = "DE result tables",
+          nav_panel(card_header("DEGs"), dataTableOutput(outputId = "de_data")),
+          nav_panel(card_header("All genes"), dataTableOutput(outputId = "all_data"))
+        ),
+        card(card_header("MA plot"),
+             checkboxInput("ma_plot_color", "Color DE genes"),
+             plotOutput("ma_plot"),
+             downloadButton("download_ma_plot", "Download MA plot", style = "width:40%;")), 
+        card(card_header("Volcano plot"),
+             checkboxInput("volcano_plot_color", "Color DE genes"),
+             plotOutput("volcano_plot"),
+             downloadButton("download_volcano_plot", "Download volcano plot", style = "width:40%;")),
+        col_widths = c(12,6,6), row_heights = c("750px", "500px")
+      )
+    }
+    
+  })
+  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  
+  output$sidebar_filters_UI <- renderUI({
+    if(is(de_table_in(), "data.frame")){
+      div(
+        "DE filters",
+        numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.001),
+        
+        numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 1, min = 0, step = 0.1),
+        
+        actionButton("de_filter", "Apply filter")
+      )
+      
+    }
+  })
+  
+  filtered_de <- reactive({
+    de_table_in() %>% 
+      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
+  }) %>%
+    bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE)
+
+  output$download_ma_plot <- downloadHandler(
+    filename = function() {
+      "maplot.pdf"
+    },
+    content = function(file) {
+      ggsave(filename = file, plot = ma_plot_reac())
+    }
+  )
+  
+  output$download_volcano_plot <- downloadHandler(
+    filename = function() {
+      "volcanoplot.pdf"
+    },
+    content = function(file) {
+      ggsave(filename = file, plot = volcano_plot_reac())
+    }
+  )
+  
+  output$de_data = renderDataTable({
+    datatable(filtered_de(),
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+    ma_plot_reac <- reactive({
+    if(input$ma_plot_color == 1){
+      de_table_wSig <- de_table_in() %>%
+        dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE"))
+      ggplot(de_table_wSig, aes(x = baseMean, y = log2FoldChange, color = sig)) +
+        geom_point() +
+        scale_x_log10() +
+        scale_color_manual(values = c("red","grey"), labels = c(paste0("p<", input$padj_filter, " & L2FC>", input$lfc_filter), "not_DE")) +
+        xlab("baseMean (log scale)") +
+        theme_bw() +
+        theme(legend.position="bottom", legend.text=element_text(size=12)) +
+        ggtitle("MA plot")
+    }else{
+      ggplot(de_table_in(), aes(x = baseMean, y = log2FoldChange)) +
+        geom_point() +
+        scale_x_log10() +
+        xlab("baseMean (log scale)") +
+        theme_bw() +
+        ggtitle("MA plot")
+    }
+    
+  })  %>%
+    bindEvent(input$de_filter, input$ma_plot_color, de_table_in(), ignoreNULL = FALSE)
+
+    output$ma_plot = renderPlot({
+      ma_plot_reac()
+    }) 
+  
+    volcano_plot_reac <- reactive({
+      if(input$volcano_plot_color == 1){
+        de_table_wSig <- de_table_in() %>%
+          dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE"))
+        ggplot(de_table_wSig, aes(x = log2FoldChange, y = -log10(pvalue), color = sig)) +
+          geom_point() +
+          scale_color_manual(values = c("red","grey"), labels = c(paste0("p<", input$padj_filter, " & L2FC>", input$lfc_filter), "not_DE")) +
+          theme_bw() +
+          theme(legend.position="bottom", legend.text=element_text(size=12)) +
+          ggtitle("Volcano plot")
+      }else{
+        ggplot(de_table_in(), aes(x = log2FoldChange, y = -log10(pvalue))) +
+          geom_point() +
+          theme_bw() +
+          ggtitle("Volcano plot")
+      }
+      
+    }) %>%
+      bindEvent(input$de_filter, input$volcano_plot_color, de_table_in(), ignoreNULL = FALSE)
+    
+    
+  output$volcano_plot = renderPlot({
+    volcano_plot_reac()
+  }) 
+  
+}
+
+```
+
+---
+## Using the uiOutput/renderUI to control timing of UI components
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_renderUIall, server = server_renderUIall)
+```
+
+---
+
+## Use validate function to check input file
+
+Our app is looking for a very specific format for the uploaded file. It might be a good idea to make sure the file has the correct format to prevent the app from breaking and returning an error to the user. 
+
+We will introduce a new Shiny function to handle this, the *validate* function.
+
+---
+
+## Use validate function to check input file
+
+*Validate* prevents the alarming red error messages that are unhelpful to the user. This function can be used within a reactive expression, and the validation test is often called within a *need* function call.
+
+*Need* takes an expression to evaluate, and if it is FALSE, then it will display a string provided in the 'message' argument in any output that depends on this reactive.
+
+---
+
+## Use validate function to check input file
+
+```{r, echo=T, eval=T, out.width="75%"}
+
+server_validate = function(input, output) {
+  
+  de_table_in <- reactive({
+    req(input$de_file)
+    file_in <- rio::import(input$de_file$datapath)
+    # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    validate(
+      need(expr = all(c("baseMean", "log2FoldChange", "lfcSE", "stat", "pvalue", "padj") %in% colnames(file_in)), 
+           message = "You must have the following columns: 'baseMean', 'log2FoldChange', 'lfcSE', 'stat', 'pvalue', 'padj'")
+    )
+    # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    file_in
+  })
+  
+  output$all_data = renderDataTable({
+    datatable(de_table_in(),
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+  output$message_UI <- renderUI({
+    if(!is(input$de_file$datapath, "character")){
+      layout_columns(
+        "No data has been loaded! Upload a DE table with the following columns: 'baseMean', 'log2FoldChange', 'lfcSE', 'stat', 'pvalue', 'padj'"
+      )
+    }
+  })
+  
+  output$table_plots_UI <- renderUI({
+    if(is(de_table_in(), "data.frame")){
+      layout_columns(
+        navset_card_tab(
+          title = "DE result tables",
+          nav_panel(card_header("DEGs"), dataTableOutput(outputId = "de_data")),
+          nav_panel(card_header("All genes"), dataTableOutput(outputId = "all_data"))
+        ),
+        card(card_header("MA plot"),
+             checkboxInput("ma_plot_color", "Color DE genes"),
+             plotOutput("ma_plot")),
+        card(card_header("Volcano plot"),
+             checkboxInput("volcano_plot_color", "Color DE genes"),
+             plotOutput("volcano_plot")),
+        col_widths = c(12,6,6), row_heights = c("750px", "500px")
+      )
+    }
+    
+  })
+  
+  output$sidebar_filters_UI <- renderUI({
+    if(is(de_table_in(), "data.frame")){
+      div(
+        "DE filters",
+        numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.001),
+        
+        numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 1, min = 0, step = 0.1),
+        
+        actionButton("de_filter", "Apply filter")
+      )
+      
+    }
+  })
+  
+  filtered_de <- reactive({
+    de_table_in() %>% 
+      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
+  }) %>%
+    bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE)
+
+  output$download_ma_plot <- downloadHandler(
+    filename = function() {
+      "maplot.pdf"
+    },
+    content = function(file) {
+      ggsave(filename = file, plot = ma_plot_reac())
+    }
+  )
+  
+  output$download_volcano_plot <- downloadHandler(
+    filename = function() {
+      "volcanoplot.pdf"
+    },
+    content = function(file) {
+      ggsave(filename = file, plot = volcano_plot_reac())
+    }
+  )
+  
+  output$de_data = renderDataTable({
+    datatable(filtered_de(),
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+    ma_plot_reac <- reactive({
+    if(input$ma_plot_color == 1){
+      de_table_wSig <- de_table_in() %>%
+        dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE"))
+      ggplot(de_table_wSig, aes(x = baseMean, y = log2FoldChange, color = sig)) +
+        geom_point() +
+        scale_x_log10() +
+        scale_color_manual(values = c("red","grey"), labels = c(paste0("p<", input$padj_filter, " & L2FC>", input$lfc_filter), "not_DE")) +
+        xlab("baseMean (log scale)") +
+        theme_bw() +
+        theme(legend.position="bottom", legend.text=element_text(size=12)) +
+        ggtitle("MA plot")
+    }else{
+      ggplot(de_table_in(), aes(x = baseMean, y = log2FoldChange)) +
+        geom_point() +
+        scale_x_log10() +
+        xlab("baseMean (log scale)") +
+        theme_bw() +
+        ggtitle("MA plot")
+    }
+    
+  })  %>%
+    bindEvent(input$de_filter, input$ma_plot_color, de_table_in(), ignoreNULL = FALSE)
+
+    output$ma_plot = renderPlot({
+      ma_plot_reac()
+    }) 
+  
+    volcano_plot_reac <- reactive({
+      if(input$volcano_plot_color == 1){
+        de_table_wSig <- de_table_in() %>%
+          dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE"))
+        ggplot(de_table_wSig, aes(x = log2FoldChange, y = -log10(pvalue), color = sig)) +
+          geom_point() +
+          scale_color_manual(values = c("red","grey"), labels = c(paste0("p<", input$padj_filter, " & L2FC>", input$lfc_filter), "not_DE")) +
+          theme_bw() +
+          theme(legend.position="bottom", legend.text=element_text(size=12)) +
+          ggtitle("Volcano plot")
+      }else{
+        ggplot(de_table_in(), aes(x = log2FoldChange, y = -log10(pvalue))) +
+          geom_point() +
+          theme_bw() +
+          ggtitle("Volcano plot")
+      }
+      
+    }) %>%
+      bindEvent(input$de_filter, input$volcano_plot_color, de_table_in(), ignoreNULL = FALSE)
+    
+    
+  output$volcano_plot = renderPlot({
+    volcano_plot_reac()
+  }) 
+  
+}
+
+```
+
+---
+## Use validate function to check input file
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_renderUIall, server = server_validate)
+```
+
+
+---
+
+```{r, results='asis',include=TRUE,echo=FALSE}
+if(params$isSlides == "yes"){
+  cat("class: inverse, center, middle
+
+# Observers
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
+
+---
+"    
+  )
+}else{
+  cat("# Observers
+
+---
+"    
+  )
+  
+}
+
+```
+
+## Observers
+
+Sometimes we might want our app to react to a change in an input, but we don't need to return a value like *reactive* or we don't need to change one of the outputs. Maybe we want to write to a database when a button is clicked, or notify the user that something has happened. 
+
+Often the *observe* function is used for this purpose, to perform a side effect when an input changes
+
+Like the *reactive* function or an output, *observe* creates a reactive context that takes dependencies on inputs. Though unlike a reactive expression, an observer does not return a value and is eager in its evaluation, meaning it will evaluate the code every time an input it depends on changes. 
+
+---
+
+## Observers - notification for user
+
+We will add a nice message for the user to notify them that a new data set has been loaded.
+
+```{r, echo=T, eval=T, out.width="75%"}
+
+server_notify = function(input, output) {
+  
+  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  observe({
+      showNotification("A new table has been loaded into the app!", duration = NULL, type = "message")
+  }) %>%
+    bindEvent(de_table_in())
+  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  
+  de_table_in <- reactive({
+    req(input$de_file)
+    file_in <- rio::import(input$de_file$datapath)
+    validate(
+      need(expr = all(c("baseMean", "log2FoldChange", "lfcSE", "stat", "pvalue", "padj") %in% colnames(file_in)), 
+           message = "You must have the following columns: 'baseMean', 'log2FoldChange', 'lfcSE', 'stat', 'pvalue', 'padj'")
+    )
+    file_in
+  })
+  
+  output$all_data = renderDataTable({
+    datatable(de_table_in(),
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+  output$message_UI <- renderUI({
+    if(!is(input$de_file$datapath, "character")){
+      layout_columns(
+        "No data has been loaded! Upload a DE table with the following columns: 'baseMean', 'log2FoldChange', 'lfcSE', 'stat', 'pvalue', 'padj'"
+      )
+    }
+  })
+  
+  output$table_plots_UI <- renderUI({
+    if(is(de_table_in(), "data.frame")){
+      layout_columns(
+        navset_card_tab(
+          title = "DE result tables",
+          nav_panel(card_header("DEGs"), dataTableOutput(outputId = "de_data")),
+          nav_panel(card_header("All genes"), dataTableOutput(outputId = "all_data"))
+        ),
+        card(card_header("MA plot"),
+             checkboxInput("ma_plot_color", "Color DE genes"),
+             plotOutput("ma_plot")),
+        card(card_header("Volcano plot"),
+             checkboxInput("volcano_plot_color", "Color DE genes"),
+             plotOutput("volcano_plot")),
+        col_widths = c(12,6,6), row_heights = c("750px", "500px")
+      )
+    }
+    
+  })
+  
+  output$sidebar_filters_UI <- renderUI({
+    if(is(de_table_in(), "data.frame")){
+      div(
+        "DE filters",
+        numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.001),
+        
+        numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 1, min = 0, step = 0.1),
+        
+        actionButton("de_filter", "Apply filter")
+      )
+      
+    }
+  })
+  
+  filtered_de <- reactive({
+    de_table_in() %>% 
+      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
+  }) %>%
+    bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE)
+
+  output$download_ma_plot <- downloadHandler(
+    filename = function() {
+      "maplot.pdf"
+    },
+    content = function(file) {
+      ggsave(filename = file, plot = ma_plot_reac())
+    }
+  )
+  
+  output$download_volcano_plot <- downloadHandler(
+    filename = function() {
+      "volcanoplot.pdf"
+    },
+    content = function(file) {
+      ggsave(filename = file, plot = volcano_plot_reac())
+    }
+  )
+  
+  output$de_data = renderDataTable({
+    datatable(filtered_de(),
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+    ma_plot_reac <- reactive({
+    if(input$ma_plot_color == 1){
+      de_table_wSig <- de_table_in() %>%
+        dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE"))
+      ggplot(de_table_wSig, aes(x = baseMean, y = log2FoldChange, color = sig)) +
+        geom_point() +
+        scale_x_log10() +
+        scale_color_manual(values = c("red","grey"), labels = c(paste0("p<", input$padj_filter, " & L2FC>", input$lfc_filter), "not_DE")) +
+        xlab("baseMean (log scale)") +
+        theme_bw() +
+        theme(legend.position="bottom", legend.text=element_text(size=12)) +
+        ggtitle("MA plot")
+    }else{
+      ggplot(de_table_in(), aes(x = baseMean, y = log2FoldChange)) +
+        geom_point() +
+        scale_x_log10() +
+        xlab("baseMean (log scale)") +
+        theme_bw() +
+        ggtitle("MA plot")
+    }
+    
+  })  %>%
+    bindEvent(input$de_filter, input$ma_plot_color, de_table_in(), ignoreNULL = FALSE)
+
+    output$ma_plot = renderPlot({
+      ma_plot_reac()
+    }) 
+  
+    volcano_plot_reac <- reactive({
+      if(input$volcano_plot_color == 1){
+        de_table_wSig <- de_table_in() %>%
+          dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE"))
+        ggplot(de_table_wSig, aes(x = log2FoldChange, y = -log10(pvalue), color = sig)) +
+          geom_point() +
+          scale_color_manual(values = c("red","grey"), labels = c(paste0("p<", input$padj_filter, " & L2FC>", input$lfc_filter), "not_DE")) +
+          theme_bw() +
+          theme(legend.position="bottom", legend.text=element_text(size=12)) +
+          ggtitle("Volcano plot")
+      }else{
+        ggplot(de_table_in(), aes(x = log2FoldChange, y = -log10(pvalue))) +
+          geom_point() +
+          theme_bw() +
+          ggtitle("Volcano plot")
+      }
+      
+    }) %>%
+      bindEvent(input$de_filter, input$volcano_plot_color, de_table_in(), ignoreNULL = FALSE)
+    
+    
+  output$volcano_plot = renderPlot({
+    volcano_plot_reac()
+  }) 
+  
+}
+
+```
+
+---
+## Observers - notification for user
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_renderUIall, server = server_notify)
+```
+
+---
+use observer to let user enter file name for plots?
+
+also can use observer when you introduce the update* series of functions
+---
+
+
+
+# other ideas for later on
+
+* reactiveValues()
+* intorduce ways to include custom HTML
+* custom CSS?
+* publishing to shinyapps.io
+* debugging?
+* mention shiny in python?
+
+
+---
+## Further Resources
+
+
+
+
+---
+## Exercises
+
+Exercise on Reproducibility in R can be found [here](../../exercises/exercises/Docker_exercise.html)
+
+
+---
+## Contact
+
+Any suggestions, comments, edits or questions (about content or the slides themselves) please reach out to our [GitHub](https://github.com/RockefellerUniversity/Intro_to_Shiny/issues) and raise an issue.
+
 
 --
 ## Exercises
