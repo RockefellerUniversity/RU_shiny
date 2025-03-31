@@ -13,7 +13,7 @@
 <meta name="author" content="brc@rockefeller.edu" />
 
 
-<title>My Course Template, Session 2</title>
+<title>Introduction to Shiny, Session 2</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1295,6 +1295,106 @@ ul.task-list{list-style: none;}
 
 
 
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } 
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.at { color: #204a87; } 
+code span.bn { color: #0000cf; } 
+code span.cf { color: #204a87; font-weight: bold; } 
+code span.ch { color: #4e9a06; } 
+code span.cn { color: #8f5902; } 
+code span.co { color: #8f5902; font-style: italic; } 
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.dt { color: #204a87; } 
+code span.dv { color: #0000cf; } 
+code span.er { color: #a40000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #0000cf; } 
+code span.fu { color: #204a87; font-weight: bold; } 
+code span.im { } 
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.kw { color: #204a87; font-weight: bold; } 
+code span.op { color: #ce5c00; font-weight: bold; } 
+code span.ot { color: #8f5902; } 
+code span.pp { color: #8f5902; font-style: italic; } 
+code span.sc { color: #ce5c00; font-weight: bold; } 
+code span.ss { color: #4e9a06; } 
+code span.st { color: #4e9a06; } 
+code span.va { color: #000000; } 
+code span.vs { color: #4e9a06; } 
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
 
 
 
@@ -1456,7 +1556,7 @@ border-radius: 0px;
 
 
 
-<h1 class="title toc-ignore">My Course Template, Session 2</h1>
+<h1 class="title toc-ignore">Introduction to Shiny, Session 2</h1>
 <h3 class="subtitle"><html><br />
 <br />
 <hr color="#EB811B" size="1px" width="796px"><br />
@@ -1484,18 +1584,1454 @@ types in R</a></li>
 and writing in R</a></li>
 </ul>
 </div>
-<div id="same-stuff" class="section level2">
-<h2>Same stuff</h2>
-<p>??More content for second session??</p>
+</div>
+<div id="session-2---input-types-and-reactivity" class="section level1">
+<h1>Session 2 - Input types and reactivity</h1>
+<hr />
+<div id="inputs---text-boxes" class="section level2">
+<h2>Inputs - text boxes</h2>
+<p>should probably explain in detail how the input functons work in
+general (Arguments, etc)</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>ui_textInputs <span class="ot">=</span> <span class="fu">page_fluid</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  <span class="fu">textInput</span>(<span class="at">inputId =</span> <span class="st">&quot;text_box&quot;</span>, <span class="at">label =</span> <span class="st">&quot;Experiment name:&quot;</span>),</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  <span class="fu">textAreaInput</span>(<span class="at">inputId =</span> <span class="st">&quot;big_text_box&quot;</span>, <span class="st">&quot;Describe your experiment:&quot;</span>, <span class="at">rows =</span> <span class="dv">3</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">shinyApp</span>(<span class="at">ui =</span> ui_textInputs, <span class="at">server =</span> <span class="cf">function</span>(input, output){})</span></code></pre></div>
+<p><img role="img" src="imgs/text_boxes.png" height="250" width="350"></p>
+</div>
+<div id="inputs---dropdowns" class="section level2">
+<h2>Inputs - dropdowns</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>ui_selInputs <span class="ot">&lt;-</span> <span class="fu">page_fluid</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="fu">selectInput</span>(<span class="st">&quot;dropdown&quot;</span>, <span class="st">&quot;Select a gene:&quot;</span>, </span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>              <span class="at">choices =</span> <span class="fu">c</span>(<span class="st">&quot;TP53&quot;</span>, <span class="st">&quot;PTEN&quot;</span>, <span class="st">&quot;HRAS&quot;</span>, <span class="st">&quot;PI3K&quot;</span>)),</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  </span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="fu">selectInput</span>(<span class="st">&quot;dropdown&quot;</span>, <span class="st">&quot;Select a gene from this really wide box!&quot;</span>, </span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>              <span class="at">choices =</span> <span class="fu">c</span>(<span class="st">&quot;TP53&quot;</span>, <span class="st">&quot;PTEN&quot;</span>, <span class="st">&quot;HRAS&quot;</span>, <span class="st">&quot;PI3K&quot;</span>),</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>              <span class="at">width =</span> <span class="st">&quot;100%&quot;</span>),</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  </span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>  <span class="fu">selectInput</span>(<span class="st">&quot;dropdown2&quot;</span>, <span class="st">&quot;Select more than one gene if you want:&quot;</span>, </span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>              <span class="at">choices =</span> <span class="fu">c</span>(<span class="st">&quot;TP53&quot;</span>, <span class="st">&quot;PTEN&quot;</span>, <span class="st">&quot;HRAS&quot;</span>, <span class="st">&quot;PI3K&quot;</span>), </span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>              <span class="at">selected =</span> <span class="fu">c</span>(<span class="st">&quot;PTEN&quot;</span>, <span class="st">&quot;HRAS&quot;</span>), <span class="at">multiple =</span> T),</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="inputs---dropdowns-1" class="section level2">
+<h2>Inputs - dropdowns</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">shinyApp</span>(<span class="at">ui =</span> ui_selInputs, <span class="at">server =</span> <span class="cf">function</span>(input, output){})</span></code></pre></div>
+<p><img role="img" src="imgs/dropdowns.png" height="350" width="650"></p>
+</div>
+<div id="inputs---selection-of-choices" class="section level2">
+<h2>Inputs - selection of choices</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>ui_pickInputs <span class="ot">&lt;-</span> <span class="fu">page_fluid</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="st">&quot;If you want the user to only select one option from a list, radioButtons work well&quot;</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="fu">radioButtons</span>(<span class="st">&quot;radio&quot;</span>, <span class="st">&quot;Select only one gene from the radio selections:&quot;</span>, </span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>              <span class="at">choices =</span> <span class="fu">c</span>(<span class="st">&quot;TP53&quot;</span>, <span class="st">&quot;PTEN&quot;</span>, <span class="st">&quot;HRAS&quot;</span>, <span class="st">&quot;PI3K&quot;</span>), </span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>              <span class="at">selected =</span> <span class="st">&quot;HRAS&quot;</span>),</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  </span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  <span class="st">&quot;To allow the user to select multiple options, use checkboxGroupInput&quot;</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  <span class="fu">checkboxGroupInput</span>(<span class="st">&quot;checkbox_group&quot;</span>, <span class="st">&quot;Check one or more boxes next to a gene:&quot;</span>, </span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>                     <span class="at">choices =</span> <span class="fu">c</span>(<span class="st">&quot;TP53&quot;</span>, <span class="st">&quot;PTEN&quot;</span>, <span class="st">&quot;HRAS&quot;</span>, <span class="st">&quot;PI3K&quot;</span>)),</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>  <span class="st">&quot;OR if you only want a binary yes/no, you can use checkboxInput&quot;</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>  <span class="fu">checkboxInput</span>(<span class="st">&quot;checkbox&quot;</span>, <span class="st">&quot;Do you agree to the terms and conditions?&quot;</span>),</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="inputs---selection-of-choices-1" class="section level2">
+<h2>Inputs - selection of choices</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">shinyApp</span>(<span class="at">ui =</span> ui_pickInputs, <span class="at">server =</span> <span class="cf">function</span>(input, output){})</span></code></pre></div>
+<p><img role="img" src="imgs/pickInputs.png" height="400" width="550"></p>
+</div>
+<div id="inputs---numeric" class="section level2">
+<h2>Inputs - numeric</h2>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>ui_numInputs <span class="ot">&lt;-</span> <span class="fu">page_fluid</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  </span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="fu">numericInput</span>(<span class="st">&quot;numeric&quot;</span>, <span class="st">&quot;Number of samples&quot;</span>, <span class="at">value =</span> <span class="dv">1</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">100</span>),</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  </span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="fu">sliderInput</span>(<span class="st">&quot;num_slider&quot;</span>, <span class="st">&quot;Number of samples&quot;</span>, <span class="at">value =</span> <span class="dv">10</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">25</span>),</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  </span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>  <span class="fu">sliderInput</span>(<span class="st">&quot;num_slider&quot;</span>, <span class="st">&quot;Range of sample numbers&quot;</span>, <span class="at">value =</span> <span class="fu">c</span>(<span class="dv">10</span>,<span class="dv">20</span>), <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">25</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">shinyApp</span>(<span class="at">ui =</span> ui_numInputs, <span class="at">server =</span> <span class="cf">function</span>(input, output){})</span></code></pre></div>
+<p><img role="img" src="imgs/numInputs.png" height="250" width="350"></p>
+</div>
+<div id="inputs---dates" class="section level2">
+<h2>Inputs - dates</h2>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>ui_dateInputs <span class="ot">&lt;-</span> <span class="fu">page_fluid</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="fu">dateInput</span>(<span class="st">&quot;date&quot;</span>, <span class="st">&quot;Choose a date:&quot;</span>),</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  </span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="fu">dateRangeInput</span>(<span class="st">&quot;date_range&quot;</span>, <span class="st">&quot;Choose a range of dates:&quot;</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">shinyApp</span>(<span class="at">ui =</span> ui_dateInputs, <span class="at">server =</span> <span class="cf">function</span>(input, output){})</span></code></pre></div>
+<p><img role="img" src="imgs/dateInputs.png" height="300" width="250"></p>
+</div>
+<div id="inputs---action-buttons" class="section level2">
+<h2>Inputs - action buttons</h2>
+<p>To have the user trigger downstream events by clicking a button, we
+can use an <em>actionButton</em></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>ui_button <span class="ot">&lt;-</span> <span class="fu">page_fluid</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  <span class="fu">actionButton</span>(<span class="st">&quot;button&quot;</span>, <span class="st">&quot;Click me!&quot;</span>),</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">shinyApp</span>(<span class="at">ui =</span> ui_button, <span class="at">server =</span> <span class="cf">function</span>(input, output){})</span></code></pre></div>
+<p><img role="img" src="imgs/actionButton.png" height="100" width="250"></p>
+</div>
+</div>
+<div id="reactivity" class="section level1">
+<h1>Reactivity</h1>
+<hr />
+<div id="reactive-use-of-inputs" class="section level2">
+<h2>Reactive use of inputs</h2>
+<p>We have seen many types of inputs, but these would be pointless if we
+can’t detect when they change or know what is selected.</p>
+<p>Every input returns some kind of value, and changes in this value can
+be recorded by shiny. This introduces the concept of ‘reactivity’, the
+key element of shiny that makes apps useful and cool.</p>
+</div>
+<div id="using-reactivity" class="section level2">
+<h2>Using reactivity</h2>
+<p>If we include an output and it’s corresponding render function that
+uses inputs we have created, we can see the return value of the
+input.</p>
+<p>This is an example of simple reactivity, we change the gene, and the
+<em>gene_name</em> output detects this and displays the new gene
+name.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>ui_gene <span class="ot">&lt;-</span> <span class="fu">page_fluid</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  <span class="fu">radioButtons</span>(<span class="st">&quot;gene&quot;</span>, <span class="st">&quot;Select only one gene from the radio selections:&quot;</span>, </span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>              <span class="at">choices =</span> <span class="fu">c</span>(<span class="st">&quot;TP53&quot;</span>, <span class="st">&quot;PTEN&quot;</span>, <span class="st">&quot;HRAS&quot;</span>, <span class="st">&quot;PI3K&quot;</span>), </span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>              <span class="at">selected =</span> <span class="st">&quot;HRAS&quot;</span>),</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>  </span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>  <span class="fu">textOutput</span>(<span class="st">&quot;gene_text&quot;</span>)</span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>)</span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>server_gene <span class="ot">=</span> <span class="cf">function</span>(input, output){</span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>   output<span class="sc">$</span>gene_text <span class="ot">&lt;-</span> <span class="fu">renderText</span>({</span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>     <span class="fu">paste0</span>(<span class="st">&quot;We will study &quot;</span>, input<span class="sc">$</span>gene)</span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>   })</span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a> }</span></code></pre></div>
+</div>
+<div id="using-reactivity-1" class="section level2">
+<h2>Using reactivity</h2>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">shinyApp</span>(<span class="at">ui =</span> ui_gene, <span class="at">server =</span> server_gene)</span></code></pre></div>
+<p><img role="img" src="imgs/hras.png" height="200" width="250"> ]</p>
+<p><img role="img" src="imgs/pi3k.png" height="200" width="250"> ]</p>
+</div>
+<div id="reactive-graph" class="section level2">
+<h2>Reactive graph</h2>
+<p><img role="img" src="imgs/input_output.png" height="300" width="700"></p>
+</div>
+<div id="reactive-contexts" class="section level2">
+<h2>Reactive contexts</h2>
+<p>Inputs are considered a ‘reactive value’. This means that when that
+value changes, anything that relies on this value will also change.</p>
+<p>The requires special handling, and a reactive value can only be used
+in certain contexts. For example, we get an error if we just try and
+print <em>input$gene</em> without putting it inside a reactive handler,
+such as <em>renderText</em>.</p>
+<p>We will learn more about other reactive contexts later on.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>server_geneBad <span class="ot">=</span> <span class="cf">function</span>(input, output){</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">&quot;We will study &quot;</span>, input<span class="sc">$</span>gene))</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a> }</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">shinyApp</span>(<span class="at">ui =</span> ui_gene, <span class="at">server =</span> server_geneBad)</span></code></pre></div>
+<p><img role="img" src="imgs/reactive_error.png" height="65" width="500"></p>
+</div>
+<div id="reactivity-1" class="section level2">
+<h2>Reactivity</h2>
+<p>Here is a slightly more complicated reactive situation where we have
+more than one input being used by an output, including a calculation
+involving two separate inputs.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>ui_gene2 <span class="ot">&lt;-</span> <span class="fu">page_fluid</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>  <span class="fu">radioButtons</span>(<span class="st">&quot;gene&quot;</span>, <span class="st">&quot;Select only one gene from the radio selections:&quot;</span>, </span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>              <span class="at">choices =</span> <span class="fu">c</span>(<span class="st">&quot;TP53&quot;</span>, <span class="st">&quot;PTEN&quot;</span>, <span class="st">&quot;HRAS&quot;</span>, <span class="st">&quot;PI3K&quot;</span>), </span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>              <span class="at">selected =</span> <span class="st">&quot;HRAS&quot;</span>),</span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>  </span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>  <span class="fu">sliderInput</span>(<span class="st">&quot;conditions&quot;</span>, <span class="st">&quot;Number of samples&quot;</span>, <span class="at">value =</span> <span class="dv">10</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">25</span>),</span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>  </span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a>  <span class="fu">numericInput</span>(<span class="st">&quot;replicates&quot;</span>, <span class="st">&quot;Number of replicates&quot;</span>, <span class="at">value =</span> <span class="dv">1</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">100</span>),</span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a>  </span>
+<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a>  <span class="fu">textOutput</span>(<span class="st">&quot;study_summary&quot;</span>)</span>
+<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a>)</span>
+<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a></span>
+<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a>server_gene2 <span class="ot">=</span> <span class="cf">function</span>(input, output){</span>
+<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a>   output<span class="sc">$</span>study_summary <span class="ot">&lt;-</span> <span class="fu">renderText</span>({</span>
+<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a>     <span class="fu">paste0</span>(<span class="st">&quot;We will study &quot;</span>, input<span class="sc">$</span>gene, <span class="st">&quot; and use &quot;</span>, input<span class="sc">$</span>conditions, <span class="st">&quot; samples, with &quot;</span>, input<span class="sc">$</span>replicates, <span class="st">&quot; replicates of each. This will give &quot;</span>, input<span class="sc">$</span>conditions<span class="sc">*</span>input<span class="sc">$</span>replicates, <span class="st">&quot; total samples.&quot;</span>)</span>
+<span id="cb17-16"><a href="#cb17-16" tabindex="-1"></a>   })</span>
+<span id="cb17-17"><a href="#cb17-17" tabindex="-1"></a> }</span></code></pre></div>
+</div>
+<div id="reactivity-2" class="section level2">
+<h2>Reactivity</h2>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">shinyApp</span>(<span class="at">ui =</span> ui_gene2, <span class="at">server =</span> server_gene2)</span></code></pre></div>
+</div>
+<div id="reactivity-3" class="section level2">
+<h2>Reactivity</h2>
+<p>This sets up a reactive graph where we have one output,
+<em>output$study_summary</em>, that depends on three inputs and a
+separate calculation that involves the two numeric inputs.</p>
+<p><img role="img" src="imgs/no_reactive_graph1.png" height="300" width="400"></p>
+</div>
+<div id="reactivity-4" class="section level2">
+<h2>Reactivity</h2>
+<p>While this code will work, it is not the most efficient way to write
+this app. Because <em>output<span class="math inline">\(study_summary*
+depends directly on the sample calculation, it will re-run it any time
+that **any one of these inputs change**, even if it is not involved in
+that calculation, such as *input\)</span>gene</em>.</p>
+<p>This is okay for this situation, but if a more intensive calculation
+was being done, this would slow the app considerably.</p>
+<p><img role="img" src="imgs/no_reactive_graph2.png" height="300" width="800"></p>
+</div>
+<div id="lazy-evaluation-of-reactive-functions" class="section level2">
+<h2>Lazy evaluation of reactive functions</h2>
+<p>A key aspect of reactivity in Shiny is that evaluation in a shiny app
+is generally ‘lazy’. This means that any code in the app is only
+evaluated when it is needed, typically when a dependency changes. This
+is different than a typical R script that runs from top to bottom.</p>
+<p>We will introduce a new shiny function that helps to make reactivity
+much more efficient and utilizes the advantage of lazy code evaluation
+in shiny.</p>
+<p>That would be the <em>reactive</em> function, which creates a
+reactive expression. A reactive expression usually takes inputs as
+dependencies and it’s value is often used by an output.</p>
+<p><img role="img" src="imgs/reactive_intro.png" height="250" width="700"></p>
+</div>
+<div id="reactive-expressions" class="section level2">
+<h2>Reactive expressions</h2>
+<p>Key aspects of a reactive function:</p>
+<ul>
+<li>It usually depends on one or more reactive inputs</li>
+<li>If one of these dependencies changes, then it is invalidated and the
+next time that reactive expression is called it will be computed
+again.</li>
+<li>The output of the function is cached and is available for use within
+the app.</li>
+<li>When the expression is called in the app and the value of a reactive
+function is valid, this value is retrieved without any further
+computation.</li>
+</ul>
+</div>
+<div id="reactive-expressions-1" class="section level2">
+<h2>Reactive expressions</h2>
+<p>A <em>reactive</em> function takes a chunk of R code and returns a
+value like a regular R function. To use the result, use the name of the
+expression followed by parenthesis, e.g. total_samples() below. It will
+return the object made by the last line, or you can use the
+<em>return</em> function, just like any other function in R.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>server_geneGood <span class="ot">=</span> <span class="cf">function</span>(input, output){</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>  </span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>  total_samples <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a>    input<span class="sc">$</span>conditions<span class="sc">*</span>input<span class="sc">$</span>replicates</span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a>  })</span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a>  </span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a>   output<span class="sc">$</span>study_summary <span class="ot">&lt;-</span> <span class="fu">renderText</span>({</span>
+<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a>     <span class="fu">paste0</span>(<span class="st">&quot;We will study &quot;</span>, input<span class="sc">$</span>gene, <span class="st">&quot; and use &quot;</span>, input<span class="sc">$</span>conditions, <span class="st">&quot; samples, with &quot;</span>, input<span class="sc">$</span>replicates, <span class="st">&quot; replicates of each. This will give &quot;</span>, <span class="fu">total_samples</span>(), <span class="st">&quot; total samples.&quot;</span>)</span>
+<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a>   })</span>
+<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="fu">shinyApp</span>(<span class="at">ui =</span> ui_gene2, <span class="at">server =</span> server_geneGood)</span></code></pre></div>
+</div>
+<div id="reactive-expressions-2" class="section level2">
+<h2>Reactive expressions</h2>
+<p>Applied to our previous example, <em>output$study_summary</em> calls
+<em>total_samples()</em>, which takes dependencies on the two numeric
+inputs to make this calculation.</p>
+<p><img role="img" src="imgs/reactivity_with_reactive1.png" height="300" width="500"></p>
+</div>
+<div id="reactive-expressions-3" class="section level2">
+<h2>Reactive expressions</h2>
+<p><em>total_samples()</em> is only calculated if <em>input<span class="math inline">\(conditions* or *input\)</span>replicates</em> has
+changed since the last time this text was rendered.</p>
+<p>If the <em>input$gene</em> is changed, then the cached value of
+<em>total_samples()</em> is used and it does not need to be
+re-calculated.</p>
+<p><img role="img" src="imgs/reactivity_with_reactive2.png" height="300" width="750"></p>
+</div>
+<div id="reactive-expressions-4" class="section level2">
+<h2>Reactive expressions</h2>
+<p>As a reminder, when this calculation was previously housed within the
+<em>renderText</em> function and not in a reactive expression, the total
+number of samples would be recalculated if <em>input$gene</em> changed,
+even though the calculation doesn’t depend on it.</p>
+<p><img role="img" src="imgs/no_reactive_graph2.png" height="300" width="800"></p>
+</div>
+<div id="add-reactivity-to-rnaseq-app" class="section level2">
+<h2>Add reactivity to RNAseq app</h2>
+<p>Now we can use some of these inputs and reactivity to improve our
+RNAseq analysis app.</p>
+<p>We have a blank sidebar, but this would be a good place to add some
+inputs to make our app more interactive.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="co"># sidebar app we previously made</span></span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="fu">shinyApp</span>(<span class="at">ui =</span> ui_custom, <span class="at">server =</span> server_data)</span></code></pre></div>
+<p><img role="img" src="imgs/sidebar.png" height="400" width="550"></p>
+</div>
+<div id="add-a-filter-for-the-de-table---ui-object" class="section level2">
+<h2>Add a filter for the DE table - UI object</h2>
+<p>We can add numeric inputs for the user to add cutoff values for
+adjusted pvalue and log2 fold change.</p>
+<p>In the UI we will add numeric inputs to allow the user to select the
+cut off values. We can set some sensible starting values as well using
+the ‘value’ argment of each function.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>sidebar <span class="ot">=</span> <span class="fu">sidebar</span>(</span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>  <span class="at">width =</span> <span class="dv">300</span>,</span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>  <span class="fu">numericInput</span>(<span class="st">&quot;padj_filter&quot;</span>, <span class="at">label =</span> <span class="st">&quot;Cutoff for padj:&quot;</span>, <span class="at">value =</span> <span class="fl">0.05</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">1</span>, <span class="at">step =</span> <span class="fl">0.005</span>),</span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>  </span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>  <span class="fu">numericInput</span>(<span class="st">&quot;lfc_filter&quot;</span>, <span class="at">label =</span> <span class="st">&quot;Cutoff for log2 FC:&quot;</span>, <span class="at">value =</span> <span class="dv">0</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">step =</span> <span class="fl">0.1</span>)</span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="add-a-filter-for-the-de-table---server" class="section level2">
+<h2>Add a filter for the DE table - server</h2>
+<p>If we were to launch the app after adding these inputs to the UI, the
+filters would appear, but nothing would happen when we change the
+values. We need to use these values in the app’s server function.</p>
+<p>We will add a reactive expression that will take these values and
+make a filtered version of the differential expression table.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>filtered_de <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>    de_table <span class="sc">%&gt;%</span></span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">filter</span>(padj <span class="sc">&lt;</span> input<span class="sc">$</span>padj_filter <span class="sc">&amp;</span> <span class="fu">abs</span>(log2FoldChange) <span class="sc">&gt;</span> input<span class="sc">$</span>lfc_filter)</span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a>  })</span></code></pre></div>
+<p>We also need to use this reactive expression in the render* function
+that creates the table output. Remember, reactive expressions are used
+as if they are function calls with parenthesis.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a>output<span class="sc">$</span>de_data <span class="ot">=</span> <span class="fu">renderDataTable</span>({</span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>    <span class="fu">datatable</span>(<span class="fu">filtered_de</span>(),</span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a>              <span class="at">selection =</span> <span class="st">&quot;none&quot;</span>,</span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a>              <span class="at">filter =</span> <span class="st">&#39;top&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a>      <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;baseMean&quot;</span>, <span class="st">&quot;log2FoldChange&quot;</span>, <span class="st">&quot;lfcSE&quot;</span>, <span class="st">&quot;stat&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a>      <span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;pvalue&quot;</span>, <span class="st">&quot;padj&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a>  })</span></code></pre></div>
+</div>
+<div id="add-the-filter-to-the-full-app---ui" class="section level2">
+<h2>Add the filter to the full app - UI</h2>
+<p>We include these inputs in the sidebar of the UI object.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a>ui_filter <span class="ot">&lt;-</span> <span class="fu">page_navbar</span>(</span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">&quot;RNAseq tools&quot;</span>,</span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a>  <span class="at">theme =</span> custom_theme,</span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a>  <span class="fu">nav_panel</span>(</span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;DE Analysis&quot;</span>,</span>
+<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a>    <span class="fu">layout_sidebar</span>(</span>
+<span id="cb25-7"><a href="#cb25-7" tabindex="-1"></a>      <span class="at">sidebar =</span> <span class="fu">sidebar</span>(</span>
+<span id="cb25-8"><a href="#cb25-8" tabindex="-1"></a>        <span class="at">width =</span> <span class="dv">300</span>,</span>
+<span id="cb25-9"><a href="#cb25-9" tabindex="-1"></a>        <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb25-10"><a href="#cb25-10" tabindex="-1"></a>        <span class="fu">numericInput</span>(<span class="st">&quot;padj_filter&quot;</span>, <span class="at">label =</span> <span class="st">&quot;Cutoff for padj:&quot;</span>, <span class="at">value =</span> <span class="fl">0.05</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">1</span>, <span class="at">step =</span> <span class="fl">0.005</span>),</span>
+<span id="cb25-11"><a href="#cb25-11" tabindex="-1"></a>    </span>
+<span id="cb25-12"><a href="#cb25-12" tabindex="-1"></a>        <span class="fu">numericInput</span>(<span class="st">&quot;lfc_filter&quot;</span>, <span class="at">label =</span> <span class="st">&quot;Cutoff for log2 FC:&quot;</span>, <span class="at">value =</span> <span class="dv">0</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">step =</span> <span class="fl">0.1</span>)</span>
+<span id="cb25-13"><a href="#cb25-13" tabindex="-1"></a>        <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb25-14"><a href="#cb25-14" tabindex="-1"></a>      ),</span>
+<span id="cb25-15"><a href="#cb25-15" tabindex="-1"></a>      </span>
+<span id="cb25-16"><a href="#cb25-16" tabindex="-1"></a>      <span class="fu">layout_columns</span>(</span>
+<span id="cb25-17"><a href="#cb25-17" tabindex="-1"></a>        <span class="fu">card</span>(<span class="fu">card_header</span>(<span class="st">&quot;Table of DE results&quot;</span>), <span class="fu">dataTableOutput</span>(<span class="at">outputId =</span> <span class="st">&quot;de_data&quot;</span>)),</span>
+<span id="cb25-18"><a href="#cb25-18" tabindex="-1"></a>        <span class="fu">card</span>(<span class="fu">card_header</span>(<span class="st">&quot;MA plot&quot;</span>),<span class="fu">plotOutput</span>(<span class="st">&quot;ma_plot&quot;</span>)),</span>
+<span id="cb25-19"><a href="#cb25-19" tabindex="-1"></a>        <span class="fu">card</span>(<span class="fu">card_header</span>(<span class="st">&quot;Volcano plot&quot;</span>),<span class="fu">plotOutput</span>(<span class="st">&quot;volcano_plot&quot;</span>)),</span>
+<span id="cb25-20"><a href="#cb25-20" tabindex="-1"></a>        <span class="at">col_widths =</span> <span class="fu">c</span>(<span class="dv">12</span>,<span class="dv">6</span>,<span class="dv">6</span>), <span class="at">row_heights =</span> <span class="fu">c</span>(<span class="st">&quot;750px&quot;</span>, <span class="st">&quot;500px&quot;</span>)</span>
+<span id="cb25-21"><a href="#cb25-21" tabindex="-1"></a>      )</span>
+<span id="cb25-22"><a href="#cb25-22" tabindex="-1"></a>    )</span>
+<span id="cb25-23"><a href="#cb25-23" tabindex="-1"></a>  ),</span>
+<span id="cb25-24"><a href="#cb25-24" tabindex="-1"></a>  <span class="fu">nav_panel</span>(</span>
+<span id="cb25-25"><a href="#cb25-25" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Next steps&quot;</span>,</span>
+<span id="cb25-26"><a href="#cb25-26" tabindex="-1"></a>    <span class="st">&quot;The next step in our analysis will be...&quot;</span></span>
+<span id="cb25-27"><a href="#cb25-27" tabindex="-1"></a>  ),</span>
+<span id="cb25-28"><a href="#cb25-28" tabindex="-1"></a>  <span class="fu">nav_spacer</span>(),</span>
+<span id="cb25-29"><a href="#cb25-29" tabindex="-1"></a>  <span class="fu">nav_menu</span>(</span>
+<span id="cb25-30"><a href="#cb25-30" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Links&quot;</span>,</span>
+<span id="cb25-31"><a href="#cb25-31" tabindex="-1"></a>    <span class="at">align =</span> <span class="st">&quot;right&quot;</span>,</span>
+<span id="cb25-32"><a href="#cb25-32" tabindex="-1"></a>    <span class="fu">nav_item</span>(</span>
+<span id="cb25-33"><a href="#cb25-33" tabindex="-1"></a>      tags<span class="sc">$</span><span class="fu">a</span>(</span>
+<span id="cb25-34"><a href="#cb25-34" tabindex="-1"></a>        shiny<span class="sc">::</span><span class="fu">icon</span>(<span class="st">&quot;chart-simple&quot;</span>), <span class="st">&quot;RU BRC - Learn more!&quot;</span>,</span>
+<span id="cb25-35"><a href="#cb25-35" tabindex="-1"></a>        <span class="at">href =</span> <span class="st">&quot;https://rockefelleruniversity.github.io/&quot;</span>,</span>
+<span id="cb25-36"><a href="#cb25-36" tabindex="-1"></a>        <span class="at">target =</span> <span class="st">&quot;_blank&quot;</span></span>
+<span id="cb25-37"><a href="#cb25-37" tabindex="-1"></a>      )</span>
+<span id="cb25-38"><a href="#cb25-38" tabindex="-1"></a>    )</span>
+<span id="cb25-39"><a href="#cb25-39" tabindex="-1"></a>  )</span>
+<span id="cb25-40"><a href="#cb25-40" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="add-the-filter-to-the-full-app---server" class="section level2">
+<h2>Add the filter to the full app - server</h2>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a>server_filter <span class="ot">=</span> <span class="cf">function</span>(input, output){ </span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a>  <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a>  filtered_de <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a>    de_table <span class="sc">%&gt;%</span></span>
+<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">filter</span>(padj <span class="sc">&lt;</span> input<span class="sc">$</span>padj_filter <span class="sc">&amp;</span> <span class="fu">abs</span>(log2FoldChange) <span class="sc">&gt;</span> input<span class="sc">$</span>lfc_filter)</span>
+<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a>  })</span>
+<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a>  <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a></span>
+<span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a>  output<span class="sc">$</span>de_data <span class="ot">=</span> <span class="fu">renderDataTable</span>({</span>
+<span id="cb26-10"><a href="#cb26-10" tabindex="-1"></a>    <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a>    <span class="fu">datatable</span>(<span class="fu">filtered_de</span>(),</span>
+<span id="cb26-12"><a href="#cb26-12" tabindex="-1"></a>              <span class="at">selection =</span> <span class="st">&quot;none&quot;</span>, </span>
+<span id="cb26-13"><a href="#cb26-13" tabindex="-1"></a>              <span class="at">filter =</span> <span class="st">&#39;top&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-14"><a href="#cb26-14" tabindex="-1"></a>      <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;baseMean&quot;</span>, <span class="st">&quot;log2FoldChange&quot;</span>, <span class="st">&quot;lfcSE&quot;</span>, <span class="st">&quot;stat&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-15"><a href="#cb26-15" tabindex="-1"></a>      <span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;pvalue&quot;</span>, <span class="st">&quot;padj&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb26-16"><a href="#cb26-16" tabindex="-1"></a>    <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb26-17"><a href="#cb26-17" tabindex="-1"></a>  })</span>
+<span id="cb26-18"><a href="#cb26-18" tabindex="-1"></a>  </span>
+<span id="cb26-19"><a href="#cb26-19" tabindex="-1"></a>  output<span class="sc">$</span>ma_plot <span class="ot">=</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb26-20"><a href="#cb26-20" tabindex="-1"></a>    <span class="fu">ggplot</span>(de_table, <span class="fu">aes</span>(<span class="at">x =</span> baseMean, <span class="at">y =</span> log2FoldChange)) <span class="sc">+</span></span>
+<span id="cb26-21"><a href="#cb26-21" tabindex="-1"></a>      <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb26-22"><a href="#cb26-22" tabindex="-1"></a>      <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
+<span id="cb26-23"><a href="#cb26-23" tabindex="-1"></a>      <span class="fu">xlab</span>(<span class="st">&quot;baseMean (log scale)&quot;</span>) <span class="sc">+</span></span>
+<span id="cb26-24"><a href="#cb26-24" tabindex="-1"></a>      <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb26-25"><a href="#cb26-25" tabindex="-1"></a>      <span class="fu">ggtitle</span>(<span class="st">&quot;MA plot&quot;</span>)</span>
+<span id="cb26-26"><a href="#cb26-26" tabindex="-1"></a>  })</span>
+<span id="cb26-27"><a href="#cb26-27" tabindex="-1"></a>  </span>
+<span id="cb26-28"><a href="#cb26-28" tabindex="-1"></a>  output<span class="sc">$</span>volcano_plot <span class="ot">=</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb26-29"><a href="#cb26-29" tabindex="-1"></a>    <span class="fu">ggplot</span>(de_table, <span class="fu">aes</span>(<span class="at">x =</span> log2FoldChange, <span class="at">y =</span> negLog10_pval)) <span class="sc">+</span></span>
+<span id="cb26-30"><a href="#cb26-30" tabindex="-1"></a>      <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb26-31"><a href="#cb26-31" tabindex="-1"></a>      <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb26-32"><a href="#cb26-32" tabindex="-1"></a>      <span class="fu">ggtitle</span>(<span class="st">&quot;Volcano plot&quot;</span>)</span>
+<span id="cb26-33"><a href="#cb26-33" tabindex="-1"></a>  })</span>
+<span id="cb26-34"><a href="#cb26-34" tabindex="-1"></a>  </span>
+<span id="cb26-35"><a href="#cb26-35" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="add-a-filter-for-the-de-table" class="section level2">
+<h2>Add a filter for the DE table</h2>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="fu">shinyApp</span>(<span class="at">ui =</span> ui_filter, <span class="at">server =</span> server_filter)</span></code></pre></div>
+<p><img role="img" src="imgs/sidebar_DEfilter.png" height="600" width="650"></p>
+</div>
+<div id="control-filtering-with-a-button" class="section level2">
+<h2>Control filtering with a button</h2>
+<p>You’ll notice the table is reacting in real time as we change the
+values. This might be what you want, but a cleaner solution could be to
+wait to apply the filter until the user explicitly wants to.</p>
+<p>We can to this by pairing an <em>actionButton</em> with a new
+function, <em>bindEvent</em>. This modifies the reactive expression and
+instead of updating when any reactive value it depends on changes, it
+will only update based on a specific event (e.g. when a button is
+pressed)</p>
+<p><img role="img" src="imgs/de_app_button.png" height="300" width="400"></p>
+</div>
+<div id="using-a-button-to-control-filtering" class="section level2">
+<h2>Using a button to control filtering</h2>
+<p>The <em>actionButton</em> function is used in the UI object:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="fu">actionButton</span>(<span class="st">&quot;de_filter&quot;</span>, <span class="st">&quot;Apply filter&quot;</span>)</span></code></pre></div>
+<p>In the server function, we modify the reactive expression to be
+dependent on this button. We wrap the reactive (or add using a pipe) in
+the <em>bindEvent</em> function and include the dependency
+<em>input$de_filter</em> as the first argument.</p>
+<p>This will make this reactive expression only trigger when the button
+is pressed</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a>filtered_de <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a>    de_table <span class="sc">%&gt;%</span></span>
+<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">filter</span>(padj <span class="sc">&lt;</span> input<span class="sc">$</span>padj_filter <span class="sc">&amp;</span> <span class="fu">abs</span>(log2FoldChange) <span class="sc">&gt;</span> input<span class="sc">$</span>lfc_filter)</span>
+<span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a>  }) <span class="sc">%&gt;%</span></span>
+<span id="cb29-5"><a href="#cb29-5" tabindex="-1"></a>    <span class="fu">bindEvent</span>(input<span class="sc">$</span>de_filter)</span></code></pre></div>
+</div>
+<div id="add-button-to-app-ui" class="section level2">
+<h2>Add button to app UI</h2>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>ui_filterButton <span class="ot">&lt;-</span> <span class="fu">page_navbar</span>(</span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">&quot;RNAseq tools&quot;</span>,</span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a>  <span class="at">theme =</span> custom_theme,</span>
+<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a>  <span class="fu">nav_panel</span>(</span>
+<span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;DE Analysis&quot;</span>,</span>
+<span id="cb30-6"><a href="#cb30-6" tabindex="-1"></a>    <span class="fu">layout_sidebar</span>(</span>
+<span id="cb30-7"><a href="#cb30-7" tabindex="-1"></a>      <span class="at">sidebar =</span> <span class="fu">sidebar</span>(</span>
+<span id="cb30-8"><a href="#cb30-8" tabindex="-1"></a>        <span class="at">width =</span> <span class="dv">300</span>,</span>
+<span id="cb30-9"><a href="#cb30-9" tabindex="-1"></a>        <span class="fu">numericInput</span>(<span class="st">&quot;padj_filter&quot;</span>, <span class="at">label =</span> <span class="st">&quot;Cutoff for padj:&quot;</span>, <span class="at">value =</span> <span class="fl">0.05</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">1</span>, <span class="at">step =</span> <span class="fl">0.005</span>),</span>
+<span id="cb30-10"><a href="#cb30-10" tabindex="-1"></a>    </span>
+<span id="cb30-11"><a href="#cb30-11" tabindex="-1"></a>        <span class="fu">numericInput</span>(<span class="st">&quot;lfc_filter&quot;</span>, <span class="at">label =</span> <span class="st">&quot;Cutoff for log2 FC:&quot;</span>, <span class="at">value =</span> <span class="dv">1</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">step =</span> <span class="fl">0.1</span>),</span>
+<span id="cb30-12"><a href="#cb30-12" tabindex="-1"></a>        <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb30-13"><a href="#cb30-13" tabindex="-1"></a>        <span class="fu">actionButton</span>(<span class="st">&quot;de_filter&quot;</span>, <span class="st">&quot;Apply filter&quot;</span>)</span>
+<span id="cb30-14"><a href="#cb30-14" tabindex="-1"></a>        <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb30-15"><a href="#cb30-15" tabindex="-1"></a>      ),</span>
+<span id="cb30-16"><a href="#cb30-16" tabindex="-1"></a>      </span>
+<span id="cb30-17"><a href="#cb30-17" tabindex="-1"></a>      <span class="fu">layout_columns</span>(</span>
+<span id="cb30-18"><a href="#cb30-18" tabindex="-1"></a>        <span class="fu">card</span>(<span class="fu">card_header</span>(<span class="st">&quot;Table of DE results&quot;</span>), <span class="fu">dataTableOutput</span>(<span class="at">outputId =</span> <span class="st">&quot;de_data&quot;</span>)),</span>
+<span id="cb30-19"><a href="#cb30-19" tabindex="-1"></a>        <span class="fu">card</span>(<span class="fu">card_header</span>(<span class="st">&quot;MA plot&quot;</span>),<span class="fu">plotOutput</span>(<span class="st">&quot;ma_plot&quot;</span>)),</span>
+<span id="cb30-20"><a href="#cb30-20" tabindex="-1"></a>        <span class="fu">card</span>(<span class="fu">card_header</span>(<span class="st">&quot;Volcano plot&quot;</span>),<span class="fu">plotOutput</span>(<span class="st">&quot;volcano_plot&quot;</span>)),</span>
+<span id="cb30-21"><a href="#cb30-21" tabindex="-1"></a>        <span class="at">col_widths =</span> <span class="fu">c</span>(<span class="dv">12</span>,<span class="dv">6</span>,<span class="dv">6</span>), <span class="at">row_heights =</span> <span class="fu">c</span>(<span class="st">&quot;750px&quot;</span>, <span class="st">&quot;500px&quot;</span>)</span>
+<span id="cb30-22"><a href="#cb30-22" tabindex="-1"></a>      )</span>
+<span id="cb30-23"><a href="#cb30-23" tabindex="-1"></a>    )</span>
+<span id="cb30-24"><a href="#cb30-24" tabindex="-1"></a>  ),</span>
+<span id="cb30-25"><a href="#cb30-25" tabindex="-1"></a>  <span class="fu">nav_panel</span>(</span>
+<span id="cb30-26"><a href="#cb30-26" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Next steps&quot;</span>,</span>
+<span id="cb30-27"><a href="#cb30-27" tabindex="-1"></a>    <span class="st">&quot;The next step in our analysis will be...&quot;</span></span>
+<span id="cb30-28"><a href="#cb30-28" tabindex="-1"></a>  ),</span>
+<span id="cb30-29"><a href="#cb30-29" tabindex="-1"></a>  <span class="fu">nav_spacer</span>(),</span>
+<span id="cb30-30"><a href="#cb30-30" tabindex="-1"></a>  <span class="fu">nav_menu</span>(</span>
+<span id="cb30-31"><a href="#cb30-31" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Links&quot;</span>,</span>
+<span id="cb30-32"><a href="#cb30-32" tabindex="-1"></a>    <span class="at">align =</span> <span class="st">&quot;right&quot;</span>,</span>
+<span id="cb30-33"><a href="#cb30-33" tabindex="-1"></a>    <span class="fu">nav_item</span>(</span>
+<span id="cb30-34"><a href="#cb30-34" tabindex="-1"></a>      tags<span class="sc">$</span><span class="fu">a</span>(</span>
+<span id="cb30-35"><a href="#cb30-35" tabindex="-1"></a>        shiny<span class="sc">::</span><span class="fu">icon</span>(<span class="st">&quot;chart-simple&quot;</span>), <span class="st">&quot;RU BRC - Learn more!&quot;</span>,</span>
+<span id="cb30-36"><a href="#cb30-36" tabindex="-1"></a>        <span class="at">href =</span> <span class="st">&quot;https://rockefelleruniversity.github.io/&quot;</span>,</span>
+<span id="cb30-37"><a href="#cb30-37" tabindex="-1"></a>        <span class="at">target =</span> <span class="st">&quot;_blank&quot;</span></span>
+<span id="cb30-38"><a href="#cb30-38" tabindex="-1"></a>      )</span>
+<span id="cb30-39"><a href="#cb30-39" tabindex="-1"></a>    )</span>
+<span id="cb30-40"><a href="#cb30-40" tabindex="-1"></a>  )</span>
+<span id="cb30-41"><a href="#cb30-41" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="add-button-to-app-server" class="section level2">
+<h2>Add button to app server</h2>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a>server_filterButton <span class="ot">=</span> <span class="cf">function</span>(input, output) {</span>
+<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a>  filtered_de <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a>    de_table <span class="sc">%&gt;%</span></span>
+<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">filter</span>(padj <span class="sc">&lt;</span> input<span class="sc">$</span>padj_filter <span class="sc">&amp;</span> <span class="fu">abs</span>(log2FoldChange) <span class="sc">&gt;</span> input<span class="sc">$</span>lfc_filter)</span>
+<span id="cb31-5"><a href="#cb31-5" tabindex="-1"></a>  }) <span class="sc">%&gt;%</span></span>
+<span id="cb31-6"><a href="#cb31-6" tabindex="-1"></a>    <span class="fu">bindEvent</span>(input<span class="sc">$</span>de_filter) <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb31-7"><a href="#cb31-7" tabindex="-1"></a></span>
+<span id="cb31-8"><a href="#cb31-8" tabindex="-1"></a>  output<span class="sc">$</span>de_data <span class="ot">=</span> <span class="fu">renderDataTable</span>({</span>
+<span id="cb31-9"><a href="#cb31-9" tabindex="-1"></a>    <span class="fu">datatable</span>(<span class="fu">filtered_de</span>(),</span>
+<span id="cb31-10"><a href="#cb31-10" tabindex="-1"></a>              <span class="at">selection =</span> <span class="st">&quot;none&quot;</span>,</span>
+<span id="cb31-11"><a href="#cb31-11" tabindex="-1"></a>              <span class="at">filter =</span> <span class="st">&#39;top&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb31-12"><a href="#cb31-12" tabindex="-1"></a>      <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;baseMean&quot;</span>, <span class="st">&quot;log2FoldChange&quot;</span>, <span class="st">&quot;lfcSE&quot;</span>, <span class="st">&quot;stat&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb31-13"><a href="#cb31-13" tabindex="-1"></a>      <span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;pvalue&quot;</span>, <span class="st">&quot;padj&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb31-14"><a href="#cb31-14" tabindex="-1"></a>  })</span>
+<span id="cb31-15"><a href="#cb31-15" tabindex="-1"></a>  </span>
+<span id="cb31-16"><a href="#cb31-16" tabindex="-1"></a>  output<span class="sc">$</span>ma_plot <span class="ot">=</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb31-17"><a href="#cb31-17" tabindex="-1"></a>    <span class="fu">ggplot</span>(de_table, <span class="fu">aes</span>(<span class="at">x =</span> baseMean, <span class="at">y =</span> log2FoldChange)) <span class="sc">+</span></span>
+<span id="cb31-18"><a href="#cb31-18" tabindex="-1"></a>      <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb31-19"><a href="#cb31-19" tabindex="-1"></a>      <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
+<span id="cb31-20"><a href="#cb31-20" tabindex="-1"></a>      <span class="fu">xlab</span>(<span class="st">&quot;baseMean (log scale)&quot;</span>) <span class="sc">+</span></span>
+<span id="cb31-21"><a href="#cb31-21" tabindex="-1"></a>      <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb31-22"><a href="#cb31-22" tabindex="-1"></a>      <span class="fu">ggtitle</span>(<span class="st">&quot;MA plot&quot;</span>)</span>
+<span id="cb31-23"><a href="#cb31-23" tabindex="-1"></a>  })</span>
+<span id="cb31-24"><a href="#cb31-24" tabindex="-1"></a>  </span>
+<span id="cb31-25"><a href="#cb31-25" tabindex="-1"></a>  output<span class="sc">$</span>volcano_plot <span class="ot">=</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb31-26"><a href="#cb31-26" tabindex="-1"></a>    <span class="fu">ggplot</span>(de_table, <span class="fu">aes</span>(<span class="at">x =</span> log2FoldChange, <span class="at">y =</span> negLog10_pval)) <span class="sc">+</span></span>
+<span id="cb31-27"><a href="#cb31-27" tabindex="-1"></a>      <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb31-28"><a href="#cb31-28" tabindex="-1"></a>      <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb31-29"><a href="#cb31-29" tabindex="-1"></a>      <span class="fu">ggtitle</span>(<span class="st">&quot;Volcano plot&quot;</span>)</span>
+<span id="cb31-30"><a href="#cb31-30" tabindex="-1"></a>  })</span>
+<span id="cb31-31"><a href="#cb31-31" tabindex="-1"></a>  </span>
+<span id="cb31-32"><a href="#cb31-32" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="launch-app-with-button" class="section level2">
+<h2>Launch app with button</h2>
+<p>You’ll notice that the table doesn’t appear initially, and only
+appears once we click the button. By default, <em>bindEvent</em> does
+not run when a button still has a value of 0 (meaning it hasn’t been
+clicked).</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a><span class="fu">shinyApp</span>(<span class="at">ui =</span> ui_filterButton, <span class="at">server =</span> server_filterButton)</span></code></pre></div>
+<p><img role="img" src="imgs/button_ignoreNULL_issue.png" height="600" width="650"></p>
+</div>
+<div id="initialize-table-before-first-button-click" class="section level2">
+<h2>Initialize table before first button click</h2>
+<p>The <em>bindEvent</em> function has an argument ‘ignoreNULL’ that
+tells it whether to not update the reactive expression when the value is
+NULL, or 0 for an actionButton. We can turn this setting off and the
+reactive will update when the button initializes and has a value of
+0.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a>server_filterButton2 <span class="ot">=</span> <span class="cf">function</span>(input, output) {</span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a>  filtered_de <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a>    de_table <span class="sc">%&gt;%</span></span>
+<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">filter</span>(padj <span class="sc">&lt;</span> input<span class="sc">$</span>padj_filter <span class="sc">&amp;</span> <span class="fu">abs</span>(log2FoldChange) <span class="sc">&gt;</span> input<span class="sc">$</span>lfc_filter)</span>
+<span id="cb33-5"><a href="#cb33-5" tabindex="-1"></a>  }) <span class="sc">%&gt;%</span></span>
+<span id="cb33-6"><a href="#cb33-6" tabindex="-1"></a>    <span class="fu">bindEvent</span>(input<span class="sc">$</span>de_filter, <span class="at">ignoreNULL =</span> <span class="cn">FALSE</span>) <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb33-7"><a href="#cb33-7" tabindex="-1"></a></span>
+<span id="cb33-8"><a href="#cb33-8" tabindex="-1"></a>  output<span class="sc">$</span>de_data <span class="ot">=</span> <span class="fu">renderDataTable</span>({</span>
+<span id="cb33-9"><a href="#cb33-9" tabindex="-1"></a>    <span class="fu">datatable</span>(<span class="fu">filtered_de</span>(),</span>
+<span id="cb33-10"><a href="#cb33-10" tabindex="-1"></a>              <span class="at">selection =</span> <span class="st">&quot;none&quot;</span>,</span>
+<span id="cb33-11"><a href="#cb33-11" tabindex="-1"></a>              <span class="at">filter =</span> <span class="st">&#39;top&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-12"><a href="#cb33-12" tabindex="-1"></a>      <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;baseMean&quot;</span>, <span class="st">&quot;log2FoldChange&quot;</span>, <span class="st">&quot;lfcSE&quot;</span>, <span class="st">&quot;stat&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-13"><a href="#cb33-13" tabindex="-1"></a>      <span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;pvalue&quot;</span>, <span class="st">&quot;padj&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb33-14"><a href="#cb33-14" tabindex="-1"></a>  })</span>
+<span id="cb33-15"><a href="#cb33-15" tabindex="-1"></a>  </span>
+<span id="cb33-16"><a href="#cb33-16" tabindex="-1"></a>  output<span class="sc">$</span>ma_plot <span class="ot">=</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb33-17"><a href="#cb33-17" tabindex="-1"></a>    <span class="fu">ggplot</span>(de_table, <span class="fu">aes</span>(<span class="at">x =</span> baseMean, <span class="at">y =</span> log2FoldChange)) <span class="sc">+</span></span>
+<span id="cb33-18"><a href="#cb33-18" tabindex="-1"></a>      <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb33-19"><a href="#cb33-19" tabindex="-1"></a>      <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
+<span id="cb33-20"><a href="#cb33-20" tabindex="-1"></a>      <span class="fu">xlab</span>(<span class="st">&quot;baseMean (log scale)&quot;</span>) <span class="sc">+</span></span>
+<span id="cb33-21"><a href="#cb33-21" tabindex="-1"></a>      <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb33-22"><a href="#cb33-22" tabindex="-1"></a>      <span class="fu">ggtitle</span>(<span class="st">&quot;MA plot&quot;</span>)</span>
+<span id="cb33-23"><a href="#cb33-23" tabindex="-1"></a>  })</span>
+<span id="cb33-24"><a href="#cb33-24" tabindex="-1"></a>  </span>
+<span id="cb33-25"><a href="#cb33-25" tabindex="-1"></a>  output<span class="sc">$</span>volcano_plot <span class="ot">=</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb33-26"><a href="#cb33-26" tabindex="-1"></a>    <span class="fu">ggplot</span>(de_table, <span class="fu">aes</span>(<span class="at">x =</span> log2FoldChange, <span class="at">y =</span> negLog10_pval)) <span class="sc">+</span></span>
+<span id="cb33-27"><a href="#cb33-27" tabindex="-1"></a>      <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb33-28"><a href="#cb33-28" tabindex="-1"></a>      <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb33-29"><a href="#cb33-29" tabindex="-1"></a>      <span class="fu">ggtitle</span>(<span class="st">&quot;Volcano plot&quot;</span>)</span>
+<span id="cb33-30"><a href="#cb33-30" tabindex="-1"></a>  })</span>
+<span id="cb33-31"><a href="#cb33-31" tabindex="-1"></a>  </span>
+<span id="cb33-32"><a href="#cb33-32" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="initialize-table-before-first-button-click-1" class="section level2">
+<h2>Initialize table before first button click</h2>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a><span class="fu">shinyApp</span>(<span class="at">ui =</span> ui_filterButton, <span class="at">server =</span> server_filterButton2)</span></code></pre></div>
+<p><img role="img" src="imgs/button_ignoreNULL_resolved.png" height="600" width="650"></p>
+</div>
+<div id="add-a-tab-to-a-card---ui" class="section level2">
+<h2>Add a tab to a card - UI</h2>
+<p>Currently, we show the filtered table, but if we also want to give
+the user the full data as well, having mutliple tabs within the card can
+be a nice clean way to do this.</p>
+<p>To do this, we change the card that we want to contain tabs to use
+the function <em>navset_card_tab</em>, which will then have multiple
+<em>nav_panel</em> function calls for each individual tab.</p>
+<p>Old card containing only one table (with filtered gene set):</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a><span class="fu">card</span>(<span class="fu">card_header</span>(<span class="st">&quot;Table of DE results&quot;</span>), <span class="fu">dataTableOutput</span>(<span class="at">outputId =</span> <span class="st">&quot;de_data&quot;</span>))</span></code></pre></div>
+<p>New card with tabs:</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a><span class="fu">navset_card_tab</span>(</span>
+<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">&quot;DE result tables&quot;</span>,</span>
+<span id="cb36-3"><a href="#cb36-3" tabindex="-1"></a>  </span>
+<span id="cb36-4"><a href="#cb36-4" tabindex="-1"></a>  <span class="fu">nav_panel</span>(<span class="fu">card_header</span>(<span class="st">&quot;DEGs&quot;</span>), <span class="fu">dataTableOutput</span>(<span class="at">outputId =</span> <span class="st">&quot;de_data&quot;</span>)),</span>
+<span id="cb36-5"><a href="#cb36-5" tabindex="-1"></a>  </span>
+<span id="cb36-6"><a href="#cb36-6" tabindex="-1"></a>  <span class="fu">nav_panel</span>(<span class="fu">card_header</span>(<span class="st">&quot;All genes&quot;</span>), <span class="fu">dataTableOutput</span>(<span class="at">outputId =</span> <span class="st">&quot;all_data&quot;</span>))</span>
+<span id="cb36-7"><a href="#cb36-7" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="add-a-tab-to-a-card---server" class="section level2">
+<h2>Add a tab to a card - server</h2>
+<p>We then need to add a corresponding render function for the second
+tab containing the full table.</p>
+<p>This will be added to the server function:</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a>output<span class="sc">$</span>all_data <span class="ot">=</span> <span class="fu">renderDataTable</span>({</span>
+<span id="cb37-2"><a href="#cb37-2" tabindex="-1"></a>    <span class="fu">datatable</span>(de_table,</span>
+<span id="cb37-3"><a href="#cb37-3" tabindex="-1"></a>              <span class="at">filter =</span> <span class="st">&#39;top&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb37-4"><a href="#cb37-4" tabindex="-1"></a>      <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;baseMean&quot;</span>, <span class="st">&quot;log2FoldChange&quot;</span>, <span class="st">&quot;lfcSE&quot;</span>, <span class="st">&quot;stat&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb37-5"><a href="#cb37-5" tabindex="-1"></a>      <span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;pvalue&quot;</span>, <span class="st">&quot;padj&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb37-6"><a href="#cb37-6" tabindex="-1"></a>  })</span></code></pre></div>
+</div>
+<div id="add-a-tab-main-app---ui" class="section level2">
+<h2>Add a tab main app - UI</h2>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a>ui_tab <span class="ot">&lt;-</span> <span class="fu">page_navbar</span>(</span>
+<span id="cb38-2"><a href="#cb38-2" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">&quot;RNAseq tools&quot;</span>,</span>
+<span id="cb38-3"><a href="#cb38-3" tabindex="-1"></a>  <span class="at">theme =</span> custom_theme,</span>
+<span id="cb38-4"><a href="#cb38-4" tabindex="-1"></a>  <span class="fu">nav_panel</span>(</span>
+<span id="cb38-5"><a href="#cb38-5" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;DE Analysis&quot;</span>,</span>
+<span id="cb38-6"><a href="#cb38-6" tabindex="-1"></a>    <span class="fu">layout_sidebar</span>(</span>
+<span id="cb38-7"><a href="#cb38-7" tabindex="-1"></a>      <span class="at">sidebar =</span> <span class="fu">sidebar</span>(</span>
+<span id="cb38-8"><a href="#cb38-8" tabindex="-1"></a>        <span class="at">width =</span> <span class="dv">300</span>,</span>
+<span id="cb38-9"><a href="#cb38-9" tabindex="-1"></a>        <span class="fu">numericInput</span>(<span class="st">&quot;padj_filter&quot;</span>, <span class="at">label =</span> <span class="st">&quot;Cutoff for padj:&quot;</span>, <span class="at">value =</span> <span class="fl">0.05</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">1</span>, <span class="at">step =</span> <span class="fl">0.005</span>),</span>
+<span id="cb38-10"><a href="#cb38-10" tabindex="-1"></a>    </span>
+<span id="cb38-11"><a href="#cb38-11" tabindex="-1"></a>        <span class="fu">numericInput</span>(<span class="st">&quot;lfc_filter&quot;</span>, <span class="at">label =</span> <span class="st">&quot;Cutoff for log2 FC:&quot;</span>, <span class="at">value =</span> <span class="dv">1</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">step =</span> <span class="fl">0.1</span>),</span>
+<span id="cb38-12"><a href="#cb38-12" tabindex="-1"></a> </span>
+<span id="cb38-13"><a href="#cb38-13" tabindex="-1"></a>        <span class="fu">actionButton</span>(<span class="st">&quot;de_filter&quot;</span>, <span class="st">&quot;Apply filter&quot;</span>)</span>
+<span id="cb38-14"><a href="#cb38-14" tabindex="-1"></a>      ),</span>
+<span id="cb38-15"><a href="#cb38-15" tabindex="-1"></a>      <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb38-16"><a href="#cb38-16" tabindex="-1"></a>      <span class="fu">layout_columns</span>(</span>
+<span id="cb38-17"><a href="#cb38-17" tabindex="-1"></a>        <span class="fu">navset_card_tab</span>(</span>
+<span id="cb38-18"><a href="#cb38-18" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">&quot;DE result tables&quot;</span>,</span>
+<span id="cb38-19"><a href="#cb38-19" tabindex="-1"></a>          <span class="fu">nav_panel</span>(<span class="fu">card_header</span>(<span class="st">&quot;DEGs&quot;</span>), <span class="fu">dataTableOutput</span>(<span class="at">outputId =</span> <span class="st">&quot;de_data&quot;</span>)),</span>
+<span id="cb38-20"><a href="#cb38-20" tabindex="-1"></a>          <span class="fu">nav_panel</span>(<span class="fu">card_header</span>(<span class="st">&quot;All genes&quot;</span>), <span class="fu">dataTableOutput</span>(<span class="at">outputId =</span> <span class="st">&quot;all_data&quot;</span>))</span>
+<span id="cb38-21"><a href="#cb38-21" tabindex="-1"></a>        ),</span>
+<span id="cb38-22"><a href="#cb38-22" tabindex="-1"></a>        <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb38-23"><a href="#cb38-23" tabindex="-1"></a>        <span class="fu">card</span>(<span class="fu">card_header</span>(<span class="st">&quot;MA plot&quot;</span>),<span class="fu">plotOutput</span>(<span class="st">&quot;ma_plot&quot;</span>)),</span>
+<span id="cb38-24"><a href="#cb38-24" tabindex="-1"></a>        <span class="fu">card</span>(<span class="fu">card_header</span>(<span class="st">&quot;Volcano plot&quot;</span>),<span class="fu">plotOutput</span>(<span class="st">&quot;volcano_plot&quot;</span>)),</span>
+<span id="cb38-25"><a href="#cb38-25" tabindex="-1"></a>        <span class="at">col_widths =</span> <span class="fu">c</span>(<span class="dv">12</span>,<span class="dv">6</span>,<span class="dv">6</span>), <span class="at">row_heights =</span> <span class="fu">c</span>(<span class="st">&quot;750px&quot;</span>, <span class="st">&quot;500px&quot;</span>)</span>
+<span id="cb38-26"><a href="#cb38-26" tabindex="-1"></a>      )</span>
+<span id="cb38-27"><a href="#cb38-27" tabindex="-1"></a>    )</span>
+<span id="cb38-28"><a href="#cb38-28" tabindex="-1"></a>  ),</span>
+<span id="cb38-29"><a href="#cb38-29" tabindex="-1"></a>  <span class="fu">nav_panel</span>(</span>
+<span id="cb38-30"><a href="#cb38-30" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Next steps&quot;</span>,</span>
+<span id="cb38-31"><a href="#cb38-31" tabindex="-1"></a>    <span class="st">&quot;The next step in our analysis will be...&quot;</span></span>
+<span id="cb38-32"><a href="#cb38-32" tabindex="-1"></a>  ),</span>
+<span id="cb38-33"><a href="#cb38-33" tabindex="-1"></a>  <span class="fu">nav_spacer</span>(),</span>
+<span id="cb38-34"><a href="#cb38-34" tabindex="-1"></a>  <span class="fu">nav_menu</span>(</span>
+<span id="cb38-35"><a href="#cb38-35" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Links&quot;</span>,</span>
+<span id="cb38-36"><a href="#cb38-36" tabindex="-1"></a>    <span class="at">align =</span> <span class="st">&quot;right&quot;</span>,</span>
+<span id="cb38-37"><a href="#cb38-37" tabindex="-1"></a>    <span class="fu">nav_item</span>(</span>
+<span id="cb38-38"><a href="#cb38-38" tabindex="-1"></a>      tags<span class="sc">$</span><span class="fu">a</span>(</span>
+<span id="cb38-39"><a href="#cb38-39" tabindex="-1"></a>        shiny<span class="sc">::</span><span class="fu">icon</span>(<span class="st">&quot;chart-simple&quot;</span>), <span class="st">&quot;RU BRC - Learn more!&quot;</span>,</span>
+<span id="cb38-40"><a href="#cb38-40" tabindex="-1"></a>        <span class="at">href =</span> <span class="st">&quot;https://rockefelleruniversity.github.io/&quot;</span>,</span>
+<span id="cb38-41"><a href="#cb38-41" tabindex="-1"></a>        <span class="at">target =</span> <span class="st">&quot;_blank&quot;</span></span>
+<span id="cb38-42"><a href="#cb38-42" tabindex="-1"></a>      )</span>
+<span id="cb38-43"><a href="#cb38-43" tabindex="-1"></a>    )</span>
+<span id="cb38-44"><a href="#cb38-44" tabindex="-1"></a>  )</span>
+<span id="cb38-45"><a href="#cb38-45" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="add-a-tab-main-app---server" class="section level2">
+<h2>Add a tab main app - server</h2>
+<p>The output object and render function for the full data table are
+added to the server function.</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a>server_tab <span class="ot">=</span> <span class="cf">function</span>(input, output) {</span>
+<span id="cb39-2"><a href="#cb39-2" tabindex="-1"></a>  </span>
+<span id="cb39-3"><a href="#cb39-3" tabindex="-1"></a>  <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb39-4"><a href="#cb39-4" tabindex="-1"></a>  output<span class="sc">$</span>all_data <span class="ot">=</span> <span class="fu">renderDataTable</span>({</span>
+<span id="cb39-5"><a href="#cb39-5" tabindex="-1"></a>    <span class="fu">datatable</span>(de_table,</span>
+<span id="cb39-6"><a href="#cb39-6" tabindex="-1"></a>              <span class="at">selection =</span> <span class="st">&quot;none&quot;</span>,</span>
+<span id="cb39-7"><a href="#cb39-7" tabindex="-1"></a>              <span class="at">filter =</span> <span class="st">&#39;top&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb39-8"><a href="#cb39-8" tabindex="-1"></a>      <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;baseMean&quot;</span>, <span class="st">&quot;log2FoldChange&quot;</span>, <span class="st">&quot;lfcSE&quot;</span>, <span class="st">&quot;stat&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb39-9"><a href="#cb39-9" tabindex="-1"></a>      <span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;pvalue&quot;</span>, <span class="st">&quot;padj&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb39-10"><a href="#cb39-10" tabindex="-1"></a>  })</span>
+<span id="cb39-11"><a href="#cb39-11" tabindex="-1"></a>  <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb39-12"><a href="#cb39-12" tabindex="-1"></a>  </span>
+<span id="cb39-13"><a href="#cb39-13" tabindex="-1"></a>  filtered_de <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb39-14"><a href="#cb39-14" tabindex="-1"></a>    de_table <span class="sc">%&gt;%</span></span>
+<span id="cb39-15"><a href="#cb39-15" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">filter</span>(padj <span class="sc">&lt;</span> input<span class="sc">$</span>padj_filter <span class="sc">&amp;</span> <span class="fu">abs</span>(log2FoldChange) <span class="sc">&gt;</span> input<span class="sc">$</span>lfc_filter)</span>
+<span id="cb39-16"><a href="#cb39-16" tabindex="-1"></a>  }) <span class="sc">%&gt;%</span></span>
+<span id="cb39-17"><a href="#cb39-17" tabindex="-1"></a>    <span class="fu">bindEvent</span>(input<span class="sc">$</span>de_filter, <span class="at">ignoreNULL =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb39-18"><a href="#cb39-18" tabindex="-1"></a></span>
+<span id="cb39-19"><a href="#cb39-19" tabindex="-1"></a>  output<span class="sc">$</span>de_data <span class="ot">=</span> <span class="fu">renderDataTable</span>({</span>
+<span id="cb39-20"><a href="#cb39-20" tabindex="-1"></a>    <span class="fu">datatable</span>(<span class="fu">filtered_de</span>(),</span>
+<span id="cb39-21"><a href="#cb39-21" tabindex="-1"></a>              <span class="at">selection =</span> <span class="st">&quot;none&quot;</span>,</span>
+<span id="cb39-22"><a href="#cb39-22" tabindex="-1"></a>              <span class="at">filter =</span> <span class="st">&#39;top&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb39-23"><a href="#cb39-23" tabindex="-1"></a>      <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;baseMean&quot;</span>, <span class="st">&quot;log2FoldChange&quot;</span>, <span class="st">&quot;lfcSE&quot;</span>, <span class="st">&quot;stat&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb39-24"><a href="#cb39-24" tabindex="-1"></a>      <span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;pvalue&quot;</span>, <span class="st">&quot;padj&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb39-25"><a href="#cb39-25" tabindex="-1"></a>  })</span>
+<span id="cb39-26"><a href="#cb39-26" tabindex="-1"></a>  </span>
+<span id="cb39-27"><a href="#cb39-27" tabindex="-1"></a>  output<span class="sc">$</span>ma_plot <span class="ot">=</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb39-28"><a href="#cb39-28" tabindex="-1"></a>    <span class="fu">ggplot</span>(de_table, <span class="fu">aes</span>(<span class="at">x =</span> baseMean, <span class="at">y =</span> log2FoldChange)) <span class="sc">+</span></span>
+<span id="cb39-29"><a href="#cb39-29" tabindex="-1"></a>      <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb39-30"><a href="#cb39-30" tabindex="-1"></a>      <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
+<span id="cb39-31"><a href="#cb39-31" tabindex="-1"></a>      <span class="fu">xlab</span>(<span class="st">&quot;baseMean (log scale)&quot;</span>) <span class="sc">+</span></span>
+<span id="cb39-32"><a href="#cb39-32" tabindex="-1"></a>      <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb39-33"><a href="#cb39-33" tabindex="-1"></a>      <span class="fu">ggtitle</span>(<span class="st">&quot;MA plot&quot;</span>)</span>
+<span id="cb39-34"><a href="#cb39-34" tabindex="-1"></a>  })</span>
+<span id="cb39-35"><a href="#cb39-35" tabindex="-1"></a>  </span>
+<span id="cb39-36"><a href="#cb39-36" tabindex="-1"></a>  output<span class="sc">$</span>volcano_plot <span class="ot">=</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb39-37"><a href="#cb39-37" tabindex="-1"></a>    <span class="fu">ggplot</span>(de_table, <span class="fu">aes</span>(<span class="at">x =</span> log2FoldChange, <span class="at">y =</span> negLog10_pval)) <span class="sc">+</span></span>
+<span id="cb39-38"><a href="#cb39-38" tabindex="-1"></a>      <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb39-39"><a href="#cb39-39" tabindex="-1"></a>      <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb39-40"><a href="#cb39-40" tabindex="-1"></a>      <span class="fu">ggtitle</span>(<span class="st">&quot;Volcano plot&quot;</span>)</span>
+<span id="cb39-41"><a href="#cb39-41" tabindex="-1"></a>  })</span>
+<span id="cb39-42"><a href="#cb39-42" tabindex="-1"></a>  </span>
+<span id="cb39-43"><a href="#cb39-43" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="launch-app-with-tabs" class="section level2">
+<h2>Launch app with tabs</h2>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" tabindex="-1"></a><span class="fu">shinyApp</span>(<span class="at">ui =</span> ui_tab, <span class="at">server =</span> server_tab)</span></code></pre></div>
+</div>
+<div id="color-the-de-genes-in-plots" class="section level2">
+<h2>Color the DE genes in plots</h2>
+<p>We can also make the plots responsive to the cutoffs by coloring the
+points that exceed the thresholds.</p>
+<p>Like the table, we will make the colors of the points dependent on
+the filter button. The UI object will not change since the plot objects
+already exist on the page. The server logic will have to be modified to
+make the plots reponsive to changes to the thershold inputs.</p>
+</div>
+<div id="color-the-de-genes---server-code" class="section level2">
+<h2>Color the DE genes - server code</h2>
+<p>Multiple steps are required to do this: * Since the plots will now be
+dependent on the filtering inputs, it’s good practice to make the ggplot
+objects reactive expressions * Add the inputs to the newly created
+<em>reactive</em> function that creates the ggplot object * Wrap with or
+add a pipe to a <em>bindEvent</em> function so that the
+<em>reactive</em> function with the plot takes a dependency on the
+button * Use the reactive expression in the render function</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" tabindex="-1"></a>ma_plot_reac <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb41-2"><a href="#cb41-2" tabindex="-1"></a>    de_table <span class="sc">%&gt;%</span></span>
+<span id="cb41-3"><a href="#cb41-3" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(padj <span class="sc">&lt;</span> input<span class="sc">$</span>padj_filter <span class="sc">&amp;</span> <span class="fu">abs</span>(log2FoldChange) <span class="sc">&gt;</span> input<span class="sc">$</span>lfc_filter, <span class="st">&quot;DE&quot;</span>, <span class="st">&quot;Not_DE&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb41-4"><a href="#cb41-4" tabindex="-1"></a>      <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> baseMean, <span class="at">y =</span> log2FoldChange, <span class="at">color =</span> sig)) <span class="sc">+</span></span>
+<span id="cb41-5"><a href="#cb41-5" tabindex="-1"></a>      <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb41-6"><a href="#cb41-6" tabindex="-1"></a>      <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
+<span id="cb41-7"><a href="#cb41-7" tabindex="-1"></a>      <span class="fu">scale_color_manual</span>(<span class="at">name =</span> <span class="st">&quot;DE status&quot;</span>, <span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;red&quot;</span>, <span class="st">&quot;grey&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb41-8"><a href="#cb41-8" tabindex="-1"></a>      <span class="fu">xlab</span>(<span class="st">&quot;baseMean (log scale)&quot;</span>) <span class="sc">+</span></span>
+<span id="cb41-9"><a href="#cb41-9" tabindex="-1"></a>      <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb41-10"><a href="#cb41-10" tabindex="-1"></a>      <span class="fu">ggtitle</span>(<span class="st">&quot;MA plot&quot;</span>)</span>
+<span id="cb41-11"><a href="#cb41-11" tabindex="-1"></a>  })  <span class="sc">%&gt;%</span></span>
+<span id="cb41-12"><a href="#cb41-12" tabindex="-1"></a>    <span class="fu">bindEvent</span>(input<span class="sc">$</span>de_filter, <span class="at">ignoreNULL =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb41-13"><a href="#cb41-13" tabindex="-1"></a>  </span>
+<span id="cb41-14"><a href="#cb41-14" tabindex="-1"></a>    output<span class="sc">$</span>ma_plot <span class="ot">=</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb41-15"><a href="#cb41-15" tabindex="-1"></a>      <span class="fu">ma_plot_reac</span>()</span>
+<span id="cb41-16"><a href="#cb41-16" tabindex="-1"></a>    }) </span></code></pre></div>
+</div>
+<div id="color-the-de-genes-in-main-app" class="section level2">
+<h2>Color the DE genes in main app</h2>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" tabindex="-1"></a>server_deColor <span class="ot">=</span> <span class="cf">function</span>(input, output) {</span>
+<span id="cb42-2"><a href="#cb42-2" tabindex="-1"></a>  output<span class="sc">$</span>all_data <span class="ot">=</span> <span class="fu">renderDataTable</span>({</span>
+<span id="cb42-3"><a href="#cb42-3" tabindex="-1"></a>    <span class="fu">datatable</span>(de_table,</span>
+<span id="cb42-4"><a href="#cb42-4" tabindex="-1"></a>              <span class="at">selection =</span> <span class="st">&quot;none&quot;</span>,</span>
+<span id="cb42-5"><a href="#cb42-5" tabindex="-1"></a>              <span class="at">filter =</span> <span class="st">&#39;top&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb42-6"><a href="#cb42-6" tabindex="-1"></a>      <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;baseMean&quot;</span>, <span class="st">&quot;log2FoldChange&quot;</span>, <span class="st">&quot;lfcSE&quot;</span>, <span class="st">&quot;stat&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb42-7"><a href="#cb42-7" tabindex="-1"></a>      <span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;pvalue&quot;</span>, <span class="st">&quot;padj&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb42-8"><a href="#cb42-8" tabindex="-1"></a>  })</span>
+<span id="cb42-9"><a href="#cb42-9" tabindex="-1"></a>  </span>
+<span id="cb42-10"><a href="#cb42-10" tabindex="-1"></a>  filtered_de <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb42-11"><a href="#cb42-11" tabindex="-1"></a>    de_table <span class="sc">%&gt;%</span></span>
+<span id="cb42-12"><a href="#cb42-12" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">filter</span>(padj <span class="sc">&lt;</span> input<span class="sc">$</span>padj_filter <span class="sc">&amp;</span> <span class="fu">abs</span>(log2FoldChange) <span class="sc">&gt;</span> input<span class="sc">$</span>lfc_filter)</span>
+<span id="cb42-13"><a href="#cb42-13" tabindex="-1"></a>  }) <span class="sc">%&gt;%</span></span>
+<span id="cb42-14"><a href="#cb42-14" tabindex="-1"></a>    <span class="fu">bindEvent</span>(input<span class="sc">$</span>de_filter, <span class="at">ignoreNULL =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb42-15"><a href="#cb42-15" tabindex="-1"></a></span>
+<span id="cb42-16"><a href="#cb42-16" tabindex="-1"></a>  output<span class="sc">$</span>de_data <span class="ot">=</span> <span class="fu">renderDataTable</span>({</span>
+<span id="cb42-17"><a href="#cb42-17" tabindex="-1"></a>    <span class="fu">datatable</span>(<span class="fu">filtered_de</span>(),</span>
+<span id="cb42-18"><a href="#cb42-18" tabindex="-1"></a>              <span class="at">selection =</span> <span class="st">&quot;none&quot;</span>,</span>
+<span id="cb42-19"><a href="#cb42-19" tabindex="-1"></a>              <span class="at">filter =</span> <span class="st">&#39;top&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb42-20"><a href="#cb42-20" tabindex="-1"></a>      <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;baseMean&quot;</span>, <span class="st">&quot;log2FoldChange&quot;</span>, <span class="st">&quot;lfcSE&quot;</span>, <span class="st">&quot;stat&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb42-21"><a href="#cb42-21" tabindex="-1"></a>      <span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;pvalue&quot;</span>, <span class="st">&quot;padj&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb42-22"><a href="#cb42-22" tabindex="-1"></a>  })</span>
+<span id="cb42-23"><a href="#cb42-23" tabindex="-1"></a>  </span>
+<span id="cb42-24"><a href="#cb42-24" tabindex="-1"></a>  <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb42-25"><a href="#cb42-25" tabindex="-1"></a>  ma_plot_reac <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb42-26"><a href="#cb42-26" tabindex="-1"></a>    de_table <span class="sc">%&gt;%</span></span>
+<span id="cb42-27"><a href="#cb42-27" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(padj <span class="sc">&lt;</span> input<span class="sc">$</span>padj_filter <span class="sc">&amp;</span> <span class="fu">abs</span>(log2FoldChange) <span class="sc">&gt;</span> input<span class="sc">$</span>lfc_filter, <span class="st">&quot;DE&quot;</span>, <span class="st">&quot;Not_DE&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb42-28"><a href="#cb42-28" tabindex="-1"></a>      <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> baseMean, <span class="at">y =</span> log2FoldChange, <span class="at">color =</span> sig)) <span class="sc">+</span></span>
+<span id="cb42-29"><a href="#cb42-29" tabindex="-1"></a>      <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb42-30"><a href="#cb42-30" tabindex="-1"></a>      <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
+<span id="cb42-31"><a href="#cb42-31" tabindex="-1"></a>      <span class="fu">scale_color_manual</span>(<span class="at">name =</span> <span class="st">&quot;DE status&quot;</span>, <span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;red&quot;</span>, <span class="st">&quot;grey&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb42-32"><a href="#cb42-32" tabindex="-1"></a>      <span class="fu">xlab</span>(<span class="st">&quot;baseMean (log scale)&quot;</span>) <span class="sc">+</span></span>
+<span id="cb42-33"><a href="#cb42-33" tabindex="-1"></a>      <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb42-34"><a href="#cb42-34" tabindex="-1"></a>      <span class="fu">ggtitle</span>(<span class="st">&quot;MA plot&quot;</span>)</span>
+<span id="cb42-35"><a href="#cb42-35" tabindex="-1"></a>  })  <span class="sc">%&gt;%</span></span>
+<span id="cb42-36"><a href="#cb42-36" tabindex="-1"></a>    <span class="fu">bindEvent</span>(input<span class="sc">$</span>de_filter, <span class="at">ignoreNULL =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb42-37"><a href="#cb42-37" tabindex="-1"></a>  </span>
+<span id="cb42-38"><a href="#cb42-38" tabindex="-1"></a>    output<span class="sc">$</span>ma_plot <span class="ot">=</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb42-39"><a href="#cb42-39" tabindex="-1"></a>      <span class="fu">ma_plot_reac</span>()</span>
+<span id="cb42-40"><a href="#cb42-40" tabindex="-1"></a>    }) </span>
+<span id="cb42-41"><a href="#cb42-41" tabindex="-1"></a>  </span>
+<span id="cb42-42"><a href="#cb42-42" tabindex="-1"></a>    volcano_plot_reac <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb42-43"><a href="#cb42-43" tabindex="-1"></a>      de_table <span class="sc">%&gt;%</span></span>
+<span id="cb42-44"><a href="#cb42-44" tabindex="-1"></a>        dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(padj <span class="sc">&lt;</span> input<span class="sc">$</span>padj_filter <span class="sc">&amp;</span> <span class="fu">abs</span>(log2FoldChange) <span class="sc">&gt;</span> input<span class="sc">$</span>lfc_filter, <span class="st">&quot;DE&quot;</span>, <span class="st">&quot;Not_DE&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb42-45"><a href="#cb42-45" tabindex="-1"></a>        <span class="fu">ggplot</span>(de_table_wSig, <span class="fu">aes</span>(<span class="at">x =</span> log2FoldChange, <span class="at">y =</span> negLog10_pval, <span class="at">color =</span> sig)) <span class="sc">+</span></span>
+<span id="cb42-46"><a href="#cb42-46" tabindex="-1"></a>        <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb42-47"><a href="#cb42-47" tabindex="-1"></a>        <span class="fu">scale_color_manual</span>(<span class="at">name =</span> <span class="st">&quot;DE status&quot;</span>, <span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;red&quot;</span>, <span class="st">&quot;grey&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb42-48"><a href="#cb42-48" tabindex="-1"></a>        <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb42-49"><a href="#cb42-49" tabindex="-1"></a>        <span class="fu">ggtitle</span>(<span class="st">&quot;Volcano plot&quot;</span>)</span>
+<span id="cb42-50"><a href="#cb42-50" tabindex="-1"></a>    }) <span class="sc">%&gt;%</span></span>
+<span id="cb42-51"><a href="#cb42-51" tabindex="-1"></a>      <span class="fu">bindEvent</span>(input<span class="sc">$</span>de_filter, <span class="at">ignoreNULL =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb42-52"><a href="#cb42-52" tabindex="-1"></a>    </span>
+<span id="cb42-53"><a href="#cb42-53" tabindex="-1"></a>    </span>
+<span id="cb42-54"><a href="#cb42-54" tabindex="-1"></a>  output<span class="sc">$</span>volcano_plot <span class="ot">=</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb42-55"><a href="#cb42-55" tabindex="-1"></a>    <span class="fu">volcano_plot_reac</span>()</span>
+<span id="cb42-56"><a href="#cb42-56" tabindex="-1"></a>  }) </span>
+<span id="cb42-57"><a href="#cb42-57" tabindex="-1"></a>  <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb42-58"><a href="#cb42-58" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="launch-app-with-reactive-plots" class="section level2">
+<h2>Launch app with reactive plots</h2>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a><span class="fu">shinyApp</span>(<span class="at">ui =</span> ui_tab, <span class="at">server =</span> server_deColor)</span></code></pre></div>
+<p>REPLACE WITH TAB APP!!!!!!!
+<img role="img" src="imgs/color_filter_nocheck.png" height="400" width="500"></p>
+</div>
+</div>
+<div id="advanced-interactivity-with-tables-and-plots" class="section level1">
+<h1>Advanced interactivity with tables and plots</h1>
+<hr />
+<div id="selecting-rows-in-a-dt-datatable" class="section level2">
+<h2>Selecting rows in a DT datatable</h2>
+<p>The datatable we are using from the DT package has a very useful
+functionality to enhance app interactivity. Rows can be selected and
+this informaiton is caputured in the app.</p>
+<p>If we change the ‘selection’ argument to ‘single’ in the
+<em>datatable</em> function, then the user can click rows. Every time a
+row is clicked, shiny tracks this with a special input object. This
+object will always be the name of the table input with ’_rows_selected’
+pasted onto the end.</p>
+</div>
+<div id="selecting-rows-in-a-dt-datatable-1" class="section level2">
+<h2>Selecting rows in a DT datatable</h2>
+<p>In this simple app we print <em>input$all_data_rows_selected</em> and
+the gene in the selected row</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" tabindex="-1"></a>ui_rowSelect <span class="ot">&lt;-</span> <span class="fu">page_fluid</span>(</span>
+<span id="cb44-2"><a href="#cb44-2" tabindex="-1"></a>  <span class="fu">dataTableOutput</span>(<span class="at">outputId =</span> <span class="st">&quot;all_data&quot;</span>),</span>
+<span id="cb44-3"><a href="#cb44-3" tabindex="-1"></a>  </span>
+<span id="cb44-4"><a href="#cb44-4" tabindex="-1"></a>  <span class="fu">textOutput</span>(<span class="st">&quot;selected_row_info&quot;</span>)</span>
+<span id="cb44-5"><a href="#cb44-5" tabindex="-1"></a>)</span>
+<span id="cb44-6"><a href="#cb44-6" tabindex="-1"></a></span>
+<span id="cb44-7"><a href="#cb44-7" tabindex="-1"></a>server_rowSelect <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output){</span>
+<span id="cb44-8"><a href="#cb44-8" tabindex="-1"></a>  output<span class="sc">$</span>all_data <span class="ot">=</span> <span class="fu">renderDataTable</span>({</span>
+<span id="cb44-9"><a href="#cb44-9" tabindex="-1"></a>    <span class="fu">datatable</span>(de_table,</span>
+<span id="cb44-10"><a href="#cb44-10" tabindex="-1"></a>              <span class="at">selection =</span> <span class="st">&quot;single&quot;</span>, <span class="co">#&lt;&lt;</span></span>
+<span id="cb44-11"><a href="#cb44-11" tabindex="-1"></a>              <span class="at">filter =</span> <span class="st">&#39;top&#39;</span>)</span>
+<span id="cb44-12"><a href="#cb44-12" tabindex="-1"></a>  })</span>
+<span id="cb44-13"><a href="#cb44-13" tabindex="-1"></a>  </span>
+<span id="cb44-14"><a href="#cb44-14" tabindex="-1"></a>  selected_row <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb44-15"><a href="#cb44-15" tabindex="-1"></a>    row_index <span class="ot">&lt;-</span> input<span class="sc">$</span>all_data_rows_selected <span class="co">#&lt;&lt;</span></span>
+<span id="cb44-16"><a href="#cb44-16" tabindex="-1"></a>    de_table[row_index, ]</span>
+<span id="cb44-17"><a href="#cb44-17" tabindex="-1"></a>  })</span>
+<span id="cb44-18"><a href="#cb44-18" tabindex="-1"></a>  </span>
+<span id="cb44-19"><a href="#cb44-19" tabindex="-1"></a>  output<span class="sc">$</span>selected_row_info <span class="ot">&lt;-</span> <span class="fu">renderText</span>({</span>
+<span id="cb44-20"><a href="#cb44-20" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">&quot;The selected gene is &quot;</span>, <span class="fu">selected_row</span>()<span class="sc">$</span>Symbol, <span class="st">&quot; and the index of the selected row is &quot;</span>, input<span class="sc">$</span>all_data_rows_selected))</span>
+<span id="cb44-21"><a href="#cb44-21" tabindex="-1"></a>  })</span>
+<span id="cb44-22"><a href="#cb44-22" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="selecting-rows-in-a-dt-datatable-2" class="section level2">
+<h2>Selecting rows in a DT datatable</h2>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a><span class="fu">shinyApp</span>(ui_rowSelect, server_rowSelect)</span></code></pre></div>
+<p><img role="img" src="imgs/select_row1.png" height="350" width="500"> ]</p>
+<p><img role="img" src="imgs/select_row2.png" height="350" width="500"> ]</p>
+</div>
+<div id="pointer-clicks-on-plots" class="section level2">
+<h2>Pointer clicks on plots</h2>
+<p>Shiny also makes it easy to interact with plots. This cool feature
+can really enhance the user’s ability to get information quickly from a
+simple looking app.</p>
+<p>The <em>plotOutput</em> function has a ‘click’ argument, and the
+string used (e.g. ‘plot_click’) becomes the name of an element in the
+input object that can be accessed in the server function. For example,
+<em>plotOutput(“plot”, click = “plot_click”)</em> will result in
+‘input$plot_click’ being available in server.</p>
+<p>In this case, ‘input$plot_click’ would be a list that contains the
+coordinates of the click. These coordinates can then be used in another
+Shiny function, <em>nearPoints</em>, which takes the clikc input object
+and the dataframe used for the plot, and returns the rows from the
+closest point (or points).</p>
+</div>
+<div id="pointer-clicks-on-plots-1" class="section level2">
+<h2>Pointer clicks on plots</h2>
+<p>Here we show a table with the row of the clicked point in the server
+using the <em>nearPoints</em> function. The ‘threshold’ argument sets
+the distance (in y value space) from the point that is detected, and we
+also only return the closest point by setting ‘maxpoints’ to be one.</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" tabindex="-1"></a>ui_pointClick <span class="ot">&lt;-</span> <span class="fu">page_fluid</span>(</span>
+<span id="cb46-2"><a href="#cb46-2" tabindex="-1"></a>  <span class="fu">plotOutput</span>(<span class="st">&quot;volcano_plot&quot;</span>, <span class="at">click =</span> <span class="st">&quot;volcano_click&quot;</span>), <span class="co">#&lt;&lt;</span></span>
+<span id="cb46-3"><a href="#cb46-3" tabindex="-1"></a>  </span>
+<span id="cb46-4"><a href="#cb46-4" tabindex="-1"></a>  <span class="fu">tableOutput</span>(<span class="st">&quot;selected_point_table&quot;</span>),</span>
+<span id="cb46-5"><a href="#cb46-5" tabindex="-1"></a>)</span>
+<span id="cb46-6"><a href="#cb46-6" tabindex="-1"></a></span>
+<span id="cb46-7"><a href="#cb46-7" tabindex="-1"></a>server_pointClick <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output){</span>
+<span id="cb46-8"><a href="#cb46-8" tabindex="-1"></a>  volcano_plot_reac <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb46-9"><a href="#cb46-9" tabindex="-1"></a>        <span class="fu">ggplot</span>(de_table, <span class="fu">aes</span>(<span class="at">x =</span> log2FoldChange, <span class="at">y =</span> negLog10_pval)) <span class="sc">+</span></span>
+<span id="cb46-10"><a href="#cb46-10" tabindex="-1"></a>          <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb46-11"><a href="#cb46-11" tabindex="-1"></a>          <span class="fu">theme_bw</span>() </span>
+<span id="cb46-12"><a href="#cb46-12" tabindex="-1"></a>    })</span>
+<span id="cb46-13"><a href="#cb46-13" tabindex="-1"></a>    </span>
+<span id="cb46-14"><a href="#cb46-14" tabindex="-1"></a>  output<span class="sc">$</span>volcano_plot <span class="ot">=</span> <span class="fu">renderPlot</span>(<span class="fu">volcano_plot_reac</span>()) </span>
+<span id="cb46-15"><a href="#cb46-15" tabindex="-1"></a>  </span>
+<span id="cb46-16"><a href="#cb46-16" tabindex="-1"></a>  output<span class="sc">$</span>selected_point_table <span class="ot">&lt;-</span> <span class="fu">renderTable</span>({</span>
+<span id="cb46-17"><a href="#cb46-17" tabindex="-1"></a>    <span class="fu">nearPoints</span>(de_table, input<span class="sc">$</span>volcano_click, <span class="at">threshold =</span> <span class="dv">20</span>, <span class="at">maxpoints =</span> <span class="dv">1</span>) <span class="co">#&lt;&lt;</span></span>
+<span id="cb46-18"><a href="#cb46-18" tabindex="-1"></a>  })</span>
+<span id="cb46-19"><a href="#cb46-19" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="pointer-clicks-on-plots-2" class="section level2">
+<h2>Pointer clicks on plots</h2>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a><span class="fu">shinyApp</span>(ui_pointClick, server_pointClick)</span></code></pre></div>
+<p><img role="img" src="imgs/clicked_points.png" height="450" width="850"></p>
+</div>
+<div id="pointer-brush-on-plots" class="section level2">
+<h2>Pointer brush on plots</h2>
+<p>A brush can be used in a similar way as the click. The ‘brush’
+argument is set in <em>plotOutput</em> in the UI and we can then track
+the points that are in the selected area by rendering a table with the
+dataframe output from the <em>brushedPoints</em> function.</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" tabindex="-1"></a>ui_pointBrush <span class="ot">&lt;-</span> <span class="fu">page_fluid</span>(</span>
+<span id="cb48-2"><a href="#cb48-2" tabindex="-1"></a>  <span class="fu">plotOutput</span>(<span class="st">&quot;volcano_plot&quot;</span>, <span class="at">brush =</span> <span class="st">&quot;volcano_brush&quot;</span>), <span class="co">#&lt;&lt;</span></span>
+<span id="cb48-3"><a href="#cb48-3" tabindex="-1"></a>  </span>
+<span id="cb48-4"><a href="#cb48-4" tabindex="-1"></a>  <span class="fu">tableOutput</span>(<span class="st">&quot;selected_brush_table&quot;</span>)</span>
+<span id="cb48-5"><a href="#cb48-5" tabindex="-1"></a>)</span>
+<span id="cb48-6"><a href="#cb48-6" tabindex="-1"></a></span>
+<span id="cb48-7"><a href="#cb48-7" tabindex="-1"></a>server_pointBrush <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output){</span>
+<span id="cb48-8"><a href="#cb48-8" tabindex="-1"></a>  </span>
+<span id="cb48-9"><a href="#cb48-9" tabindex="-1"></a>  volcano_plot_reac <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb48-10"><a href="#cb48-10" tabindex="-1"></a>        <span class="fu">ggplot</span>(de_table, <span class="fu">aes</span>(<span class="at">x =</span> log2FoldChange, <span class="at">y =</span> negLog10_pval)) <span class="sc">+</span></span>
+<span id="cb48-11"><a href="#cb48-11" tabindex="-1"></a>          <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb48-12"><a href="#cb48-12" tabindex="-1"></a>          <span class="fu">theme_bw</span>() </span>
+<span id="cb48-13"><a href="#cb48-13" tabindex="-1"></a>    })</span>
+<span id="cb48-14"><a href="#cb48-14" tabindex="-1"></a>    </span>
+<span id="cb48-15"><a href="#cb48-15" tabindex="-1"></a>  output<span class="sc">$</span>volcano_plot <span class="ot">=</span> <span class="fu">renderPlot</span>(<span class="fu">volcano_plot_reac</span>()) </span>
+<span id="cb48-16"><a href="#cb48-16" tabindex="-1"></a>  </span>
+<span id="cb48-17"><a href="#cb48-17" tabindex="-1"></a>  output<span class="sc">$</span>selected_brush_table <span class="ot">&lt;-</span> <span class="fu">renderTable</span>({</span>
+<span id="cb48-18"><a href="#cb48-18" tabindex="-1"></a>    <span class="fu">brushedPoints</span>(de_table, input<span class="sc">$</span>volcano_brush) <span class="co">#&lt;&lt;</span></span>
+<span id="cb48-19"><a href="#cb48-19" tabindex="-1"></a>  })</span>
+<span id="cb48-20"><a href="#cb48-20" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="pointer-brush-on-plots-1" class="section level2">
+<h2>Pointer brush on plots</h2>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" tabindex="-1"></a><span class="fu">shinyApp</span>(ui_pointBrush, server_pointBrush)</span></code></pre></div>
+<p><img role="img" src="imgs/brushed_points.png" height="400" width="500"></p>
+</div>
+<div id="interactive-plots-with-plotly" class="section level2">
+<h2>Interactive plots with Plotly</h2>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" tabindex="-1"></a><span class="fu">library</span>(plotly)</span>
+<span id="cb50-2"><a href="#cb50-2" tabindex="-1"></a>ui_plotly <span class="ot">&lt;-</span> <span class="fu">page_fluid</span>(</span>
+<span id="cb50-3"><a href="#cb50-3" tabindex="-1"></a>  <span class="fu">plotlyOutput</span>(<span class="st">&quot;volcano_plotly&quot;</span>), <span class="co">#&lt;&lt;</span></span>
+<span id="cb50-4"><a href="#cb50-4" tabindex="-1"></a>)</span>
+<span id="cb50-5"><a href="#cb50-5" tabindex="-1"></a></span>
+<span id="cb50-6"><a href="#cb50-6" tabindex="-1"></a>server_plotly <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output){</span>
+<span id="cb50-7"><a href="#cb50-7" tabindex="-1"></a>  volcano_plot_reac <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb50-8"><a href="#cb50-8" tabindex="-1"></a>        <span class="fu">ggplot</span>(de_table, <span class="fu">aes</span>(<span class="at">x =</span> log2FoldChange, <span class="at">y =</span> negLog10_pval, <span class="at">text =</span> Symbol)) <span class="sc">+</span></span>
+<span id="cb50-9"><a href="#cb50-9" tabindex="-1"></a>          <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb50-10"><a href="#cb50-10" tabindex="-1"></a>          <span class="fu">theme_bw</span>() </span>
+<span id="cb50-11"><a href="#cb50-11" tabindex="-1"></a>    })</span>
+<span id="cb50-12"><a href="#cb50-12" tabindex="-1"></a>    </span>
+<span id="cb50-13"><a href="#cb50-13" tabindex="-1"></a>  output<span class="sc">$</span>volcano_plotly <span class="ot">=</span> <span class="fu">renderPlotly</span>(<span class="fu">ggplotly</span>(<span class="fu">volcano_plot_reac</span>())) <span class="co">#&lt;&lt; </span></span>
+<span id="cb50-14"><a href="#cb50-14" tabindex="-1"></a></span>
+<span id="cb50-15"><a href="#cb50-15" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="interactive-plots-with-plotly-1" class="section level2">
+<h2>Interactive plots with Plotly</h2>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" tabindex="-1"></a><span class="fu">shinyApp</span>(ui_plotly, server_plotly)</span></code></pre></div>
+<p><img role="img" src="imgs/plotly.png" height="400" width="600"></p>
+</div>
+<div id="get-click-info-with-plotly" class="section level2">
+<h2>Get click info with Plotly</h2>
+<p>We can also pull out the row associated with the point that is
+clicked on when using plotly. Plotly has a function called
+<em>event_data</em> that returns a dataframe with the x and y values of
+the point that is highlighted when a cursor click occurs.</p>
+<p>The plot and click event can be linked with the ‘source’ argument
+given to both the <em>ggplotly</em> and <em>event_data</em> funcitons.
+We can use the x and y values returned by <em>event_data</em> to get the
+row of our table that represented the point that was clicked on.</p>
+</div>
+<div id="get-click-info-with-plotly-1" class="section level2">
+<h2>Get click info with Plotly</h2>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" tabindex="-1"></a><span class="fu">library</span>(plotly)</span>
+<span id="cb52-2"><a href="#cb52-2" tabindex="-1"></a>ui_plotly <span class="ot">&lt;-</span> <span class="fu">page_fluid</span>(</span>
+<span id="cb52-3"><a href="#cb52-3" tabindex="-1"></a>  <span class="fu">plotlyOutput</span>(<span class="st">&quot;volcano_plotly&quot;</span>),</span>
+<span id="cb52-4"><a href="#cb52-4" tabindex="-1"></a>  </span>
+<span id="cb52-5"><a href="#cb52-5" tabindex="-1"></a>  <span class="fu">tableOutput</span>(<span class="st">&quot;plotly_click_row&quot;</span>)</span>
+<span id="cb52-6"><a href="#cb52-6" tabindex="-1"></a>)</span>
+<span id="cb52-7"><a href="#cb52-7" tabindex="-1"></a></span>
+<span id="cb52-8"><a href="#cb52-8" tabindex="-1"></a>server_plotly <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output){</span>
+<span id="cb52-9"><a href="#cb52-9" tabindex="-1"></a>  volcano_plot_reac <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb52-10"><a href="#cb52-10" tabindex="-1"></a>    <span class="fu">ggplot</span>(de_table, <span class="fu">aes</span>(<span class="at">x =</span> log2FoldChange, <span class="at">y =</span> negLog10_pval, <span class="at">text =</span> Symbol)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">theme_bw</span>() </span>
+<span id="cb52-11"><a href="#cb52-11" tabindex="-1"></a>  })</span>
+<span id="cb52-12"><a href="#cb52-12" tabindex="-1"></a>  </span>
+<span id="cb52-13"><a href="#cb52-13" tabindex="-1"></a>  output<span class="sc">$</span>volcano_plotly <span class="ot">=</span> <span class="fu">renderPlotly</span>(<span class="fu">ggplotly</span>(<span class="fu">volcano_plot_reac</span>(), <span class="at">source =</span> <span class="st">&quot;volcano_plot&quot;</span>))  <span class="co">#&lt;&lt;</span></span>
+<span id="cb52-14"><a href="#cb52-14" tabindex="-1"></a>  </span>
+<span id="cb52-15"><a href="#cb52-15" tabindex="-1"></a>  clicked_row <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb52-16"><a href="#cb52-16" tabindex="-1"></a>    event <span class="ot">&lt;-</span> <span class="fu">event_data</span>(<span class="at">event =</span> <span class="st">&quot;plotly_click&quot;</span>, <span class="at">source =</span> <span class="st">&quot;volcano_plot&quot;</span>) <span class="co">#&lt;&lt;</span></span>
+<span id="cb52-17"><a href="#cb52-17" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(event) <span class="sc">&gt;</span> <span class="dv">0</span>){</span>
+<span id="cb52-18"><a href="#cb52-18" tabindex="-1"></a>      de_table <span class="sc">%&gt;%</span> <span class="fu">filter</span>(log2FoldChange <span class="sc">==</span> event<span class="sc">$</span>x <span class="sc">&amp;</span> negLog10_pval <span class="sc">==</span> event<span class="sc">$</span>y)</span>
+<span id="cb52-19"><a href="#cb52-19" tabindex="-1"></a>    }</span>
+<span id="cb52-20"><a href="#cb52-20" tabindex="-1"></a>  })</span>
+<span id="cb52-21"><a href="#cb52-21" tabindex="-1"></a>  </span>
+<span id="cb52-22"><a href="#cb52-22" tabindex="-1"></a>  output<span class="sc">$</span>plotly_click_row <span class="ot">&lt;-</span> <span class="fu">renderTable</span>({</span>
+<span id="cb52-23"><a href="#cb52-23" tabindex="-1"></a>    <span class="fu">clicked_row</span>()</span>
+<span id="cb52-24"><a href="#cb52-24" tabindex="-1"></a>  })</span>
+<span id="cb52-25"><a href="#cb52-25" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="interactive-plots-with-plotly-2" class="section level2">
+<h2>Interactive plots with Plotly</h2>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" tabindex="-1"></a><span class="fu">shinyApp</span>(ui_plotly, server_plotly)</span></code></pre></div>
+<p><img role="img" src="imgs/plotly_clicked_point.png" height="400" width="500"></p>
+</div>
+</div>
+<div id="downloading-and-uploading-files" class="section level1">
+<h1>Downloading and uploading files</h1>
+<hr />
+<div id="downloading-plots---ui" class="section level2">
+<h2>Downloading plots - UI</h2>
+<p>Shiny makes it easy to download components of the app in the same way
+you would save any R object. To do this we use a special kind of button,
+called a <em>downloadButton</em>.</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" tabindex="-1"></a><span class="fu">library</span>(plotly)</span>
+<span id="cb54-2"><a href="#cb54-2" tabindex="-1"></a>ui_download <span class="ot">&lt;-</span> <span class="fu">page_fluid</span>(</span>
+<span id="cb54-3"><a href="#cb54-3" tabindex="-1"></a>  <span class="fu">plotlyOutput</span>(<span class="st">&quot;volcano_plotly&quot;</span>),</span>
+<span id="cb54-4"><a href="#cb54-4" tabindex="-1"></a>  </span>
+<span id="cb54-5"><a href="#cb54-5" tabindex="-1"></a>  <span class="fu">downloadButton</span>(<span class="st">&quot;download_volcano_plot&quot;</span>, <span class="st">&quot;Download volcano plot&quot;</span>, <span class="at">style =</span> <span class="st">&quot;width:40%;&quot;</span>) <span class="co">#&lt;&lt;</span></span>
+<span id="cb54-6"><a href="#cb54-6" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="in-line-css-to-style-button" class="section level2">
+<h2>In line CSS to style button</h2>
+<p>NOTE: the download button does not have a ‘width’ argument like the
+action button, so we set this by giving inline CSS commands to the
+‘style’ argument. We won’t get into CSS much in this course, but it can
+be a powerful way to highly customize any UI components in your Shiny
+app if you know how to use it. You will also likely often see people
+using it on message boards.</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" tabindex="-1"></a><span class="fu">library</span>(plotly)</span>
+<span id="cb55-2"><a href="#cb55-2" tabindex="-1"></a>ui_download <span class="ot">&lt;-</span> <span class="fu">page_fluid</span>(</span>
+<span id="cb55-3"><a href="#cb55-3" tabindex="-1"></a>  <span class="fu">plotlyOutput</span>(<span class="st">&quot;volcano_plotly&quot;</span>),</span>
+<span id="cb55-4"><a href="#cb55-4" tabindex="-1"></a>  </span>
+<span id="cb55-5"><a href="#cb55-5" tabindex="-1"></a>  <span class="fu">downloadButton</span>(<span class="st">&quot;download_volcano_plot&quot;</span>, <span class="st">&quot;Download volcano plot&quot;</span>, <span class="at">style =</span> <span class="st">&quot;width:40%;&quot;</span>) <span class="co">#&lt;&lt;</span></span>
+<span id="cb55-6"><a href="#cb55-6" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="downloading-plots---server" class="section level2">
+<h2>Downloading plots - server</h2>
+<p>In the server the output objects are paired with a
+<em>downloadHandler</em> function. This is a special kind of server
+function that will take two arguments that are both functions. * The
+‘filename’ argument takes no arguments and returns a string that will be
+the filename * The ‘content’ argument is a function that takes one
+argument named <em>file</em> that will be a temporary file path to write
+the file to, and the function contains code to generate and save the
+file. *Reactive values can be used inside of the ‘content’ function.</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" tabindex="-1"></a>server_download <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output){</span>
+<span id="cb56-2"><a href="#cb56-2" tabindex="-1"></a>  volcano_plot_reac <span class="ot">&lt;-</span> <span class="fu">reactive</span>(<span class="fu">ggplot</span>(de_table, <span class="fu">aes</span>(<span class="at">x =</span> log2FoldChange, <span class="at">y =</span> negLog10_pval, <span class="at">text =</span> Symbol)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">theme_bw</span>())</span>
+<span id="cb56-3"><a href="#cb56-3" tabindex="-1"></a>  </span>
+<span id="cb56-4"><a href="#cb56-4" tabindex="-1"></a>  output<span class="sc">$</span>volcano_plotly <span class="ot">=</span> <span class="fu">renderPlotly</span>(<span class="fu">ggplotly</span>(<span class="fu">volcano_plot_reac</span>(), <span class="at">source =</span> <span class="st">&quot;volcano_plot&quot;</span>)) </span>
+<span id="cb56-5"><a href="#cb56-5" tabindex="-1"></a>  </span>
+<span id="cb56-6"><a href="#cb56-6" tabindex="-1"></a>  output<span class="sc">$</span>download_volcano_plot <span class="ot">&lt;-</span> <span class="fu">downloadHandler</span>( <span class="co">#&lt;&lt;</span></span>
+<span id="cb56-7"><a href="#cb56-7" tabindex="-1"></a>    <span class="at">filename =</span> <span class="cf">function</span>() { <span class="co">#&lt;&lt;</span></span>
+<span id="cb56-8"><a href="#cb56-8" tabindex="-1"></a>      <span class="st">&quot;volcanoplot.pdf&quot;</span> <span class="co">#&lt;&lt;</span></span>
+<span id="cb56-9"><a href="#cb56-9" tabindex="-1"></a>    }, <span class="at">content =</span> <span class="cf">function</span>(file) { <span class="co">#&lt;&lt;</span></span>
+<span id="cb56-10"><a href="#cb56-10" tabindex="-1"></a>      <span class="fu">ggsave</span>(<span class="at">filename =</span> file, <span class="at">plot =</span> <span class="fu">volcano_plot_reac</span>()) <span class="co">#&lt;&lt;</span></span>
+<span id="cb56-11"><a href="#cb56-11" tabindex="-1"></a>    } <span class="co">#&lt;&lt;</span></span>
+<span id="cb56-12"><a href="#cb56-12" tabindex="-1"></a>  ) <span class="co">#&lt;&lt;</span></span>
+<span id="cb56-13"><a href="#cb56-13" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="downloading-plots---launch-app" class="section level2">
+<h2>Downloading plots - Launch app</h2>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" tabindex="-1"></a><span class="fu">shinyApp</span>(ui_download, server_download)</span></code></pre></div>
+<p><img role="img" src="imgs/download_small.png" height="350" width="500"></p>
+</div>
+<div id="add-interactivity-to-main-app" class="section level2">
+<h2>Add interactivity to main app</h2>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" tabindex="-1"></a>ui_newPlots <span class="ot">&lt;-</span> <span class="fu">page_navbar</span>(</span>
+<span id="cb58-2"><a href="#cb58-2" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">&quot;RNAseq tools&quot;</span>,</span>
+<span id="cb58-3"><a href="#cb58-3" tabindex="-1"></a>  <span class="at">theme =</span> custom_theme,</span>
+<span id="cb58-4"><a href="#cb58-4" tabindex="-1"></a>  <span class="fu">nav_panel</span>(</span>
+<span id="cb58-5"><a href="#cb58-5" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;DE Analysis&quot;</span>,</span>
+<span id="cb58-6"><a href="#cb58-6" tabindex="-1"></a>    <span class="fu">layout_sidebar</span>(</span>
+<span id="cb58-7"><a href="#cb58-7" tabindex="-1"></a>      <span class="at">sidebar =</span> <span class="fu">sidebar</span>(</span>
+<span id="cb58-8"><a href="#cb58-8" tabindex="-1"></a>        <span class="at">width =</span> <span class="dv">300</span>,</span>
+<span id="cb58-9"><a href="#cb58-9" tabindex="-1"></a>        <span class="fu">numericInput</span>(<span class="st">&quot;padj_filter&quot;</span>, <span class="at">label =</span> <span class="st">&quot;Cutoff for padj:&quot;</span>, <span class="at">value =</span> <span class="fl">0.05</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">1</span>, <span class="at">step =</span> <span class="fl">0.005</span>),</span>
+<span id="cb58-10"><a href="#cb58-10" tabindex="-1"></a>    </span>
+<span id="cb58-11"><a href="#cb58-11" tabindex="-1"></a>        <span class="fu">numericInput</span>(<span class="st">&quot;lfc_filter&quot;</span>, <span class="at">label =</span> <span class="st">&quot;Cutoff for log2 FC:&quot;</span>, <span class="at">value =</span> <span class="dv">1</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">step =</span> <span class="fl">0.1</span>),</span>
+<span id="cb58-12"><a href="#cb58-12" tabindex="-1"></a> </span>
+<span id="cb58-13"><a href="#cb58-13" tabindex="-1"></a>        <span class="fu">actionButton</span>(<span class="st">&quot;de_filter&quot;</span>, <span class="st">&quot;Apply filter&quot;</span>)</span>
+<span id="cb58-14"><a href="#cb58-14" tabindex="-1"></a>      ),</span>
+<span id="cb58-15"><a href="#cb58-15" tabindex="-1"></a>      </span>
+<span id="cb58-16"><a href="#cb58-16" tabindex="-1"></a>      <span class="fu">layout_columns</span>(</span>
+<span id="cb58-17"><a href="#cb58-17" tabindex="-1"></a>        <span class="fu">navset_card_tab</span>(</span>
+<span id="cb58-18"><a href="#cb58-18" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">&quot;DE result tables&quot;</span>,</span>
+<span id="cb58-19"><a href="#cb58-19" tabindex="-1"></a>          <span class="fu">nav_panel</span>(<span class="fu">card_header</span>(<span class="st">&quot;DEGs&quot;</span>), <span class="fu">dataTableOutput</span>(<span class="at">outputId =</span> <span class="st">&quot;de_data&quot;</span>)),</span>
+<span id="cb58-20"><a href="#cb58-20" tabindex="-1"></a>          <span class="fu">nav_panel</span>(<span class="fu">card_header</span>(<span class="st">&quot;All genes&quot;</span>), <span class="fu">dataTableOutput</span>(<span class="at">outputId =</span> <span class="st">&quot;all_data&quot;</span>))</span>
+<span id="cb58-21"><a href="#cb58-21" tabindex="-1"></a>        ),</span>
+<span id="cb58-22"><a href="#cb58-22" tabindex="-1"></a>        <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb58-23"><a href="#cb58-23" tabindex="-1"></a>        <span class="co"># change to plotly and add download buttons to each card</span></span>
+<span id="cb58-24"><a href="#cb58-24" tabindex="-1"></a>        <span class="fu">card</span>(<span class="fu">card_header</span>(<span class="st">&quot;MA plot&quot;</span>),</span>
+<span id="cb58-25"><a href="#cb58-25" tabindex="-1"></a>             <span class="fu">plotlyOutput</span>(<span class="st">&quot;ma_plot&quot;</span>), </span>
+<span id="cb58-26"><a href="#cb58-26" tabindex="-1"></a>             <span class="fu">downloadButton</span>(<span class="st">&quot;download_ma_plot&quot;</span>, <span class="st">&quot;Download MA plot&quot;</span>, <span class="at">style =</span> <span class="st">&quot;width:40%;&quot;</span>)), </span>
+<span id="cb58-27"><a href="#cb58-27" tabindex="-1"></a>        <span class="fu">card</span>(<span class="fu">card_header</span>(<span class="st">&quot;Volcano plot&quot;</span>),</span>
+<span id="cb58-28"><a href="#cb58-28" tabindex="-1"></a>             <span class="fu">plotlyOutput</span>(<span class="st">&quot;volcano_plot&quot;</span>),</span>
+<span id="cb58-29"><a href="#cb58-29" tabindex="-1"></a>             <span class="fu">downloadButton</span>(<span class="st">&quot;download_volcano_plot&quot;</span>, <span class="st">&quot;Download volcano plot&quot;</span>, <span class="at">style =</span> <span class="st">&quot;width:40%;&quot;</span>)), </span>
+<span id="cb58-30"><a href="#cb58-30" tabindex="-1"></a>        <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb58-31"><a href="#cb58-31" tabindex="-1"></a>        <span class="at">col_widths =</span> <span class="fu">c</span>(<span class="dv">12</span>,<span class="dv">6</span>,<span class="dv">6</span>), <span class="at">row_heights =</span> <span class="fu">c</span>(<span class="st">&quot;750px&quot;</span>, <span class="st">&quot;500px&quot;</span>)</span>
+<span id="cb58-32"><a href="#cb58-32" tabindex="-1"></a>      )</span>
+<span id="cb58-33"><a href="#cb58-33" tabindex="-1"></a>    )</span>
+<span id="cb58-34"><a href="#cb58-34" tabindex="-1"></a>  ),</span>
+<span id="cb58-35"><a href="#cb58-35" tabindex="-1"></a>  <span class="fu">nav_panel</span>(</span>
+<span id="cb58-36"><a href="#cb58-36" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Next steps&quot;</span>,</span>
+<span id="cb58-37"><a href="#cb58-37" tabindex="-1"></a>    <span class="st">&quot;The next step in our analysis will be...&quot;</span></span>
+<span id="cb58-38"><a href="#cb58-38" tabindex="-1"></a>  ),</span>
+<span id="cb58-39"><a href="#cb58-39" tabindex="-1"></a>  <span class="fu">nav_spacer</span>(),</span>
+<span id="cb58-40"><a href="#cb58-40" tabindex="-1"></a>  <span class="fu">nav_menu</span>(</span>
+<span id="cb58-41"><a href="#cb58-41" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Links&quot;</span>,</span>
+<span id="cb58-42"><a href="#cb58-42" tabindex="-1"></a>    <span class="at">align =</span> <span class="st">&quot;right&quot;</span>,</span>
+<span id="cb58-43"><a href="#cb58-43" tabindex="-1"></a>    <span class="fu">nav_item</span>(</span>
+<span id="cb58-44"><a href="#cb58-44" tabindex="-1"></a>      tags<span class="sc">$</span><span class="fu">a</span>(</span>
+<span id="cb58-45"><a href="#cb58-45" tabindex="-1"></a>        shiny<span class="sc">::</span><span class="fu">icon</span>(<span class="st">&quot;chart-simple&quot;</span>), <span class="st">&quot;RU BRC - Learn more!&quot;</span>,</span>
+<span id="cb58-46"><a href="#cb58-46" tabindex="-1"></a>        <span class="at">href =</span> <span class="st">&quot;https://rockefelleruniversity.github.io/&quot;</span>,</span>
+<span id="cb58-47"><a href="#cb58-47" tabindex="-1"></a>        <span class="at">target =</span> <span class="st">&quot;_blank&quot;</span></span>
+<span id="cb58-48"><a href="#cb58-48" tabindex="-1"></a>      )</span>
+<span id="cb58-49"><a href="#cb58-49" tabindex="-1"></a>    )</span>
+<span id="cb58-50"><a href="#cb58-50" tabindex="-1"></a>  )</span>
+<span id="cb58-51"><a href="#cb58-51" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="add-interactivity-to-main-app---server" class="section level2">
+<h2>Add interactivity to main app - server</h2>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" tabindex="-1"></a>server_newPlots <span class="ot">=</span> <span class="cf">function</span>(input, output) {</span>
+<span id="cb59-2"><a href="#cb59-2" tabindex="-1"></a>  <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb59-3"><a href="#cb59-3" tabindex="-1"></a>  output<span class="sc">$</span>download_ma_plot <span class="ot">&lt;-</span> <span class="fu">downloadHandler</span>(</span>
+<span id="cb59-4"><a href="#cb59-4" tabindex="-1"></a>    <span class="at">filename =</span> <span class="cf">function</span>() {</span>
+<span id="cb59-5"><a href="#cb59-5" tabindex="-1"></a>      <span class="st">&quot;maplot.pdf&quot;</span></span>
+<span id="cb59-6"><a href="#cb59-6" tabindex="-1"></a>    },</span>
+<span id="cb59-7"><a href="#cb59-7" tabindex="-1"></a>    <span class="at">content =</span> <span class="cf">function</span>(file) {</span>
+<span id="cb59-8"><a href="#cb59-8" tabindex="-1"></a>      <span class="fu">ggsave</span>(<span class="at">filename =</span> file, <span class="at">plot =</span> <span class="fu">ma_plot_reac</span>())</span>
+<span id="cb59-9"><a href="#cb59-9" tabindex="-1"></a>    }</span>
+<span id="cb59-10"><a href="#cb59-10" tabindex="-1"></a>  )</span>
+<span id="cb59-11"><a href="#cb59-11" tabindex="-1"></a>  </span>
+<span id="cb59-12"><a href="#cb59-12" tabindex="-1"></a>  output<span class="sc">$</span>download_volcano_plot <span class="ot">&lt;-</span> <span class="fu">downloadHandler</span>(</span>
+<span id="cb59-13"><a href="#cb59-13" tabindex="-1"></a>    <span class="at">filename =</span> <span class="cf">function</span>() {</span>
+<span id="cb59-14"><a href="#cb59-14" tabindex="-1"></a>      <span class="st">&quot;volcanoplot.pdf&quot;</span></span>
+<span id="cb59-15"><a href="#cb59-15" tabindex="-1"></a>    },</span>
+<span id="cb59-16"><a href="#cb59-16" tabindex="-1"></a>    <span class="at">content =</span> <span class="cf">function</span>(file) {</span>
+<span id="cb59-17"><a href="#cb59-17" tabindex="-1"></a>      <span class="fu">ggsave</span>(<span class="at">filename =</span> file, <span class="at">plot =</span> <span class="fu">volcano_plot_reac</span>())</span>
+<span id="cb59-18"><a href="#cb59-18" tabindex="-1"></a>    }</span>
+<span id="cb59-19"><a href="#cb59-19" tabindex="-1"></a>  )</span>
+<span id="cb59-20"><a href="#cb59-20" tabindex="-1"></a>  <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb59-21"><a href="#cb59-21" tabindex="-1"></a>  output<span class="sc">$</span>all_data <span class="ot">=</span> <span class="fu">renderDataTable</span>({</span>
+<span id="cb59-22"><a href="#cb59-22" tabindex="-1"></a>    <span class="fu">datatable</span>(de_table,</span>
+<span id="cb59-23"><a href="#cb59-23" tabindex="-1"></a>              <span class="at">filter =</span> <span class="st">&#39;top&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb59-24"><a href="#cb59-24" tabindex="-1"></a>      <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;baseMean&quot;</span>, <span class="st">&quot;log2FoldChange&quot;</span>, <span class="st">&quot;lfcSE&quot;</span>, <span class="st">&quot;stat&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb59-25"><a href="#cb59-25" tabindex="-1"></a>      <span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;pvalue&quot;</span>, <span class="st">&quot;padj&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb59-26"><a href="#cb59-26" tabindex="-1"></a>  })</span>
+<span id="cb59-27"><a href="#cb59-27" tabindex="-1"></a>  </span>
+<span id="cb59-28"><a href="#cb59-28" tabindex="-1"></a>  filtered_de <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb59-29"><a href="#cb59-29" tabindex="-1"></a>    de_table <span class="sc">%&gt;%</span></span>
+<span id="cb59-30"><a href="#cb59-30" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">filter</span>(padj <span class="sc">&lt;</span> input<span class="sc">$</span>padj_filter <span class="sc">&amp;</span> <span class="fu">abs</span>(log2FoldChange) <span class="sc">&gt;</span> input<span class="sc">$</span>lfc_filter)</span>
+<span id="cb59-31"><a href="#cb59-31" tabindex="-1"></a>  }) <span class="sc">%&gt;%</span></span>
+<span id="cb59-32"><a href="#cb59-32" tabindex="-1"></a>    <span class="fu">bindEvent</span>(input<span class="sc">$</span>de_filter, <span class="at">ignoreNULL =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb59-33"><a href="#cb59-33" tabindex="-1"></a></span>
+<span id="cb59-34"><a href="#cb59-34" tabindex="-1"></a>  output<span class="sc">$</span>de_data <span class="ot">=</span> <span class="fu">renderDataTable</span>({</span>
+<span id="cb59-35"><a href="#cb59-35" tabindex="-1"></a>    <span class="fu">datatable</span>(<span class="fu">filtered_de</span>(),</span>
+<span id="cb59-36"><a href="#cb59-36" tabindex="-1"></a>              <span class="at">selection =</span> <span class="st">&quot;single&quot;</span>,</span>
+<span id="cb59-37"><a href="#cb59-37" tabindex="-1"></a>              <span class="at">filter =</span> <span class="st">&#39;top&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb59-38"><a href="#cb59-38" tabindex="-1"></a>      <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;baseMean&quot;</span>, <span class="st">&quot;log2FoldChange&quot;</span>, <span class="st">&quot;lfcSE&quot;</span>, <span class="st">&quot;stat&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb59-39"><a href="#cb59-39" tabindex="-1"></a>      <span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;pvalue&quot;</span>, <span class="st">&quot;padj&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb59-40"><a href="#cb59-40" tabindex="-1"></a>  })</span>
+<span id="cb59-41"><a href="#cb59-41" tabindex="-1"></a>  </span>
+<span id="cb59-42"><a href="#cb59-42" tabindex="-1"></a> ma_plot_reac <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb59-43"><a href="#cb59-43" tabindex="-1"></a>    de_table <span class="sc">%&gt;%</span></span>
+<span id="cb59-44"><a href="#cb59-44" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(padj <span class="sc">&lt;</span> input<span class="sc">$</span>padj_filter <span class="sc">&amp;</span> <span class="fu">abs</span>(log2FoldChange) <span class="sc">&gt;</span> input<span class="sc">$</span>lfc_filter, <span class="st">&quot;DE&quot;</span>, <span class="st">&quot;Not_DE&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb59-45"><a href="#cb59-45" tabindex="-1"></a>      <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> baseMean, <span class="at">y =</span> log2FoldChange, <span class="at">color =</span> sig, <span class="at">label =</span> Symbol)) <span class="sc">+</span> <span class="co"># add symbol as the label</span></span>
+<span id="cb59-46"><a href="#cb59-46" tabindex="-1"></a>      <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb59-47"><a href="#cb59-47" tabindex="-1"></a>      <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
+<span id="cb59-48"><a href="#cb59-48" tabindex="-1"></a>      <span class="fu">scale_color_manual</span>(<span class="at">name =</span> <span class="st">&quot;DE status&quot;</span>, <span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;red&quot;</span>, <span class="st">&quot;grey&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb59-49"><a href="#cb59-49" tabindex="-1"></a>      <span class="fu">xlab</span>(<span class="st">&quot;baseMean (log scale)&quot;</span>) <span class="sc">+</span></span>
+<span id="cb59-50"><a href="#cb59-50" tabindex="-1"></a>      <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb59-51"><a href="#cb59-51" tabindex="-1"></a>      <span class="fu">ggtitle</span>(<span class="st">&quot;MA plot&quot;</span>)</span>
+<span id="cb59-52"><a href="#cb59-52" tabindex="-1"></a>  })  <span class="sc">%&gt;%</span></span>
+<span id="cb59-53"><a href="#cb59-53" tabindex="-1"></a>    <span class="fu">bindEvent</span>(input<span class="sc">$</span>de_filter, <span class="at">ignoreNULL =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb59-54"><a href="#cb59-54" tabindex="-1"></a>  </span>
+<span id="cb59-55"><a href="#cb59-55" tabindex="-1"></a>    <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb59-56"><a href="#cb59-56" tabindex="-1"></a>    <span class="co"># use &#39;renderPlotly&#39; and wrap plot in &#39;ggplotly&#39;</span></span>
+<span id="cb59-57"><a href="#cb59-57" tabindex="-1"></a>    output<span class="sc">$</span>ma_plot <span class="ot">=</span> <span class="fu">renderPlotly</span>({</span>
+<span id="cb59-58"><a href="#cb59-58" tabindex="-1"></a>      <span class="fu">ggplotly</span>(<span class="fu">ma_plot_reac</span>())</span>
+<span id="cb59-59"><a href="#cb59-59" tabindex="-1"></a>    }) </span>
+<span id="cb59-60"><a href="#cb59-60" tabindex="-1"></a>    <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb59-61"><a href="#cb59-61" tabindex="-1"></a>    </span>
+<span id="cb59-62"><a href="#cb59-62" tabindex="-1"></a>    volcano_plot_reac <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb59-63"><a href="#cb59-63" tabindex="-1"></a>      de_table <span class="sc">%&gt;%</span></span>
+<span id="cb59-64"><a href="#cb59-64" tabindex="-1"></a>        dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(padj <span class="sc">&lt;</span> input<span class="sc">$</span>padj_filter <span class="sc">&amp;</span> <span class="fu">abs</span>(log2FoldChange) <span class="sc">&gt;</span> input<span class="sc">$</span>lfc_filter, <span class="st">&quot;DE&quot;</span>, <span class="st">&quot;Not_DE&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb59-65"><a href="#cb59-65" tabindex="-1"></a>        <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> log2FoldChange, <span class="at">y =</span> negLog10_pval, <span class="at">color =</span> sig, <span class="at">label =</span> Symbol)) <span class="sc">+</span> <span class="co"># add symbol as the label</span></span>
+<span id="cb59-66"><a href="#cb59-66" tabindex="-1"></a>        <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb59-67"><a href="#cb59-67" tabindex="-1"></a>        <span class="fu">scale_color_manual</span>(<span class="at">name =</span> <span class="st">&quot;DE status&quot;</span>, <span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;red&quot;</span>, <span class="st">&quot;grey&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb59-68"><a href="#cb59-68" tabindex="-1"></a>        <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb59-69"><a href="#cb59-69" tabindex="-1"></a>        <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">&quot;bottom&quot;</span>, <span class="at">legend.text=</span><span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">12</span>)) <span class="sc">+</span></span>
+<span id="cb59-70"><a href="#cb59-70" tabindex="-1"></a>        <span class="fu">ggtitle</span>(<span class="st">&quot;Volcano plot&quot;</span>)</span>
+<span id="cb59-71"><a href="#cb59-71" tabindex="-1"></a>    }) <span class="sc">%&gt;%</span></span>
+<span id="cb59-72"><a href="#cb59-72" tabindex="-1"></a>      <span class="fu">bindEvent</span>(input<span class="sc">$</span>de_filter, <span class="at">ignoreNULL =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb59-73"><a href="#cb59-73" tabindex="-1"></a>    </span>
+<span id="cb59-74"><a href="#cb59-74" tabindex="-1"></a>  <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb59-75"><a href="#cb59-75" tabindex="-1"></a>  output<span class="sc">$</span>volcano_plot <span class="ot">=</span> <span class="fu">renderPlotly</span>({</span>
+<span id="cb59-76"><a href="#cb59-76" tabindex="-1"></a>    <span class="fu">ggplotly</span>(<span class="fu">volcano_plot_reac</span>())</span>
+<span id="cb59-77"><a href="#cb59-77" tabindex="-1"></a>  }) </span>
+<span id="cb59-78"><a href="#cb59-78" tabindex="-1"></a>  <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb59-79"><a href="#cb59-79" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="launch-app" class="section level2">
+<h2>Launch app</h2>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" tabindex="-1"></a><span class="fu">shinyApp</span>(<span class="at">ui =</span> ui_newPlots, <span class="at">server =</span> server_newPlots)</span></code></pre></div>
+</div>
+<div id="upload-a-file" class="section level2">
+<h2>Upload a file</h2>
+<p>So far we have been starting with the same data. But this app would
+be more useful if you could use any file on your computer with
+differential expression results.</p>
+</div>
+<div id="upload-a-file-1" class="section level2">
+<h2>Upload a file</h2>
+<p>We can use the <em>fileInput</em> function in the UI to allow the
+user to input a file. The ‘accept’ argument to limit the type of file
+the user can try to upload.</p>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" tabindex="-1"></a>ui_upload <span class="ot">&lt;-</span> <span class="fu">page_fluid</span>(</span>
+<span id="cb61-2"><a href="#cb61-2" tabindex="-1"></a>  <span class="fu">fileInput</span>(<span class="st">&quot;de_file&quot;</span>, <span class="st">&quot;Upload a DE file&quot;</span>, <span class="at">accept =</span> <span class="fu">c</span>(<span class="st">&quot;.csv&quot;</span>, <span class="st">&quot;.tsv&quot;</span>, <span class="st">&quot;xlsx&quot;</span>, <span class="st">&quot;xls&quot;</span>)), <span class="co">#&lt;&lt;</span></span>
+<span id="cb61-3"><a href="#cb61-3" tabindex="-1"></a>  </span>
+<span id="cb61-4"><a href="#cb61-4" tabindex="-1"></a>  <span class="fu">dataTableOutput</span>(<span class="at">outputId =</span> <span class="st">&quot;all_data&quot;</span>),</span>
+<span id="cb61-5"><a href="#cb61-5" tabindex="-1"></a>)</span>
+<span id="cb61-6"><a href="#cb61-6" tabindex="-1"></a></span>
+<span id="cb61-7"><a href="#cb61-7" tabindex="-1"></a>server_upload <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output){</span>
+<span id="cb61-8"><a href="#cb61-8" tabindex="-1"></a>  de_table_in <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb61-9"><a href="#cb61-9" tabindex="-1"></a>    rio<span class="sc">::</span><span class="fu">import</span>(input<span class="sc">$</span>de_file<span class="sc">$</span>datapath) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">negLog10_pval =</span> <span class="sc">-</span><span class="fu">log10</span>(pvalue))</span>
+<span id="cb61-10"><a href="#cb61-10" tabindex="-1"></a>  })</span>
+<span id="cb61-11"><a href="#cb61-11" tabindex="-1"></a>  </span>
+<span id="cb61-12"><a href="#cb61-12" tabindex="-1"></a>  output<span class="sc">$</span>all_data <span class="ot">=</span> <span class="fu">renderDataTable</span>({</span>
+<span id="cb61-13"><a href="#cb61-13" tabindex="-1"></a>    <span class="fu">datatable</span>(<span class="fu">de_table_in</span>(),</span>
+<span id="cb61-14"><a href="#cb61-14" tabindex="-1"></a>              <span class="at">filter =</span> <span class="st">&#39;top&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb61-15"><a href="#cb61-15" tabindex="-1"></a>      <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;baseMean&quot;</span>, <span class="st">&quot;log2FoldChange&quot;</span>, <span class="st">&quot;lfcSE&quot;</span>, <span class="st">&quot;stat&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb61-16"><a href="#cb61-16" tabindex="-1"></a>      <span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;pvalue&quot;</span>, <span class="st">&quot;padj&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb61-17"><a href="#cb61-17" tabindex="-1"></a>  })</span>
+<span id="cb61-18"><a href="#cb61-18" tabindex="-1"></a></span>
+<span id="cb61-19"><a href="#cb61-19" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="upload-a-file-2" class="section level2">
+<h2>Upload a file</h2>
+<p>The help page for fileInput (?fileInput) explains that once a file is
+loaded, then the value returned to the server is a data frame, and one
+of the columns is the path to the temporary file path where Shiny is
+holding the file.</p>
+<p>This path is used below in the <em>de_table_in</em> reactive
+expression to read in the dataframe.</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" tabindex="-1"></a>ui_upload <span class="ot">&lt;-</span> <span class="fu">page_fluid</span>(</span>
+<span id="cb62-2"><a href="#cb62-2" tabindex="-1"></a>  <span class="fu">fileInput</span>(<span class="st">&quot;de_file&quot;</span>, <span class="st">&quot;Upload a DE file&quot;</span>, <span class="at">accept =</span> <span class="fu">c</span>(<span class="st">&quot;.csv&quot;</span>, <span class="st">&quot;.tsv&quot;</span>, <span class="st">&quot;xlsx&quot;</span>, <span class="st">&quot;xls&quot;</span>)), </span>
+<span id="cb62-3"><a href="#cb62-3" tabindex="-1"></a>  <span class="fu">dataTableOutput</span>(<span class="at">outputId =</span> <span class="st">&quot;all_data&quot;</span>),</span>
+<span id="cb62-4"><a href="#cb62-4" tabindex="-1"></a>)</span>
+<span id="cb62-5"><a href="#cb62-5" tabindex="-1"></a></span>
+<span id="cb62-6"><a href="#cb62-6" tabindex="-1"></a>server_upload <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output){</span>
+<span id="cb62-7"><a href="#cb62-7" tabindex="-1"></a>  de_table_in <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb62-8"><a href="#cb62-8" tabindex="-1"></a>    rio<span class="sc">::</span><span class="fu">import</span>(input<span class="sc">$</span>de_file<span class="sc">$</span>datapath) <span class="sc">%&gt;%</span>  <span class="co">#&lt;&lt;</span></span>
+<span id="cb62-9"><a href="#cb62-9" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">negLog10_pval =</span> <span class="sc">-</span><span class="fu">log10</span>(pvalue))</span>
+<span id="cb62-10"><a href="#cb62-10" tabindex="-1"></a>  })</span>
+<span id="cb62-11"><a href="#cb62-11" tabindex="-1"></a>  </span>
+<span id="cb62-12"><a href="#cb62-12" tabindex="-1"></a>  output<span class="sc">$</span>all_data <span class="ot">=</span> <span class="fu">renderDataTable</span>({</span>
+<span id="cb62-13"><a href="#cb62-13" tabindex="-1"></a>    <span class="fu">datatable</span>(<span class="fu">de_table_in</span>(),</span>
+<span id="cb62-14"><a href="#cb62-14" tabindex="-1"></a>              <span class="at">filter =</span> <span class="st">&#39;top&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb62-15"><a href="#cb62-15" tabindex="-1"></a>      <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;baseMean&quot;</span>, <span class="st">&quot;log2FoldChange&quot;</span>, <span class="st">&quot;lfcSE&quot;</span>, <span class="st">&quot;stat&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb62-16"><a href="#cb62-16" tabindex="-1"></a>      <span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;pvalue&quot;</span>, <span class="st">&quot;padj&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb62-17"><a href="#cb62-17" tabindex="-1"></a>  })</span>
+<span id="cb62-18"><a href="#cb62-18" tabindex="-1"></a></span>
+<span id="cb62-19"><a href="#cb62-19" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="launch-app-1" class="section level2">
+<h2>Launch app</h2>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" tabindex="-1"></a><span class="fu">shinyApp</span>(<span class="at">ui =</span> ui_upload, <span class="at">server =</span> server_upload)</span></code></pre></div>
+<p><img role="img" src="imgs/upload_before_after.png" height="400" width="800"></p>
+</div>
+<div id="the-req-function" class="section level2">
+<h2>The req() function</h2>
+<p>In the previous UI, the user sees an error until a file is uploaded.
+This is because the file path is NULL and the <em>rio::import</em>
+function throws an error.</p>
+<p>Shiny has a handy function <em>req</em> that can be added to a
+reactive context and the reactive or output function won’t run if the
+value passed to <em>req</em> is NULL. We modify the reactive in the
+server function that reads in the table.</p>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" tabindex="-1"></a>server_uploadReq <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output){</span>
+<span id="cb64-2"><a href="#cb64-2" tabindex="-1"></a>  </span>
+<span id="cb64-3"><a href="#cb64-3" tabindex="-1"></a>  de_table_in <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb64-4"><a href="#cb64-4" tabindex="-1"></a>    <span class="fu">req</span>(input<span class="sc">$</span>de_file)  <span class="co">#&lt;&lt;</span></span>
+<span id="cb64-5"><a href="#cb64-5" tabindex="-1"></a>    rio<span class="sc">::</span><span class="fu">import</span>(input<span class="sc">$</span>de_file<span class="sc">$</span>datapath) <span class="sc">%&gt;%</span></span>
+<span id="cb64-6"><a href="#cb64-6" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">negLog10_pval =</span> <span class="sc">-</span><span class="fu">log10</span>(pvalue))</span>
+<span id="cb64-7"><a href="#cb64-7" tabindex="-1"></a>  })</span>
+<span id="cb64-8"><a href="#cb64-8" tabindex="-1"></a>  </span>
+<span id="cb64-9"><a href="#cb64-9" tabindex="-1"></a>  output<span class="sc">$</span>all_data <span class="ot">=</span> <span class="fu">renderDataTable</span>({</span>
+<span id="cb64-10"><a href="#cb64-10" tabindex="-1"></a>    <span class="fu">datatable</span>(<span class="fu">de_table_in</span>(),</span>
+<span id="cb64-11"><a href="#cb64-11" tabindex="-1"></a>              <span class="at">filter =</span> <span class="st">&#39;top&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb64-12"><a href="#cb64-12" tabindex="-1"></a>      <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;baseMean&quot;</span>, <span class="st">&quot;log2FoldChange&quot;</span>, <span class="st">&quot;lfcSE&quot;</span>, <span class="st">&quot;stat&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb64-13"><a href="#cb64-13" tabindex="-1"></a>      <span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;pvalue&quot;</span>, <span class="st">&quot;padj&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb64-14"><a href="#cb64-14" tabindex="-1"></a>  })</span>
+<span id="cb64-15"><a href="#cb64-15" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="the-req-function-1" class="section level2">
+<h2>The req() function</h2>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" tabindex="-1"></a><span class="fu">shinyApp</span>(<span class="at">ui =</span> ui_upload, <span class="at">server =</span> server_uploadReq)</span></code></pre></div>
+<p><img role="img" src="imgs/addReq.png" height="400" width="800"></p>
+</div>
+<div id="add-upload-to-main-app---ui" class="section level2">
+<h2>Add upload to main app - UI</h2>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" tabindex="-1"></a>ui_fileInput <span class="ot">&lt;-</span> <span class="fu">page_navbar</span>(</span>
+<span id="cb66-2"><a href="#cb66-2" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">&quot;RNAseq tools&quot;</span>,</span>
+<span id="cb66-3"><a href="#cb66-3" tabindex="-1"></a>  <span class="at">theme =</span> custom_theme,</span>
+<span id="cb66-4"><a href="#cb66-4" tabindex="-1"></a>  <span class="fu">nav_panel</span>(</span>
+<span id="cb66-5"><a href="#cb66-5" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;DE Analysis&quot;</span>,</span>
+<span id="cb66-6"><a href="#cb66-6" tabindex="-1"></a>    <span class="fu">layout_sidebar</span>(</span>
+<span id="cb66-7"><a href="#cb66-7" tabindex="-1"></a>      <span class="at">sidebar =</span> <span class="fu">sidebar</span>(</span>
+<span id="cb66-8"><a href="#cb66-8" tabindex="-1"></a>        <span class="at">width =</span> <span class="dv">300</span>,</span>
+<span id="cb66-9"><a href="#cb66-9" tabindex="-1"></a>        <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb66-10"><a href="#cb66-10" tabindex="-1"></a>        <span class="fu">fileInput</span>(<span class="st">&quot;de_file&quot;</span>, <span class="st">&quot;Upload a DE file&quot;</span>, <span class="at">accept =</span> <span class="fu">c</span>(<span class="st">&quot;.csv&quot;</span>, <span class="st">&quot;.tsv&quot;</span>, <span class="st">&quot;xlsx&quot;</span>, <span class="st">&quot;xls&quot;</span>)), </span>
+<span id="cb66-11"><a href="#cb66-11" tabindex="-1"></a>        <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb66-12"><a href="#cb66-12" tabindex="-1"></a>        <span class="fu">numericInput</span>(<span class="st">&quot;padj_filter&quot;</span>, <span class="at">label =</span> <span class="st">&quot;Cutoff for padj:&quot;</span>, <span class="at">value =</span> <span class="fl">0.05</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">1</span>, <span class="at">step =</span> <span class="fl">0.005</span>),</span>
+<span id="cb66-13"><a href="#cb66-13" tabindex="-1"></a>    </span>
+<span id="cb66-14"><a href="#cb66-14" tabindex="-1"></a>        <span class="fu">numericInput</span>(<span class="st">&quot;lfc_filter&quot;</span>, <span class="at">label =</span> <span class="st">&quot;Cutoff for log2 FC:&quot;</span>, <span class="at">value =</span> <span class="dv">1</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">step =</span> <span class="fl">0.1</span>),</span>
+<span id="cb66-15"><a href="#cb66-15" tabindex="-1"></a> </span>
+<span id="cb66-16"><a href="#cb66-16" tabindex="-1"></a>        <span class="fu">actionButton</span>(<span class="st">&quot;de_filter&quot;</span>, <span class="st">&quot;Apply filter&quot;</span>)</span>
+<span id="cb66-17"><a href="#cb66-17" tabindex="-1"></a>      ),</span>
+<span id="cb66-18"><a href="#cb66-18" tabindex="-1"></a>      </span>
+<span id="cb66-19"><a href="#cb66-19" tabindex="-1"></a>      <span class="fu">layout_columns</span>(</span>
+<span id="cb66-20"><a href="#cb66-20" tabindex="-1"></a>        <span class="fu">navset_card_tab</span>(</span>
+<span id="cb66-21"><a href="#cb66-21" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">&quot;DE result tables&quot;</span>,</span>
+<span id="cb66-22"><a href="#cb66-22" tabindex="-1"></a>          <span class="fu">nav_panel</span>(<span class="fu">card_header</span>(<span class="st">&quot;DEGs&quot;</span>), <span class="fu">dataTableOutput</span>(<span class="at">outputId =</span> <span class="st">&quot;de_data&quot;</span>)),</span>
+<span id="cb66-23"><a href="#cb66-23" tabindex="-1"></a>          <span class="fu">nav_panel</span>(<span class="fu">card_header</span>(<span class="st">&quot;All genes&quot;</span>), <span class="fu">dataTableOutput</span>(<span class="at">outputId =</span> <span class="st">&quot;all_data&quot;</span>))</span>
+<span id="cb66-24"><a href="#cb66-24" tabindex="-1"></a>        ),</span>
+<span id="cb66-25"><a href="#cb66-25" tabindex="-1"></a>        <span class="fu">card</span>(<span class="fu">card_header</span>(<span class="st">&quot;MA plot&quot;</span>),</span>
+<span id="cb66-26"><a href="#cb66-26" tabindex="-1"></a>             <span class="fu">plotOutput</span>(<span class="st">&quot;ma_plot&quot;</span>),</span>
+<span id="cb66-27"><a href="#cb66-27" tabindex="-1"></a>             <span class="fu">downloadButton</span>(<span class="st">&quot;download_ma_plot&quot;</span>, <span class="st">&quot;Download MA plot&quot;</span>, <span class="at">style =</span> <span class="st">&quot;width:40%;&quot;</span>)), </span>
+<span id="cb66-28"><a href="#cb66-28" tabindex="-1"></a>        <span class="fu">card</span>(<span class="fu">card_header</span>(<span class="st">&quot;Volcano plot&quot;</span>),</span>
+<span id="cb66-29"><a href="#cb66-29" tabindex="-1"></a>             <span class="fu">plotOutput</span>(<span class="st">&quot;volcano_plot&quot;</span>),</span>
+<span id="cb66-30"><a href="#cb66-30" tabindex="-1"></a>             <span class="fu">downloadButton</span>(<span class="st">&quot;download_volcano_plot&quot;</span>, <span class="st">&quot;Download volcano plot&quot;</span>, <span class="at">style =</span> <span class="st">&quot;width:40%;&quot;</span>)), </span>
+<span id="cb66-31"><a href="#cb66-31" tabindex="-1"></a>        <span class="at">col_widths =</span> <span class="fu">c</span>(<span class="dv">12</span>,<span class="dv">6</span>,<span class="dv">6</span>), <span class="at">row_heights =</span> <span class="fu">c</span>(<span class="st">&quot;750px&quot;</span>, <span class="st">&quot;500px&quot;</span>)</span>
+<span id="cb66-32"><a href="#cb66-32" tabindex="-1"></a>      )</span>
+<span id="cb66-33"><a href="#cb66-33" tabindex="-1"></a>    )</span>
+<span id="cb66-34"><a href="#cb66-34" tabindex="-1"></a>  ),</span>
+<span id="cb66-35"><a href="#cb66-35" tabindex="-1"></a>  <span class="fu">nav_panel</span>(</span>
+<span id="cb66-36"><a href="#cb66-36" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Next steps&quot;</span>,</span>
+<span id="cb66-37"><a href="#cb66-37" tabindex="-1"></a>    <span class="st">&quot;The next step in our analysis will be...&quot;</span></span>
+<span id="cb66-38"><a href="#cb66-38" tabindex="-1"></a>  ),</span>
+<span id="cb66-39"><a href="#cb66-39" tabindex="-1"></a>  <span class="fu">nav_spacer</span>(),</span>
+<span id="cb66-40"><a href="#cb66-40" tabindex="-1"></a>  <span class="fu">nav_menu</span>(</span>
+<span id="cb66-41"><a href="#cb66-41" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Links&quot;</span>,</span>
+<span id="cb66-42"><a href="#cb66-42" tabindex="-1"></a>    <span class="at">align =</span> <span class="st">&quot;right&quot;</span>,</span>
+<span id="cb66-43"><a href="#cb66-43" tabindex="-1"></a>    <span class="fu">nav_item</span>(</span>
+<span id="cb66-44"><a href="#cb66-44" tabindex="-1"></a>      tags<span class="sc">$</span><span class="fu">a</span>(</span>
+<span id="cb66-45"><a href="#cb66-45" tabindex="-1"></a>        shiny<span class="sc">::</span><span class="fu">icon</span>(<span class="st">&quot;chart-simple&quot;</span>), <span class="st">&quot;RU BRC - Learn more!&quot;</span>,</span>
+<span id="cb66-46"><a href="#cb66-46" tabindex="-1"></a>        <span class="at">href =</span> <span class="st">&quot;https://rockefelleruniversity.github.io/&quot;</span>,</span>
+<span id="cb66-47"><a href="#cb66-47" tabindex="-1"></a>        <span class="at">target =</span> <span class="st">&quot;_blank&quot;</span></span>
+<span id="cb66-48"><a href="#cb66-48" tabindex="-1"></a>      )</span>
+<span id="cb66-49"><a href="#cb66-49" tabindex="-1"></a>    )</span>
+<span id="cb66-50"><a href="#cb66-50" tabindex="-1"></a>  )</span>
+<span id="cb66-51"><a href="#cb66-51" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="add-upload-to-main-app---server" class="section level2">
+<h2>Add upload to main app - server</h2>
+<p>The filtered table reactive and plot reactives use this table to
+apply the filtering cut offs, so we change these reactives to use this
+table and add de_table_in() to <em>bindEvent</em> so that they are
+updated when a new dataset is uploaded.</p>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" tabindex="-1"></a><span class="co"># part of server function, not run in isolation...</span></span>
+<span id="cb67-2"><a href="#cb67-2" tabindex="-1"></a>filtered_de <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb67-3"><a href="#cb67-3" tabindex="-1"></a>    <span class="fu">de_table_in</span>() <span class="sc">%&gt;%</span> <span class="co">#&lt;&lt;</span></span>
+<span id="cb67-4"><a href="#cb67-4" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">filter</span>(padj <span class="sc">&lt;</span> input<span class="sc">$</span>padj_filter <span class="sc">&amp;</span> <span class="fu">abs</span>(log2FoldChange) <span class="sc">&gt;</span> input<span class="sc">$</span>lfc_filter)</span>
+<span id="cb67-5"><a href="#cb67-5" tabindex="-1"></a>  }) <span class="sc">%&gt;%</span></span>
+<span id="cb67-6"><a href="#cb67-6" tabindex="-1"></a>    <span class="fu">bindEvent</span>(input<span class="sc">$</span>de_filter, <span class="fu">de_table_in</span>(), <span class="at">ignoreNULL =</span> <span class="cn">FALSE</span>) <span class="co">#&lt;&lt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" tabindex="-1"></a><span class="co"># part of server function, not run in isolation...</span></span>
+<span id="cb68-2"><a href="#cb68-2" tabindex="-1"></a>ma_plot_reac <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb68-3"><a href="#cb68-3" tabindex="-1"></a>    <span class="fu">de_table_in</span>() <span class="sc">%&gt;%</span> <span class="co">#&lt;&lt;</span></span>
+<span id="cb68-4"><a href="#cb68-4" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(padj <span class="sc">&lt;</span> input<span class="sc">$</span>padj_filter <span class="sc">&amp;</span> <span class="fu">abs</span>(log2FoldChange) <span class="sc">&gt;</span> input<span class="sc">$</span>lfc_filter, <span class="st">&quot;DE&quot;</span>, <span class="st">&quot;Not_DE&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb68-5"><a href="#cb68-5" tabindex="-1"></a>      <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> baseMean, <span class="at">y =</span> log2FoldChange, <span class="at">color =</span> sig, <span class="at">label =</span> Symbol)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb68-6"><a href="#cb68-6" tabindex="-1"></a>      <span class="fu">scale_x_log10</span>() <span class="sc">+</span> <span class="fu">scale_color_manual</span>(<span class="at">name =</span> <span class="st">&quot;DE status&quot;</span>, <span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;red&quot;</span>, <span class="st">&quot;grey&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb68-7"><a href="#cb68-7" tabindex="-1"></a>      <span class="fu">xlab</span>(<span class="st">&quot;baseMean (log scale)&quot;</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">&quot;MA plot&quot;</span>)</span>
+<span id="cb68-8"><a href="#cb68-8" tabindex="-1"></a>  })  <span class="sc">%&gt;%</span></span>
+<span id="cb68-9"><a href="#cb68-9" tabindex="-1"></a>    <span class="fu">bindEvent</span>(input<span class="sc">$</span>de_filter, <span class="fu">de_table_in</span>(), <span class="at">ignoreNULL =</span> <span class="cn">FALSE</span>)  <span class="co">#&lt;&lt;</span></span></code></pre></div>
+</div>
+<div id="add-upload-to-main-app---server-1" class="section level2">
+<h2>Add upload to main app - server</h2>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" tabindex="-1"></a>server_fileInput <span class="ot">=</span> <span class="cf">function</span>(input, output) {</span>
+<span id="cb69-2"><a href="#cb69-2" tabindex="-1"></a></span>
+<span id="cb69-3"><a href="#cb69-3" tabindex="-1"></a>  <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb69-4"><a href="#cb69-4" tabindex="-1"></a>  de_table_in <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb69-5"><a href="#cb69-5" tabindex="-1"></a>    <span class="fu">req</span>(input<span class="sc">$</span>de_file)</span>
+<span id="cb69-6"><a href="#cb69-6" tabindex="-1"></a>    rio<span class="sc">::</span><span class="fu">import</span>(input<span class="sc">$</span>de_file<span class="sc">$</span>datapath) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">negLog10_pval =</span> <span class="sc">-</span><span class="fu">log10</span>(pvalue))</span>
+<span id="cb69-7"><a href="#cb69-7" tabindex="-1"></a>  })</span>
+<span id="cb69-8"><a href="#cb69-8" tabindex="-1"></a>  <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb69-9"><a href="#cb69-9" tabindex="-1"></a>  </span>
+<span id="cb69-10"><a href="#cb69-10" tabindex="-1"></a>  output<span class="sc">$</span>download_ma_plot <span class="ot">&lt;-</span> <span class="fu">downloadHandler</span>(</span>
+<span id="cb69-11"><a href="#cb69-11" tabindex="-1"></a>    <span class="at">filename =</span> <span class="cf">function</span>() {</span>
+<span id="cb69-12"><a href="#cb69-12" tabindex="-1"></a>      <span class="st">&quot;maplot.pdf&quot;</span></span>
+<span id="cb69-13"><a href="#cb69-13" tabindex="-1"></a>    },</span>
+<span id="cb69-14"><a href="#cb69-14" tabindex="-1"></a>    <span class="at">content =</span> <span class="cf">function</span>(file) {</span>
+<span id="cb69-15"><a href="#cb69-15" tabindex="-1"></a>      <span class="fu">ggsave</span>(<span class="at">filename =</span> file, <span class="at">plot =</span> <span class="fu">ma_plot_reac</span>())</span>
+<span id="cb69-16"><a href="#cb69-16" tabindex="-1"></a>    }</span>
+<span id="cb69-17"><a href="#cb69-17" tabindex="-1"></a>  )</span>
+<span id="cb69-18"><a href="#cb69-18" tabindex="-1"></a>  </span>
+<span id="cb69-19"><a href="#cb69-19" tabindex="-1"></a>  output<span class="sc">$</span>download_volcano_plot <span class="ot">&lt;-</span> <span class="fu">downloadHandler</span>(</span>
+<span id="cb69-20"><a href="#cb69-20" tabindex="-1"></a>    <span class="at">filename =</span> <span class="cf">function</span>() {</span>
+<span id="cb69-21"><a href="#cb69-21" tabindex="-1"></a>      <span class="st">&quot;volcanoplot.pdf&quot;</span></span>
+<span id="cb69-22"><a href="#cb69-22" tabindex="-1"></a>    },</span>
+<span id="cb69-23"><a href="#cb69-23" tabindex="-1"></a>    <span class="at">content =</span> <span class="cf">function</span>(file) {</span>
+<span id="cb69-24"><a href="#cb69-24" tabindex="-1"></a>      <span class="fu">ggsave</span>(<span class="at">filename =</span> file, <span class="at">plot =</span> <span class="fu">volcano_plot_reac</span>())</span>
+<span id="cb69-25"><a href="#cb69-25" tabindex="-1"></a>    }</span>
+<span id="cb69-26"><a href="#cb69-26" tabindex="-1"></a>  )</span>
+<span id="cb69-27"><a href="#cb69-27" tabindex="-1"></a>  </span>
+<span id="cb69-28"><a href="#cb69-28" tabindex="-1"></a>  output<span class="sc">$</span>all_data <span class="ot">=</span> <span class="fu">renderDataTable</span>({</span>
+<span id="cb69-29"><a href="#cb69-29" tabindex="-1"></a>    <span class="fu">datatable</span>(<span class="fu">de_table_in</span>(), <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb69-30"><a href="#cb69-30" tabindex="-1"></a>              <span class="at">filter =</span> <span class="st">&#39;top&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb69-31"><a href="#cb69-31" tabindex="-1"></a>      <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;baseMean&quot;</span>, <span class="st">&quot;log2FoldChange&quot;</span>, <span class="st">&quot;lfcSE&quot;</span>, <span class="st">&quot;stat&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb69-32"><a href="#cb69-32" tabindex="-1"></a>      <span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;pvalue&quot;</span>, <span class="st">&quot;padj&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb69-33"><a href="#cb69-33" tabindex="-1"></a>  })</span>
+<span id="cb69-34"><a href="#cb69-34" tabindex="-1"></a>  </span>
+<span id="cb69-35"><a href="#cb69-35" tabindex="-1"></a>  filtered_de <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb69-36"><a href="#cb69-36" tabindex="-1"></a>    <span class="fu">de_table_in</span>() <span class="sc">%&gt;%</span> <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb69-37"><a href="#cb69-37" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">filter</span>(padj <span class="sc">&lt;</span> input<span class="sc">$</span>padj_filter <span class="sc">&amp;</span> <span class="fu">abs</span>(log2FoldChange) <span class="sc">&gt;</span> input<span class="sc">$</span>lfc_filter)</span>
+<span id="cb69-38"><a href="#cb69-38" tabindex="-1"></a>  }) <span class="sc">%&gt;%</span></span>
+<span id="cb69-39"><a href="#cb69-39" tabindex="-1"></a>    <span class="fu">bindEvent</span>(input<span class="sc">$</span>de_filter, <span class="fu">de_table_in</span>(), <span class="at">ignoreNULL =</span> <span class="cn">FALSE</span>) <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb69-40"><a href="#cb69-40" tabindex="-1"></a></span>
+<span id="cb69-41"><a href="#cb69-41" tabindex="-1"></a>  output<span class="sc">$</span>de_data <span class="ot">=</span> <span class="fu">renderDataTable</span>({</span>
+<span id="cb69-42"><a href="#cb69-42" tabindex="-1"></a>    <span class="fu">datatable</span>(<span class="fu">filtered_de</span>(), </span>
+<span id="cb69-43"><a href="#cb69-43" tabindex="-1"></a>              <span class="at">filter =</span> <span class="st">&#39;top&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb69-44"><a href="#cb69-44" tabindex="-1"></a>      <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;baseMean&quot;</span>, <span class="st">&quot;log2FoldChange&quot;</span>, <span class="st">&quot;lfcSE&quot;</span>, <span class="st">&quot;stat&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb69-45"><a href="#cb69-45" tabindex="-1"></a>      <span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;pvalue&quot;</span>, <span class="st">&quot;padj&quot;</span>), <span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb69-46"><a href="#cb69-46" tabindex="-1"></a>  })</span>
+<span id="cb69-47"><a href="#cb69-47" tabindex="-1"></a>  </span>
+<span id="cb69-48"><a href="#cb69-48" tabindex="-1"></a>  ma_plot_reac <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb69-49"><a href="#cb69-49" tabindex="-1"></a>      <span class="fu">de_table_in</span>() <span class="sc">%&gt;%</span> <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb69-50"><a href="#cb69-50" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(padj <span class="sc">&lt;</span> input<span class="sc">$</span>padj_filter <span class="sc">&amp;</span> <span class="fu">abs</span>(log2FoldChange) <span class="sc">&gt;</span> input<span class="sc">$</span>lfc_filter, <span class="st">&quot;DE&quot;</span>, <span class="st">&quot;Not_DE&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb69-51"><a href="#cb69-51" tabindex="-1"></a>      <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> baseMean, <span class="at">y =</span> log2FoldChange, <span class="at">color =</span> sig, <span class="at">label =</span> Symbol)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb69-52"><a href="#cb69-52" tabindex="-1"></a>      <span class="fu">scale_x_log10</span>() <span class="sc">+</span> <span class="fu">scale_color_manual</span>(<span class="at">name =</span> <span class="st">&quot;DE status&quot;</span>, <span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;red&quot;</span>, <span class="st">&quot;grey&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb69-53"><a href="#cb69-53" tabindex="-1"></a>      <span class="fu">xlab</span>(<span class="st">&quot;baseMean (log scale)&quot;</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">&quot;MA plot&quot;</span>)</span>
+<span id="cb69-54"><a href="#cb69-54" tabindex="-1"></a>  })  <span class="sc">%&gt;%</span></span>
+<span id="cb69-55"><a href="#cb69-55" tabindex="-1"></a>    <span class="fu">bindEvent</span>(input<span class="sc">$</span>de_filter, <span class="fu">de_table_in</span>(), <span class="at">ignoreNULL =</span> <span class="cn">FALSE</span>) <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb69-56"><a href="#cb69-56" tabindex="-1"></a></span>
+<span id="cb69-57"><a href="#cb69-57" tabindex="-1"></a>    output<span class="sc">$</span>ma_plot <span class="ot">=</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb69-58"><a href="#cb69-58" tabindex="-1"></a>      <span class="fu">ma_plot_reac</span>()</span>
+<span id="cb69-59"><a href="#cb69-59" tabindex="-1"></a>    }) </span>
+<span id="cb69-60"><a href="#cb69-60" tabindex="-1"></a>  </span>
+<span id="cb69-61"><a href="#cb69-61" tabindex="-1"></a>    volcano_plot_reac <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb69-62"><a href="#cb69-62" tabindex="-1"></a>        <span class="fu">de_table_in</span>() <span class="sc">%&gt;%</span> <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb69-63"><a href="#cb69-63" tabindex="-1"></a>          dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">sig =</span> <span class="fu">ifelse</span>(padj <span class="sc">&lt;</span> input<span class="sc">$</span>padj_filter <span class="sc">&amp;</span> <span class="fu">abs</span>(log2FoldChange) <span class="sc">&gt;</span> input<span class="sc">$</span>lfc_filter, <span class="st">&quot;DE&quot;</span>, <span class="st">&quot;Not_DE&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb69-64"><a href="#cb69-64" tabindex="-1"></a>          <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> log2FoldChange, <span class="at">y =</span> negLog10_pval, <span class="at">color =</span> sig)) <span class="sc">+</span></span>
+<span id="cb69-65"><a href="#cb69-65" tabindex="-1"></a>          <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb69-66"><a href="#cb69-66" tabindex="-1"></a>          <span class="fu">scale_color_manual</span>(<span class="at">name =</span> <span class="st">&quot;DE status&quot;</span>, <span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;red&quot;</span>,<span class="st">&quot;grey&quot;</span>),) <span class="sc">+</span></span>
+<span id="cb69-67"><a href="#cb69-67" tabindex="-1"></a>          <span class="fu">ggtitle</span>(<span class="st">&quot;Volcano plot&quot;</span>)</span>
+<span id="cb69-68"><a href="#cb69-68" tabindex="-1"></a>      </span>
+<span id="cb69-69"><a href="#cb69-69" tabindex="-1"></a>    }) <span class="sc">%&gt;%</span></span>
+<span id="cb69-70"><a href="#cb69-70" tabindex="-1"></a>      <span class="fu">bindEvent</span>(input<span class="sc">$</span>de_filter, <span class="fu">de_table_in</span>(), <span class="at">ignoreNULL =</span> <span class="cn">FALSE</span>) <span class="co"># &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span></span>
+<span id="cb69-71"><a href="#cb69-71" tabindex="-1"></a>  </span>
+<span id="cb69-72"><a href="#cb69-72" tabindex="-1"></a>    output<span class="sc">$</span>volcano_plot <span class="ot">=</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb69-73"><a href="#cb69-73" tabindex="-1"></a>      <span class="fu">volcano_plot_reac</span>()</span>
+<span id="cb69-74"><a href="#cb69-74" tabindex="-1"></a>    }) </span>
+<span id="cb69-75"><a href="#cb69-75" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="starting-with-an-uploaded-file" class="section level2">
+<h2>Starting with an uploaded file</h2>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" tabindex="-1"></a><span class="fu">shinyApp</span>(<span class="at">ui =</span> ui_fileInput, <span class="at">server =</span> server_fileInput)</span></code></pre></div>
+<p><img role="img" src="imgs/mainApp_beforeUI.png" height="450" width="900"></p>
 </div>
 <div id="time-for-an-exercise" class="section level2">
 <h2>Time for an exercise!</h2>
-<p>Exercise on functions can be found <a href="../..//exercises/exercises/MyExercise3_exercise.html">here</a></p>
+<p>Exercise on functions can be found <a href="../..//exercises/exercises/shiny_exercise2_exercises.html">here</a></p>
 </div>
 <div id="answers-to-exercise." class="section level2">
 <h2>Answers to exercise.</h2>
-<p>Answers can be found here <a href="../..//exercises/answers/MyExercise3_answers.html">here</a></p>
-<p>Rcode for answers can be found here <a href="../..//exercises/answers//answers/MyExercise3_Answers.R">here</a></p>
+<p>Answers can be found here <a href="../..//exercises/answers/shiny_exercise2_answers.html">here</a></p>
+<p>Rcode for answers can be found here <a href="../..//exercises/answers//answers/shiny_exercise2_Answers.R">here</a></p>
 </div>
 </div>
 
