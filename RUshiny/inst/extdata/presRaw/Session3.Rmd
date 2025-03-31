@@ -365,6 +365,32 @@ Recap of changes:
 ---
 ## Update main app - UI
 
+```{r, echo=F, eval=T, out.width="75%"}
+# grab the custom theme from the previous session
+custom_css <- "
+  .card-header {
+    background-color: #d3dff1;
+    border-bottom: 2px solid #273449;
+  }
+"
+
+# Create theme with custom CSS
+custom_theme <- bs_theme(
+  version = 5,
+  bg = "white",
+  fg = "#273449",
+  primary = "#5886b2",
+  secondary = "#95a5a6",
+  success = "#18bc9c",
+  info = "#3498db",
+  warning = "#f39c12",
+  danger = "#e74c3c",
+  preset = "bootstrap",
+  "navbar-bg" = "#5886b2"
+) |> bs_add_rules(custom_css)
+
+```
+
 ```{r, echo=T, eval=T}
 ui_renderUIall <- page_navbar(
   title = "RNAseq tools",
