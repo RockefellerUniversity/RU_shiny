@@ -96,6 +96,14 @@ shinyApp(ui = ui_textInputs, server = function(input, output){})
 
 ## Inputs - dropdowns
 
+```{r, echo=F, eval=T, message = F}
+library(shiny)
+library(bslib)
+library(ggplot2)
+library(DT)
+library(rio)
+```
+
 
 ```{r dropdowns, echo=T, eval=T}
 ui_selInputs <- page_fluid(

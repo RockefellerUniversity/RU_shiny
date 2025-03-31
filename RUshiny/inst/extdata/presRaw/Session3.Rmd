@@ -128,6 +128,13 @@ setwd("/PathToMyDownload/RU_Course_template/r_course")
 
 
 ---
+```{r, echo=F, eval=T, message = F}
+library(shiny)
+library(bslib)
+library(ggplot2)
+library(DT)
+library(rio)
+```
 
 
 ```{r, results='asis',include=TRUE,echo=FALSE}
@@ -213,6 +220,8 @@ server_renderUI <- function(input, output){
 These inputs are moved to the server within an output object paired with *renderUI* and are conditional on *de_table_in()* being a dataframe.
 
 ```{r, echo=T, eval=T}
+library(rio)
+
 ui_renderUI <- page_fluid(
   fileInput("de_file", "Upload a DE file", accept = c(".csv", ".tsv", "xlsx", "xls")), 
    uiOutput("sidebar_filters_UI"), 

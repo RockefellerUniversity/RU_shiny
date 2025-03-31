@@ -8,7 +8,7 @@ Description: This package contains training materials for a Shiny course
 License: What license is it under?
 LazyData: TRUE
 biocViews: Training
-Depends: shiny, ggplot2, bslib, ggplot2, DT, plotly
+Depends: shiny, ggplot2, bslib, ggplot2, DT, plotly, rio
 Suggests: knitr,
     rmarkdown,
     testthat,
