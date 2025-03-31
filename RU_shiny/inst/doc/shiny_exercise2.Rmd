@@ -1,0 +1,369 @@
+---
+title: "My Exercise 1"
+author: "Rockefeller University, Bioinformatics Resource Centre"
+date: "https://rockefelleruniversity.github.io/RU_course_template/"
+output: 
+  html_document:
+    number_sections: false  ## if you want number sections at each table header
+    theme: united  # many options for theme, this one is my favorite.
+    highlight: tango  # specifies the syntax highlighting style
+params:
+  toMessage: false    
+---
+
+```{r, setup,include=FALSE}
+toMessage <- ifelse(!is.null(params$toMessage),params$toMessage,FALSE)
+message(toMessage)
+```
+
+
+<p>&nbsp;</p>
+These exercises are about [using reactivity in our apps](https://rockefelleruniversity.github.io/RU_shiny/). 
+
+**Exercises for Shiny session 2**
+
+
+4) Startign from the app made in quations #3 of the exercises from Session 1, add a sidebar so that it is present on all pages of the app and add the following inputs:
+
+* a slider input to control the number of bins in the histogram
+* a dropdown that allows the user to choose which column to use for the Kaplan Meier survival curve, allowing them to see the difference in survival between the levels of that particular column. 
+  + use the four columns used for the pie charts, and feel free to try any more columns that might be of interest or have an impact of patient survival.
+  + HINT: for the 'survfit' function with fitting the survival curve, to use a variable in the formula, use the 'as.formula' function and 'paste' to make the formula, like this: fit <- survfit(as.formula(paste0("surv_obj ~ ", input$survival_column)), data = data_in)
+
+```{r,echo=toMessage}
+library(ggplot2)
+library(dplyr)
+library(shiny)
+library(bslib)
+library(DT)
+library(survival)
+
+
+data_in <- rio::import("data/msk_2024_clinical_Pancreatic_rev.csv")
+
+
+ui_ex4 <- page_navbar(
+  title = "Cancer data",
+  theme = bs_theme(version = 5, bootswatch = "pulse"),
+  sidebar = sidebar(
+    sliderInput("number_of_bins", "Number of bins for histogram of age:",
+                min = 2, max = 50, value = 10, step = 1),
+    selectInput("survival_column", "Choose a column for the survivial plot:",
+                choices = c("Smoking_History_NLP", "Sex", "Sample_Type", "Cancer_Type_Detailed"),
+                selected = "Smoking_History_NLP"),
+    width = 300),
+  nav_panel(
+    title = "Data visualization",
+    
+    layout_columns(
+      layout_columns(
+        value_box("Number of patients", 
+                  value = nrow(data_in),
+                  theme = "text-purple"),
+        card(card_header("Age distribution"),
+             plotOutput("age_histogram")),
+        col_widths = c(3,9), 
+        row_heights = list("300px")
+      ),
+      layout_columns(
+        card(card_header("Sex"),
+             plotOutput("sex_pie_chart")),
+        card(card_header("Smoking status"),
+             plotOutput("smokes_pie_chart")),
+        card(card_header("Sample Type"),
+             plotOutput("sampleType_pie_chart")),
+        card(card_header("Cancer Type"),
+             plotOutput("cancerType_pie_chart")),
+        col_widths = c(6, 6, 6, 6),
+        row_heights = c("400px", "400px")
+      ),
+      layout_columns(
+        card(card_header("Survival by group"),
+             plotOutput("survival_kaplan")),
+        col_widths = c(12), 
+        row_heights = list("500px")
+      ),
+      col_widths = c(12,12, 12), fill=F
+    )
+    
+  ),
+  nav_panel(
+    title = "Clinical data table",
+    card(
+      card_header("Clinical Data"),
+      DT::dataTableOutput("data_in")
+    )
+  ),
+  nav_spacer(),
+  nav_menu(
+    title = "Links",
+    align = "right",
+    nav_item(
+      tags$a(
+        shiny::icon("chart-simple"), "RU BRC - Learn more!",
+        href = "https://www.cbioportal.org/",
+        target = "_blank"
+      )
+    )
+  )
+)
+
+server_ex4 <- function(input, output){
+  
+  output$data_in <- renderDataTable({
+    datatable(data_in)
+  })
+  
+  output$age_histogram <- renderPlot({
+    ggplot(data_in, aes(x = Current_Age)) +
+      geom_histogram(bins=input$number_of_bins) + 
+      theme_bw()
+  })
+  
+  
+  output$sex_pie_chart <- renderPlot({
+    data_in %>%
+      group_by(Sex) %>%
+      summarize(Num = n()) %>%
+      ggplot(aes(x = 1, y = Num, fill = Sex)) +
+      geom_bar(stat="identity", color="white") +
+      coord_polar("y") +
+      theme_void() +  
+      theme(legend.text=element_text(size=12)) 
+  })
+  
+  output$sampleType_pie_chart <- renderPlot({
+    data_in %>%
+      group_by(Sample_Type) %>%
+      summarize(Num = n()) %>%
+      ggplot(aes(x = 1, y = Num, fill = Sample_Type)) +
+      geom_bar(stat="identity", color="white") +
+      coord_polar("y") +
+      theme_void() +  
+      theme(legend.text=element_text(size=12)) 
+  })
+  
+  output$smokes_pie_chart <- renderPlot({
+    data_in %>%
+      group_by(Smoking_History_NLP) %>%
+      summarize(Num = n()) %>%
+      ggplot(aes(x = 1, y = Num, fill = Smoking_History_NLP)) +
+      geom_bar(stat="identity", color="white") +
+      coord_polar("y") + 
+      theme_void() + 
+      theme(legend.text=element_text(size=12)) 
+  })
+  
+  output$cancerType_pie_chart <- renderPlot({
+    data_in %>%
+      group_by(Cancer_Type_Detailed) %>%
+      summarize(Num = n()) %>%
+      ggplot(aes(x = 1, y = Num, fill = Cancer_Type_Detailed)) +
+      geom_bar(stat="identity", color="white") +
+      coord_polar("y") +
+      theme_void() + 
+      theme(legend.text=element_text(size=12)) 
+  })
+  
+  
+  survival_plot <- reactive({
+    surv_obj <- Surv(time = data_in$Overall_Survival_Months, event = data_in$Survival_code)
+    fit <- survfit(as.formula(paste0("surv_obj ~ ", input$survival_column)), data = data_in)
+    surv_df <- data.frame(
+      time = fit$time,
+      surv = fit$surv,
+      group = rep(names(fit$strata), fit$strata)
+    )
+    
+    ggplot(surv_df, aes(x = time, y = surv, color = group)) +
+      geom_step(linewidth = 1) +
+      labs(x = "Time (months)", y = "Survival Probability", color = "Group") +
+      theme_minimal() +
+      theme(legend.text=element_text(size=12)) +
+      ggtitle(paste0("Kaplan Meier - ", input$survival_column))
+  })
+  
+  output$survival_kaplan <- renderPlot({
+    survival_plot()
+  }) 
+  
+}
+
+```
+
+```{r,echo=toMessage, eval=F}
+shiny::shinyApp(ui_ex4, server_ex4)
+```
+
+5) Add a button to the sidebar and make it so the histogram and survival curve don't update with the new input values until the button is pressed.
+
+```{r,echo=toMessage}
+library(ggplot2)
+library(dplyr)
+library(shiny)
+library(bslib)
+library(DT)
+library(survival)
+
+
+data_in <- rio::import("data/msk_2024_clinical_Pancreatic_rev.csv")
+
+# add button to UI
+ui_ex5 <- page_navbar(
+  title = "Cancer data",
+  theme = bs_theme(version = 5, bootswatch = "pulse"),
+  sidebar = sidebar(
+    sliderInput("number_of_bins", "Number of bins for histogram of age:",
+                min = 2, max = 50, value = 10, step = 1),
+    selectInput("survival_column", "Choose a column for the survivial plot:",
+                choices = c("Smoking_History_NLP", "Sex", "Sample_Type", "Cancer_Type_Detailed"),
+                selected = "Smoking_History_NLP"),
+    actionButton("update_plots", "Update plots"), # add button to UI here!
+    width = 300),
+  nav_panel(
+    title = "Data visualization",
+    
+    layout_columns(
+      layout_columns(
+        value_box("Number of patients", 
+                  value = nrow(data_in),
+                  theme = "text-purple"),
+        card(card_header("Age distribution"),
+             plotOutput("age_histogram")),
+        col_widths = c(3,9), 
+        row_heights = list("300px")
+      ),
+      layout_columns(
+        card(card_header("Sex"),
+             plotOutput("sex_pie_chart")),
+        card(card_header("Smoking status"),
+             plotOutput("smokes_pie_chart")),
+        card(card_header("Sample Type"),
+             plotOutput("sampleType_pie_chart")),
+        card(card_header("Cancer Type"),
+             plotOutput("cancerType_pie_chart")),
+        col_widths = c(6, 6, 6, 6),
+        row_heights = c("400px", "400px")
+      ),
+      layout_columns(
+        card(card_header("Survival by group"),
+             plotOutput("survival_kaplan")),
+        col_widths = c(12), 
+        row_heights = list("500px")
+      ),
+      col_widths = c(12,12, 12), fill=F
+    )
+    
+  ),
+  nav_panel(
+    title = "Clinical data table",
+    card(
+      card_header("Clinical Data"),
+      DT::dataTableOutput("data_in")
+    )
+  ),
+  nav_spacer(),
+  nav_menu(
+    title = "Links",
+    align = "right",
+    nav_item(
+      tags$a(
+        shiny::icon("chart-simple"), "RU BRC - Learn more!",
+        href = "https://www.cbioportal.org/",
+        target = "_blank"
+      )
+    )
+  )
+)
+
+server_ex5 <- function(input, output){
+  
+  output$data_in <- renderDataTable({
+    datatable(data_in)
+  })
+  
+  output$age_histogram <- renderPlot({
+    ggplot(data_in, aes(x = Current_Age)) +
+      geom_histogram(bins=input$number_of_bins) + 
+      theme_bw()
+  }) %>%
+    bindEvent(input$update_plots, ignoreNULL = FALSE) # make it so the plot is only re-rendered when the button is pressed. We don't want to ignore when button has not been clicked, so we add- ignoreNULL=F
+  
+  
+  output$sex_pie_chart <- renderPlot({
+    data_in %>%
+      group_by(Sex) %>%
+      summarize(Num = n()) %>%
+      ggplot(aes(x = 1, y = Num, fill = Sex)) +
+      geom_bar(stat="identity", color="white") +
+      coord_polar("y") +
+      theme_void() +  
+      theme(legend.text=element_text(size=12)) 
+  })
+  
+  output$sampleType_pie_chart <- renderPlot({
+    data_in %>%
+      group_by(Sample_Type) %>%
+      summarize(Num = n()) %>%
+      ggplot(aes(x = 1, y = Num, fill = Sample_Type)) +
+      geom_bar(stat="identity", color="white") +
+      coord_polar("y") +
+      theme_void() +  
+      theme(legend.text=element_text(size=12)) 
+  })
+  
+  output$smokes_pie_chart <- renderPlot({
+    data_in %>%
+      group_by(Smoking_History_NLP) %>%
+      summarize(Num = n()) %>%
+      ggplot(aes(x = 1, y = Num, fill = Smoking_History_NLP)) +
+      geom_bar(stat="identity", color="white") +
+      coord_polar("y") + 
+      theme_void() + 
+      theme(legend.text=element_text(size=12)) 
+  })
+  
+  output$cancerType_pie_chart <- renderPlot({
+    data_in %>%
+      group_by(Cancer_Type_Detailed) %>%
+      summarize(Num = n()) %>%
+      ggplot(aes(x = 1, y = Num, fill = Cancer_Type_Detailed)) +
+      geom_bar(stat="identity", color="white") +
+      coord_polar("y") +
+      theme_void() + 
+      theme(legend.text=element_text(size=12)) 
+  })
+  
+  
+  survival_plot <- reactive({
+    surv_obj <- Surv(time = data_in$Overall_Survival_Months, event = data_in$Survival_code)
+    fit <- survfit(as.formula(paste0("surv_obj ~ ", input$survival_column)), data = data_in)
+    surv_df <- data.frame(
+      time = fit$time,
+      surv = fit$surv,
+      group = rep(names(fit$strata), fit$strata)
+    )
+    
+    ggplot(surv_df, aes(x = time, y = surv, color = group)) +
+      geom_step(linewidth = 1) +
+      labs(x = "Time (months)", y = "Survival Probability", color = "Group") +
+      theme_minimal() +
+      theme(legend.text=element_text(size=12)) +
+      ggtitle(paste0("Kaplan Meier - ", input$survival_column))
+  }) %>%
+    bindEvent(input$update_plots, ignoreNULL = FALSE) # make it so the reactive is only invalidated when the button is pressed. We don't want to ignore when button has not been clicked, so we add ignoreNULL=F
+  
+  output$survival_kaplan <- renderPlot({
+    survival_plot()
+  }) 
+  
+}
+
+```
+
+```{r,echo=toMessage, eval=F}
+shiny::shinyApp(ui_ex5, server_ex5)
+```
+
+
+
