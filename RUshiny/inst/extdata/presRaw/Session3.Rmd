@@ -29,113 +29,15 @@ suppressPackageStartupMessages(require(knitr))
 knitr::opts_chunk$set(echo = TRUE, tidy = T)
 ```
 
-```{r, results='asis',include=TRUE,echo=FALSE}
-if(params$isSlides != "yes"){
-  cat("# Intro to Shiny
 
 ---
-"    
-  )
-  
-}
-
-```
-
-## Overview
-
-??We often put an overview slide that links to the various parts of the course content to make it easy to navigate i.e. this one for intro to r??
-
-- [Set up](https://rockefelleruniversity.github.io/Intro_To_R_1Day/r_course/presentations/singlepage/introToR_Session1.html#set-up)
-- [Background to R](https://rockefelleruniversity.github.io/Intro_To_R_1Day/r_course/presentations/singlepage/introToR_Session1.html#background-to-r)
-- [Data types in R](https://rockefelleruniversity.github.io/Intro_To_R_1Day/r_course/presentations/singlepage/introToR_Session1.html#data_types_in_r)
-- [Reading and writing in R](https://rockefelleruniversity.github.io/Intro_To_R_1Day/r_course/presentations/singlepage/introToR_Session1.html#reading-and-writing-data-in-r)
-
----
-```{r, results='asis',include=TRUE,echo=FALSE}
-if(params$isSlides == "yes"){
-  cat("class: inverse, center, middle
-
-# Set Up
-
-<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
-
----
-"    
-  )
-}else{
-  cat("# Set Up
-
----
-"    
-  )
-  
-}
-
-```
-
-## Materials
-
-??We try to denote each major section of content with these title slides (see above for set up). The hierarchy will help with the different versions of the teaching content i.e. slides and single page.??
-
-?? Materials just gives the links to download the package Just ensure links are up to date??
-
-All prerequisites, links to material and slides for this course can be found on github.
-
-* [Intro_To_R_1](https://rockefelleruniversity.github.io/Intro_To_R_1Day/)
-
-Or can be downloaded as a zip archive from here.
-
-* [Download zip](https://github.com/rockefelleruniversity/Intro_To_R_1Day/zipball/master)
-
-
-
----
-## Course materials
-
-?? this slide just shows where thye can get the course content from the download. You do not need to populate these directories. It will be made during compilation??
-
-Once the zip file in unarchived. All presentations as HTML slides and pages, their R code and HTML practical sheets will be available in the directories underneath.
-
-* **r_course/presentations/slides/**
-Presentations as an HTML slide show.
-* **r_course/presentations/singlepage/** 
-Presentations as an HTML single page.
-* **r_course/presentations/r_code/**
-R code in presentations.
-* **r_course/exercises/**
-Practicals as HTML pages. 
-* **r_course/answers/**
-Practicals with answers as HTML pages and R code solutions. 
-
-
-
----
-## Set the Working directory
-
-
-Before running any of the code in the practicals or slides we need to set the working directory to the folder we unarchived. 
-
-You may navigate to the unarchived RU_Course_help folder in the Rstudio menu.
-
-**Session -> Set Working Directory -> Choose Directory**
-
-or in the console.
-
-```{r setwd_introtoR,eval=F} 
-setwd("/PathToMyDownload/RU_Course_template/r_course")
-# e.g. setwd("~/Downloads/Intro_To_R_1Day/r_course")
-```
-
-
----
-```{r, echo=F, eval=T, message = F}
+```{r, echo=F, eval=T, message = F, warning=F}
 library(shiny)
 library(bslib)
 library(ggplot2)
 library(DT)
 library(rio)
 ```
-
 
 ```{r, results='asis',include=TRUE,echo=FALSE}
 if(params$isSlides == "yes"){
@@ -159,6 +61,322 @@ if(params$isSlides == "yes"){
 
 ```
 
+## Recap
+
+---
+
+## Upload a file
+
+We will pick up wih the app we built in Sessions 1 and 2 (below).  
+
+The app contains some nice reactive elements, but this app would be more useful if you could use any file on your computer with differential expression results as opposed to having to change the path in our app to look at a different set of results. 
+
+We will modify our app to upload a file.
+
+<img src="imgs/add_interactivity.png"height="350" width="500">
+  
+---
+## Upload a file 
+
+We can use the *fileInput* function in the UI to allow the user to input a file. The 'accept' argument to limit the type of file the user can try to upload.
+
+```{r, echo=T, eval=T}
+
+ui_upload <- page_fluid(
+  fileInput("de_file", "Upload a DE file", accept = c(".csv", ".tsv", "xlsx", "xls")), #<<
+  
+  dataTableOutput(outputId = "all_data"),
+)
+
+server_upload <- function(input, output){
+  de_table_in <- reactive({
+    rio::import(input$de_file$datapath) %>% dplyr::mutate(negLog10_pval = -log10(pvalue))
+  })
+  
+  output$all_data = renderDataTable({
+    datatable(de_table_in(),
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+
+}
+
+```
+
+---
+## Upload a file 
+
+The help page for fileInput (?fileInput) explains that once a file is loaded, then the value returned to the server is a data frame, and one of the columns is the path to the temporary file path where Shiny is holding the file.
+
+This path is used below in the *de_table_in* reactive expression to read in the dataframe.  
+
+```{r, echo=T, eval=T}
+ui_upload <- page_fluid(
+  fileInput("de_file", "Upload a DE file", accept = c(".csv", ".tsv", "xlsx", "xls")), 
+  dataTableOutput(outputId = "all_data"),
+)
+
+server_upload <- function(input, output){
+  de_table_in <- reactive({
+    rio::import(input$de_file$datapath) %>%  #<<
+      dplyr::mutate(negLog10_pval = -log10(pvalue))
+  })
+  
+  output$all_data = renderDataTable({
+    datatable(de_table_in(),
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+
+}
+
+```
+
+---
+## Launch app
+
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_upload, server = server_upload)
+```
+
+<img src="imgs/upload_before_after.png"height="400" width="800">
+
+---
+
+## The req() function
+
+In the previous UI, the user sees an error until a file is uploaded. This is because the file path is NULL and the *rio::import* function throws an error.
+
+Shiny has a handy function *req* that can be added to a reactive context and the reactive or output function won't run if the value passed to *req* is NULL. We modify the reactive in the server function that reads in the table. 
+
+```{r, echo=T, eval=T}
+
+server_uploadReq <- function(input, output){
+  
+  de_table_in <- reactive({
+    req(input$de_file)  #<<
+    rio::import(input$de_file$datapath) %>%
+      dplyr::mutate(negLog10_pval = -log10(pvalue))
+  })
+  
+  output$all_data = renderDataTable({
+    datatable(de_table_in(),
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+}
+
+```
+
+---
+
+## The req() function
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_upload, server = server_uploadReq)
+```
+<img src="imgs/addReq.png"height="400" width="800">
+
+---
+
+## Add upload to main app - UI
+
+```{r, echo=F, eval=T, out.width="75%"}
+# grab the custom theme from the previous session
+custom_css <- "
+  .card-header {
+    background-color: #d3dff1;
+    border-bottom: 2px solid #273449;
+  }
+"
+
+# Create theme with custom CSS
+custom_theme <- bs_theme(
+  version = 5,
+  bg = "white",
+  fg = "#273449",
+  primary = "#5886b2",
+  secondary = "#95a5a6",
+  success = "#18bc9c",
+  info = "#3498db",
+  warning = "#f39c12",
+  danger = "#e74c3c",
+  preset = "bootstrap",
+  "navbar-bg" = "#5886b2"
+) |> bs_add_rules(custom_css)
+
+```
+
+```{r, echo=T, eval=T, tidy=FALSE}
+
+ui_fileInput <- page_navbar(
+  title = "RNAseq tools",
+  theme = custom_theme,
+  nav_panel(
+    title = "DE Analysis",
+    layout_sidebar(
+      sidebar = sidebar(
+        width = 300,
+        # >>>>>>>>>
+        fileInput("de_file", "Upload a DE file", accept = c(".csv", ".tsv", "xlsx", "xls")), 
+        # >>>>>>>>>
+        numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005),
+        
+        numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 1, min = 0, step = 0.1),
+        
+        actionButton("de_filter", "Apply filter")
+      ),
+      
+      layout_columns(
+        navset_card_tab(
+          title = "DE result tables",
+          nav_panel(card_header("DEGs"), dataTableOutput(outputId = "de_data")),
+          nav_panel(card_header("All genes"), dataTableOutput(outputId = "all_data"))
+        ),
+        card(card_header("MA plot"),
+             plotOutput("ma_plot"),
+             downloadButton("download_ma_plot", "Download MA plot", style = "width:40%;")), 
+        card(card_header("Volcano plot"),
+             plotOutput("volcano_plot"),
+             downloadButton("download_volcano_plot", "Download volcano plot", style = "width:40%;")), 
+        col_widths = c(12,6,6), row_heights = c("750px", "500px")
+      )
+    )
+  ),
+  nav_panel(title = "Next steps","The next step in our analysis will be..."),
+  nav_spacer(),
+  nav_menu(title = "Links",
+           align = "right",
+           nav_item(tags$a(shiny::icon("chart-simple"), "RU BRC - Learn more!", href = "https://rockefelleruniversity.github.io/",target = "_blank"))
+  )
+)
+```
+
+---
+
+## Add upload to main app - server
+
+The filtered table reactive and plot reactives use this table to apply the filtering cut offs, so we change these reactives to use this table and add de_table_in() to *bindEvent* so that they are updated when a new dataset is uploaded.
+  
+```{r, echo=T, eval=F}
+# part of server function, not run in isolation...
+filtered_de <- reactive({
+  req(input$de_file)
+    de_table_in() %>% #<<
+      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
+  }) %>%
+    bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE) #<<
+
+```
+
+```{r, echo=T, eval=F}
+# part of server function, not run in isolation...
+ma_plot_reac <- reactive({
+    de_table_in() %>% #
+      dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%
+      ggplot(aes(x = baseMean, y = log2FoldChange, color = sig, label = Symbol)) + geom_point() +
+      scale_x_log10() + scale_color_manual(name = "DE status", values = c("red", "grey")) +
+      xlab("baseMean (log scale)") + theme_bw() 
+  })  %>%
+    bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE)  #<<
+
+```
+
+---
+
+## Add upload to main app - server
+
+```{r, echo=T, eval=T, out.width="75%"}
+
+server_fileInput = function(input, output) {
+
+  # >>>>>>>>>>>>>>>>>>>>>>>>
+  de_table_in <- reactive({
+    req(input$de_file)
+    rio::import(input$de_file$datapath) %>% dplyr::mutate(negLog10_pval = -log10(pvalue))
+  })
+  # >>>>>>>>>>>>>>>>>>>>>>>>
+  
+  output$download_ma_plot <- downloadHandler(
+    filename = function() {
+      "maplot.pdf"
+    },
+    content = function(file) {
+      ggsave(filename = file, plot = ma_plot_reac())
+    }
+  )
+  
+  output$download_volcano_plot <- downloadHandler(
+    filename = function() {
+      "volcanoplot.pdf"
+    },
+    content = function(file) {
+      ggsave(filename = file, plot = volcano_plot_reac())
+    }
+  )
+  
+  output$all_data = renderDataTable({
+    datatable(de_table_in(), # >>>>>>>>>>>>>>>>>>>>>>>>
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+  filtered_de <- reactive({
+    de_table_in() %>% # >>>>>>>>>>>>>>>>>>>>>>>>
+      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
+  }) %>%
+    bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE) # >>>>>>>>>>>>>>>>>>>>>>>>
+
+  output$de_data = renderDataTable({
+    datatable(filtered_de(), 
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+  ma_plot_reac <- reactive({
+      de_table_in() %>% # >>>>>>>>>>>>>>>>>>>>>>>>
+      dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%
+      ggplot(aes(x = baseMean, y = log2FoldChange, color = sig, label = Symbol)) + geom_point() +
+      scale_x_log10() + scale_color_manual(name = "DE status", values = c("red", "grey")) +
+      xlab("baseMean (log scale)") + theme_bw() 
+  })  %>%
+    bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE) # >>>>>>>>>>>>>>>>>>>>>>>>
+
+    output$ma_plot = renderPlot({
+      ma_plot_reac()
+    }) 
+  
+    volcano_plot_reac <- reactive({
+        de_table_in() %>% # >>>>>>>>>>>>>>>>>>>>>>>>
+          dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%
+          ggplot(aes(x = log2FoldChange, y = negLog10_pval, color = sig)) +
+          geom_point() +
+          scale_color_manual(name = "DE status", values = c("red","grey")) + theme_bw()  
+      
+    }) %>%
+      bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE) # >>>>>>>>>>>>>>>>>>>>>>>>
+  
+    output$volcano_plot = renderPlot({
+      volcano_plot_reac()
+    }) 
+}
+
+```
+
+---
+## Starting with an uploaded file
+
+```{r, echo=T, eval=F, out.width="75%"}
+shinyApp(ui = ui_fileInput, server = server_fileInput)
+```
+<img src="imgs/mainApp_beforeUI.png"height="350" width="900">
+
+
+---
 
 ## Using uiOutput/renderUI functions
 
@@ -179,12 +397,14 @@ So far our user interface is set up at the start and while the contents might ch
 ## Using uiOutput/renderUI functions
 
  
-.pull-right[
-<img src="imgs/mainApp_beforeUI_filtBox.png"height="450" width="350">
+.pull-left[
+<img src="imgs/mainApp_beforeUI_filtBox.png"height="450" width="400">
 ]
 
-.pull-left[
-We could improve the flow of our app by making the filter inputs in the sidebar only appear once a user has loaded in a differential table. These filter inputs aren't relevant until the data is loaded, so we will only make them appear once the *de_table_in()* value is a dataframe, suggesting a file has been loaded and a table successfully read in.
+.pull-right[
+We could improve the flow of our app by making the filter inputs in the sidebar only appear once a user has loaded in a differential table. 
+
+These filter inputs aren't relevant until the data is loaded, so we will only make them appear once the *de_table_in()* value is a dataframe, suggesting a file has been loaded and a table successfully read in.
 ]
 
 ---
@@ -260,9 +480,13 @@ shinyApp(ui = ui_renderUI, server = server_renderUI)
 ---
 ## Using uiOutput/renderUI functions
 
-We will also hide the tables and plots since they are of no use until a file is uploaded. Empty elements can confuse the user and make it seem like something is wrong.
+.pull-left[
+<img src="imgs/mainApp_beforeUI_body.png"height="450" width="400">
+]
 
-maybe include image of full app previously to show the empty boxes?
+.pull-right[
+We will also hide the tables and plots since they are of no use until a file is uploaded. Empty elements can confuse the user and make it seem like something is wrong.
+]
 
 ---
 ## Using uiOutput/renderUI functions
@@ -325,20 +549,20 @@ shinyApp(ui = ui_renderUI_table , server = server_renderUI_table)
 ---
 ## Use validate function to check input file
 
-We use *validate* in the server function when we read in the table. We check for the key columns in the table as we know that not having these columns will cause a downstream error in the app. 
+We use *validate* in the server function to check for the key columns in the table as we know that not having these columns will cause a downstream error in the app. 
 
 ```{r, echo=T, eval=T}
 ui_validate_small <- page_fluid(
   fileInput("de_file", "Upload a DE file", accept = c(".csv", ".tsv", "xlsx", "xls")), 
-  uiOutput("all_data_UI"))
+  uiOutput("all_data_UI")
+)
 
 server_validate_small <- function(input, output){
   de_table_in <- reactive({
     req(input$de_file)
     file_in <- rio::import(input$de_file$datapath)
-    validate( #<<
-      need(expr = all(c("baseMean", "log2FoldChange", "lfcSE", "stat", "pvalue", "padj") %in% colnames(file_in)), #<<
-           message = "You must have the following columns: 'baseMean', 'log2FoldChange', 'lfcSE', 'stat', 'pvalue', 'padj'")) #<<
+    validate(need(expr = all(c("baseMean", "log2FoldChange", "lfcSE", "stat", "pvalue", "padj") %in% colnames(file_in)), #<<
+                  message = "You must have the following columns: 'baseMean', 'log2FoldChange', 'lfcSE', 'stat', 'pvalue', 'padj'")) #<<
     file_in %>% dplyr::mutate(negLog10_pval = -log10(pvalue))
   })
   
@@ -347,7 +571,7 @@ server_validate_small <- function(input, output){
       div("You must load data!", style = "color: #273449; font-weight: bold;")
     }else if(!is.null(de_table_in())){ 
       navset_card_tab(nav_panel(card_header("All genes"), dataTableOutput(outputId = "all_data")))
-      }
+    }
   })
   
   output$all_data = renderDataTable(datatable(de_table_in()))
@@ -415,21 +639,11 @@ ui_renderUIall <- page_navbar(
       uiOutput("table_plots_UI"), # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     )
   ),
-  nav_panel(
-    title = "Next steps",
-    "The next step in our analysis will be..."
-  ),
+  nav_panel(title = "Next steps","The next step in our analysis will be..."),
   nav_spacer(),
-  nav_menu(
-    title = "Links",
-    align = "right",
-    nav_item(
-      tags$a(
-        shiny::icon("chart-simple"), "RU BRC - Learn more!",
-        href = "https://rockefelleruniversity.github.io/",
-        target = "_blank"
-      )
-    )
+  nav_menu(title = "Links",
+           align = "right",
+           nav_item(tags$a(shiny::icon("chart-simple"), "RU BRC - Learn more!", href = "https://rockefelleruniversity.github.io/",target = "_blank"))
   )
 )
 
@@ -534,7 +748,7 @@ server_renderUIall = function(input, output) {
       dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%
       ggplot(aes(x = baseMean, y = log2FoldChange, color = sig, label = Symbol)) + geom_point() +
       scale_x_log10() + scale_color_manual(name = "DE status", values = c("red", "grey")) +
-      xlab("baseMean (log scale)") + theme_bw() + ggtitle("MA plot")
+      xlab("baseMean (log scale)") + theme_bw()
   })  %>%
     bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE) 
 
@@ -547,8 +761,7 @@ server_renderUIall = function(input, output) {
           dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%
           ggplot(aes(x = log2FoldChange, y = negLog10_pval, color = sig)) +
           geom_point() +
-          scale_color_manual(name = "DE status", values = c("red","grey"),) +
-          theme_bw() +
+          scale_color_manual(name = "DE status", values = c("red","grey"),) + theme_bw() 
           ggtitle("Volcano plot")
       
     }) %>%
@@ -648,7 +861,7 @@ server_notify <- function(input, output){
 shinyApp(ui = ui_notify, server = server_notify)
 ```
 
-<img src="imgs/notify_small.png"height="350" width="700">
+<img src="imgs/notify_small.png"height="450" width="700">
 
 
 ---
@@ -751,7 +964,7 @@ server_notify = function(input, output) {
       dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%
       ggplot(aes(x = baseMean, y = log2FoldChange, color = sig, label = Symbol)) + geom_point() +
       scale_x_log10() + scale_color_manual(name = "DE status", values = c("red", "grey")) +
-      xlab("baseMean (log scale)") + theme_bw() + ggtitle("MA plot")
+      xlab("baseMean (log scale)") + theme_bw() 
   })  %>%
     bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE) 
 
@@ -762,12 +975,8 @@ server_notify = function(input, output) {
     volcano_plot_reac <- reactive({
         de_table_in() %>% 
           dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%
-          ggplot(aes(x = log2FoldChange, y = negLog10_pval, color = sig)) +
-          geom_point() +
-          scale_color_manual(name = "DE status", values = c("red","grey"),) +
-          theme_bw() +
-          ggtitle("Volcano plot")
-      
+          ggplot(aes(x = log2FoldChange, y = negLog10_pval, color = sig)) +geom_point() +
+          scale_color_manual(name = "DE status", values = c("red","grey"),) +theme_bw()
     }) %>%
       bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE) 
   
@@ -791,15 +1000,53 @@ use observer to let user enter file name for plots?
 also can use observer when you introduce the update* series of functions
 ---
 
+## Publishing apps on shinyapps.io
 
+While it may be useful to simply have a Shiny app on your computer that you can run and analyze data locally, you might also want to publish the app in order to share with others, or allow you to access it anywhere.
+
+Posit (aka RStudio) provides the opportunity to deploy apps for free on [shinyapps.io](https://www.shinyapps.io/), which is nicely integrated into RStudio. The free version allows for a limited number of apps and not much memory, but is a good place to get started. We will go through a simple deployment. 
+
+We first need to install and load the *rsconnect* package. 
+
+```{r, echo=T, eval=T}
+library(rsconnect)
+```
+
+---
+
+## Publishing apps on shinyapps.io
+
+It is then necessary to make an account on [shinyapps.io](https://www.shinyapps.io/), and then use the *rsconnect* package to connect RStudio to the shinyapps.io account. 
+
+First the token from shinyapps.io needs to be retrieved:
+
+<img src="imgs/get_token_from_site.png"height="350" width="900">
+
+---
+
+## Publishing apps on shinyapps.io
+
+After running the command copied from shinyapps.io that includes the token and secret, we can then publish our app. 
+
+If you have a valid app file open, right next to the 'Run App' button, there is another button that allows you to publish the app. The shinyapps.io account that you just linked should be there for deployment.
+
+<img src="imgs/rstudio_publish.png"height="350" width="900">
+
+---
+
+## Publishing apps on shinyapps.io
+
+The *rsconnect* package will then bundle the app and any packages the app uses. After some time, the log in the 'Deploy' tab in the RStudio console (bottom of IDE) will indicate sucessful deployment and the app should appear on shinyapps.io with a valid and public URL.
+
+<img src="imgs/app_is_published.png"height="350" width="900">
+
+---
 
 # other ideas for later on
 
 * reactiveValues()
-* valueBox?
 * intorduce ways to include custom HTML
 * custom CSS?
-* publishing to shinyapps.io
 * debugging?
 * mention shiny in python?
 
@@ -809,12 +1056,6 @@ also can use observer when you introduce the update* series of functions
 
 * [Mastering Shiny book](https://mastering-shiny.org/index.html)
 * [More widgets](https://dreamrs.github.io/shinyWidgets/)
-
-
----
-## Exercises
-
-Exercise on Reproducibility in R can be found [here](../../exercises/exercises/Docker_exercise.html)
 
 
 ---
@@ -832,7 +1073,7 @@ We often have several exercise slides per session. So you can just copy and past
 ---
 ## Time for an exercise!
 
-??? exercise description here?? [here](../../exercises/exercises/shiny_exercise3_exercises.html)
+Exercises for Session 3 are [here](../../exercises/exercises/shiny_exercise3_exercises.html)
 
 ---
 ## Answers to exercise
