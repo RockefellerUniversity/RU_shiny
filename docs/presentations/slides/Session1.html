@@ -38,16 +38,8 @@ Bioinformatics Resource Center - Rockefeller University
 
 
 
-## Overview
 
-??We often put an overview slide that links to the various parts of the course content to make it easy to navigate i.e. this one for intro to r??
 
-- [Set up](https://rockefelleruniversity.github.io/Intro_To_R_1Day/r_course/presentations/singlepage/introToR_Session1.html#set-up)
-- [Background to R](https://rockefelleruniversity.github.io/Intro_To_R_1Day/r_course/presentations/singlepage/introToR_Session1.html#background-to-r)
-- [Data types in R](https://rockefelleruniversity.github.io/Intro_To_R_1Day/r_course/presentations/singlepage/introToR_Session1.html#data_types_in_r)
-- [Reading and writing in R](https://rockefelleruniversity.github.io/Intro_To_R_1Day/r_course/presentations/singlepage/introToR_Session1.html#reading-and-writing-data-in-r)
-
----
 class: inverse, center, middle
 
 # Set Up
@@ -58,24 +50,19 @@ class: inverse, center, middle
 
 ## Materials
 
-??We try to denote each major section of content with these title slides (see above for set up). The hierarchy will help with the different versions of the teaching content i.e. slides and single page.??
-
-?? Materials just gives the links to download the package Just ensure links are up to date??
 
 All prerequisites, links to material and slides for this course can be found on github.
 
-* [Intro_To_R_1](https://rockefelleruniversity.github.io/Intro_To_R_1Day/)
+* [RU_shiny](https://rockefelleruniversity.github.io/RU_shiny/)
 
 Or can be downloaded as a zip archive from here.
 
-* [Download zip](https://github.com/rockefelleruniversity/Intro_To_R_1Day/zipball/master)
+* [Download zip](https://github.com/rockefelleruniversity/RU_shiny/zipball/master)
 
 
 
 ---
 ## Course materials
-
-?? this slide just shows where thye can get the course content from the download. You do not need to populate these directories. It will be made during compilation??
 
 Once the zip file in unarchived. All presentations as HTML slides and pages, their R code and HTML practical sheets will be available in the directories underneath.
 
@@ -106,8 +93,8 @@ or in the console.
 
 
 ``` r
-setwd("/PathToMyDownload/RU_Course_template/r_course")
-# e.g. setwd("~/Downloads/Intro_To_R_1Day/r_course")
+setwd("/PathToMyDownload/RU_shiny/r_course")
+# e.g. setwd("~/Downloads/RU_shiny/r_course")
 ```
 
 
@@ -124,7 +111,7 @@ class: inverse, center, middle
 
 
 
----
+
 
 
 ## Basic componenets of Shiny app
@@ -296,7 +283,6 @@ Global variables can be assigned in the script outside of the UI object and serv
 
 ``` r
 # read in table
-#de_table &lt;- read.csv("shPTBP1_vs_control_DEG.csv")
 de_table &lt;- read.csv("data/shP53_vs_control_DEG.csv")
 de_table$negLog10_pval &lt;- -log10(de_table$pvalue)
 
@@ -319,37 +305,25 @@ head(de_table, 3)
 
 ## App with datatable from DT package
 
-UI object - add the table using the *dataTableOutput* function from the DT package
+We are going to use the DT package to show the table in our app. This provides a very interactive table out of the box with little extra work.
+
+We add the table using the *dataTableOutput* function in the UI, which is paired with the *renderDataTable* function in the server. 
 
 ``` r
 library(DT)
 
 ui_simple = page_fluid(
-  
   textOutput(outputId = "app_info"),
   
-  DT::DTOutput(outputId = "de_data")
+* DT::dataTableOutput(outputId = "de_data")
 )
-```
 
----
-
-## App with datatable from DT package
-
-Make the server function and launch app
-
-Here we use the *renderDataTable* function, which will put the table in the UI where we specified with the *dataTableOutput* function
-
-``` r
 server_simple = function(input, output) {
   output$app_info = renderText("This is an app showing differential gene expression data")
   
-  output$de_data = renderDataTable({
-    datatable(de_table) 
-  })
+* output$de_data = renderDataTable(datatable(de_table))
 }
 ```
-
 
 
 ---
@@ -360,7 +334,7 @@ server_simple = function(input, output) {
 ``` r
 shinyApp(ui = ui_simple, server = server_simple)
 ```
-&lt;img src="imgs/addDT.png"height="350" width="750"&gt;
+&lt;img src="imgs/addDT.png"height="375" width="750"&gt;
 
 ---
 
@@ -376,10 +350,10 @@ server_simple2 = function(input, output) {
   output$app_info = renderText("This is an app showing differential gene expression data")
   
   output$de_data = renderDataTable({
-    datatable(de_table,
-              filter = 'top') %&gt;%
-      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %&gt;%
-      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+*   datatable(de_table,
+*             filter = 'top') %&gt;%
+*     formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %&gt;%
+*     formatSignif(columns = c("pvalue", "padj"), digits = 3)
   })
 }
 ```
@@ -418,9 +392,9 @@ ui_data = page_fluid(
   
   dataTableOutput(outputId = "de_data"),
   
-  plotOutput("ma_plot"),
+* plotOutput("ma_plot"),
   
-  plotOutput("volcano_plot")
+* plotOutput("volcano_plot")
 )
 ```
 
@@ -441,22 +415,15 @@ server_data = function(input, output) {
       formatSignif(columns = c("pvalue", "padj"), digits = 3)
   })
   
-  output$ma_plot = renderPlot({
-    ggplot(de_table, aes(x = baseMean, y = log2FoldChange)) +
-      geom_point() +
-      scale_x_log10() +
-      xlab("baseMean (log scale)") +
-      theme_bw() +
-      ggtitle("MA plot")
-  })
+* output$ma_plot = renderPlot({
+*   ggplot(de_table, aes(x = baseMean, y = log2FoldChange)) +  geom_point() +
+*     scale_x_log10() + xlab("baseMean (log scale)") + theme_bw()
+* })
   
-  output$volcano_plot = renderPlot({
-    ggplot(de_table, aes(x = log2FoldChange, y = negLog10_pval)) +
-      geom_point() +
-      theme_bw() +
-      ggtitle("Volcano plot")
-  })
-}
+* output$volcano_plot = renderPlot({
+*   ggplot(de_table, aes(x = log2FoldChange, y = negLog10_pval)) + geom_point() + theme_bw()
+* })
+} 
 ```
 
 
@@ -469,7 +436,7 @@ server_data = function(input, output) {
 shinyApp(ui = ui_data, server = server_data)
 ```
 
-&lt;img src="imgs/addPlots.png"height="450" width="400"&gt;
+&lt;img src="imgs/addPlots.png"height="500" width="450"&gt;
 ---
 
 class: inverse, center, middle
@@ -482,7 +449,7 @@ class: inverse, center, middle
 
 ## Tidy up app appearance with cards
 
-bslib has many functions that allow customizing the formatting of the page. Here we add 'cards', which are boxes that allow grouping of UI components
+bslib has many functions that allow customizing the formatting of the page. Here we add ['cards'](https://rstudio.github.io/bslib/articles/cards/index.html), which are boxes that allow grouping of UI components
 
 
 ``` r
@@ -509,16 +476,16 @@ ui_fillable &lt;- page_fillable(
 shinyApp(ui = ui_fillable, server = server_data)
 ```
 
-&lt;img src="imgs/addCards.png"height=450" width="400"&gt;
+&lt;img src="imgs/addCards.png"height="450" width="400"&gt;
 
 ---
 
-## Collapsable boxes with accordians
+## Collapsable cards with accordions
 
-We can add the ability to hide certain boxes with accordians from the bslib package
+We can add the ability to hide certain boxes with accordions from the bslib package. By default only the top accordion is open, but the *accordian* function has an argument 'open' that allows you to select which are when the app is started. 
 
 ``` r
-ui_accordian &lt;- page_fillable(
+ui_accordion &lt;- page_fillable(
   accordion(
     accordion_panel("Table of DE results",
                     dataTableOutput(outputId = "de_data")),
@@ -534,80 +501,18 @@ ui_accordian &lt;- page_fillable(
 
 ---
 
-## Collapsable boxes with accordians
+## Collapsable boxes with accordions
 
 
 ``` r
 #same server function as previous
-shinyApp(ui = ui_accordian, server = server_data)
+shinyApp(ui = ui_accordion, server = server_data)
 ```
 
-&lt;img src="imgs/accordian.png"height="500" width="750"&gt;
-
----
-
-## Collapsable boxes with accordians
-
-Control over which panels can be opened initially can be set in the *accordian* function
-
-``` r
-ui_accordian &lt;- page_fillable(
-  accordion(
-    accordion_panel("Table of DE results",
-                    dataTableOutput(outputId = "de_data")),
-    
-    accordion_panel("MA plot",
-                    plotOutput("ma_plot")),
-    
-    accordion_panel("Volcano plot",
-                    plotOutput("volcano_plot")),
-    
-    open = TRUE # will open all panels
-  )
-)
-```
-
----
-
-## Collapsable boxes with accordians
+&lt;img src="imgs/accordion.png"height="450" width="900"&gt;
 
 
-``` r
-#same server function as previous
-shinyApp(ui = ui_accordian, server = server_data)
-```
-&lt;img src="imgs/accordian_open.png"height="400" width="350"&gt;
 
----
-
-## Customize layout with columns
-
-The *layout_columns* function from bslib creates columns on the page
-
-``` r
-ui_column &lt;- page_fillable(
-  layout_columns(
-    col_widths = c(4,4,4),
-    card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))),
-    
-    card(card_header("MA plot",plotOutput("ma_plot"))),
-    
-    card(card_header("Volcano plot",plotOutput("volcano_plot")))
-    )
-  )
-```
-
----
-
-## Customize layout with columns
-
-
-``` r
-#same server function as previous
-shinyApp(ui = ui_column, server = server_data)
-```
-
-&lt;img src="imgs/columns.png"height="450" width="750"&gt;
 ---
 
 ## Multiple rows
@@ -615,7 +520,7 @@ The 'col_widths' argument of the *layout_columns* function will control with wid
 
 ``` r
 ui_twoRow &lt;- page_fillable(
-  layout_columns(
+  layout_columns( 
     card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))),
     
     card(card_header("MA plot",plotOutput("ma_plot"))),
@@ -637,90 +542,17 @@ ui_twoRow &lt;- page_fillable(
 shinyApp(ui = ui_twoRow, server = server_data)
 ```
 
-&lt;img src="imgs/multiple_rows.png"height="400" width="600"&gt;
+&lt;img src="imgs/multiple_rows.png"height="450" width="600"&gt;
 
 ---
 
-## Page layout options
-
-The previous app demonstrates how *page_fillable* will automatically fill the whole page (both vertically and horizontally). This can be controlled with the 'col_widths' and 'row_heights' arguments of the *layout_columns* function
-
-bslib has two other options for the base of the page layout, *page_fixed* and *page_fluid*. The *page_fixed* function will use a fixed width that will vary based on the settings of the device, and the *page_fluid* function will extend to fill the whole width of the webpage. 
-
-Both *page_fixed* and *page_fluid* will choose a sensible default height that can be set with the 'row_heights' argument of the *layout_columns* function. 
-
----
-
-## Fixed page
-
-
-``` r
-ui_fixed &lt;- page_fixed(
-  layout_columns(
-    card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))),
-    
-    card(card_header("MA plot",plotOutput("ma_plot"))),
-    
-    card(card_header("Volcano plot",plotOutput("volcano_plot"))),
-    
-    col_widths = c(12,6,6)
-  )
-)
-```
-
----
-
-## Fixed page
-
-
-``` r
-#same server function as previous
-shinyApp(ui = ui_fixed, server = server_data)
-```
-
-&lt;img src="imgs/fixed_page.png"height="500" width="700"&gt;
-
-
----
-
-## Fluid page
-
-
-``` r
-ui_fluid &lt;- page_fluid(
-  layout_columns(
-    card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))),
-    
-    card(card_header("MA plot",plotOutput("ma_plot"))),
-    
-    card(card_header("Volcano plot",plotOutput("volcano_plot"))),
-    
-    col_widths = c(12,6,6)
-  )
-)
-```
-
-
----
-
-## Fluid page
-
-
-``` r
-#same server function as previous
-shinyApp(ui = ui_fluid, server = server_data)
-```
-
-&lt;img src="imgs/fluid_page.png"height="400" width="550"&gt;
-
----
 ## Nested rows within a column
 
 More complicated layouts can be achieved by nesting *layout_columns* functions. Here we add a tall card as a new row below the table and then nest the plots within this row next to the card. 
 
 
 ``` r
-ui_nested &lt;- page_fluid(
+ui_nested &lt;- page_fillable(
   layout_columns(
     col_widths = 12,
     card(card_header("Table of DE results", dataTableOutput(outputId = "de_data")))),
@@ -748,23 +580,225 @@ ui_nested &lt;- page_fluid(
 shinyApp(ui = ui_nested, server = server_data)
 ```
 
-&lt;img src="imgs/nested.png"height="400" width="500"&gt;
+&lt;img src="imgs/nested.png"height="450" width="500"&gt;
+
+---
+
+## Page layout options
+
+While we have been using the *page_fillable* function to build the UI, there are three main functions from bslib for slightly differnet page layout strategies: 
+
+  * **page_fillable** - UI components will be in a grid format that will automatically fill the whole page (both vertically and horizontally). 
+  * **page_fluid** - UI components will be in a grid format that will extend to fill the whole width of the webpage.
+  * **page_fixed** - UI components will be in a grid format that has a fixed width that will vary depending on the settings of the device. 
+
+&lt;img src="imgs/page_layouts.png"height="200" width="600"&gt;
+
+Image from the Posit tutorials (https://shiny.posit.co/r/articles/build/layout-guide/)
+
+---
+
+## Fillable page (used thus far)
+
+
+``` r
+*ui_fillable &lt;- page_fillable(
+  layout_columns(
+    card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))),
+    
+    card(card_header("MA plot",plotOutput("ma_plot"))),
+    
+    card(card_header("Volcano plot",plotOutput("volcano_plot"))),
+    
+    col_widths = c(12,6,6)
+  )
+)
+```
+
+---
+
+## Fillable page (used thus far)
+
+
+``` r
+#same server function as previous
+shinyApp(ui = ui_fillable, server = server_data)
+```
+
+
+The cards do not fill the screen horizontally and dynamically, but when the window is not big enough, the cards ajust and add scroll bars so you have access to the whole table or plot not matter what.
+
+&lt;img src="imgs/fillable_page.png"height="350" width="900"&gt;
+
+---
+
+
+## Fixed page
+
+
+``` r
+*ui_fixed &lt;- page_fixed(
+  layout_columns(
+    card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))),
+    
+    card(card_header("MA plot",plotOutput("ma_plot"))),
+    
+    card(card_header("Volcano plot",plotOutput("volcano_plot"))),
+    
+    col_widths = c(12,6,6)
+  )
+)
+```
+
+---
+
+## Fixed page
+
+
+``` r
+#same server function as previous
+shinyApp(ui = ui_fixed, server = server_data)
+```
+
+
+The cards do not fill the screen horizontally as there is padding on each side and the cards are a fixed height. When the window is not big enough, you need to scroll down to see the plots on the bottom of the page.
+
+&lt;img src="imgs/fixed_page.png"height="350" width="900"&gt;
+
+
+---
+
+## Fluid page
+
+
+``` r
+*ui_fluid &lt;- page_fluid(
+  layout_columns(
+    card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))),
+    
+    card(card_header("MA plot",plotOutput("ma_plot"))),
+    
+    card(card_header("Volcano plot",plotOutput("volcano_plot"))),
+    
+    col_widths = c(12,6,6)
+  )
+)
+```
+
+
+---
+
+## Fluid page
+
+
+``` r
+#same server function as previous
+shinyApp(ui = ui_fluid, server = server_data)
+```
+
+The cards fill the screen horizontally and dynamically, but are a fixed height. When the window is not big enough, you need to scroll down to see the plots on the bottom of the page.
+
+&lt;img src="imgs/fluid_page.png"height="350" width="900"&gt;
+
+---
+class: inverse, center, middle
+
+# Value boxes and sidebars
+
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=720px&gt;&lt;/html&gt; 
+
+---
+
+
+## Value boxes
+[Value boxes](https://rstudio.github.io/bslib/articles/value-boxes/index.html) are another common UI element from the *bslib* package and are nice ways to show key numbers or information that you want to highlight for the user. 
+ 
+  * the 'value' argument in a value box will be the most prominent text
+  * the 'title' argument goes above the value and other unnamed arguments go below. 
+  * the color can be set by the 'theme' argument, which can be made with *value_box_theme* or use special [bootstrap](https://bootswatch.com/) themes (will see this later) 
+  * the 'showcase' argument can simply be an icon (see ?icon page) or can get more complex and [show a plot](https://rstudio.github.io/bslib/articles/value-boxes/index.html#expandable-sparklines)
+
+``` r
+ui_value_box &lt;- page_fluid(
+    layout_columns(
+      layout_columns(
+*       value_box(title = "Number of genes that go up:", value = textOutput("num_up"), "Adjusted p-value &lt; 0.05", showcase = icon("arrow-up"), theme = value_box_theme(bg = "#22b430")),
+*     value_box(title = "Number of genes that go down:", value = textOutput("num_down"), "Adjusted p-value &lt; 0.05", showcase = icon("arrow-down"), value_box_theme(bg ="#c34020" )),
+        col_widths = c(12,12)
+      ),
+      card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))), 
+      col_widths = c(3,9))
+)
+```
+
+---
+
+
+
+## Value boxes
+
+Here we just hard code in numbers to show in the value boxes, but this will obviously be more useful if this number can repsond to user activity. This is something we will do later on. 
+
+
+``` r
+#same server function as previous
+shinyApp(ui = ui_value_box, server = server_data)
+```
+
+&lt;img src="imgs/valueboxes.png"height="350" width="600"&gt;
+
+---
+
+## Add a sidebar to a card
+
+Sidebars are retractable areas that can be useful in adding information or eventually add user inputs for a specific part of the app. Here we add a sidebar only to the card that contains the table.
+
+The *layout_sidebar* function is used to set this up within the card. By default, layout_* elements will be fillable, here its demonstrated that this can be set to FALSE if desired. 
+
+
+``` r
+ui_sidebar_card &lt;-page_fluid( 
+  layout_columns(
+    card(card_header("Table of DE results"),
+*        layout_sidebar(sidebar = sidebar("Sidebar ONLY for table", width = 400),
+*                       dataTableOutput(outputId = "de_data"),
+*                       fillable = FALSE)),
+    card(card_header("MA plot",plotOutput("ma_plot"))),
+    card(card_header("Volcano plot",plotOutput("volcano_plot"))),
+    col_widths = c(12,6,6)
+  )
+)
+```
+
+---
+
+## Add a sidebar to a card
+
+
+``` r
+#same server function as previous
+shinyApp(ui = ui_sidebar_card, server = server_data)
+```
+
+&lt;img src="imgs/card_sidebar.png"height="400" width="900"&gt;
 
 ---
 
 ## Add a sidebar to the page
 
-Sidebars are retractable and will remain static as you scroll up and down the page. They are often nice for user inputs or information that you always want the user to see. The width can be set within the function.
+Sidebars can also be added to the whole page of the app by using the *page_sidebar* function in a similar manner to the other page_* functions used thus far.
+
+Page sidebars will remain static as you scroll up and down the page. They are often nice for user inputs or information that you always want the user to see. 
 
 
 ``` r
 ui_sidebar &lt;- page_sidebar(
   title = "RNAseq tools",
   
-  sidebar = sidebar(
-    "This is a sidebar",
-    width = 300,
-  ),
+* sidebar = sidebar(
+*   "This is a sidebar for the whole page",
+*   width = 300,
+* ),
   
   layout_columns(
     card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
@@ -779,7 +813,6 @@ ui_sidebar &lt;- page_sidebar(
 
 ## Add a sidebar to the page
 
-NOTE SHOW THAT YOU CAN ALSO ADD A SIDEBAR TO A CARD???
 
 
 ``` r
@@ -787,54 +820,39 @@ NOTE SHOW THAT YOU CAN ALSO ADD A SIDEBAR TO A CARD???
 shinyApp(ui = ui_sidebar, server = server_data)
 ```
 
-&lt;img src="imgs/sidebar.png"height="400" width="550"&gt;
+&lt;img src="imgs/sidebar.png"height="450" width="550"&gt;
+
+
+
+---
+
+class: inverse, center, middle
+
+# Mutli-page apps
+
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=720px&gt;&lt;/html&gt; 
 
 ---
 
 ## Use a navbar layout for multi-page app
 
-# explain how you can have a side bar in one page or all pages!
+Oftentimes we want a multi-page layout where the user can click through tabs to see pages with different types of data or information. This can be done using the *page_navbar* function coupled with child *nav_panel* functions that contain the UI elements for each page. 
 
 ``` r
-ui_navbar &lt;- page_navbar(
+*ui_navbar &lt;- page_navbar(
   title = "RNAseq tools",
-  nav_panel(
-    title = "DE Analysis",
-    layout_sidebar(
-      sidebar = sidebar(
-        "This is a sidebar",
-        width = 300,
-      ),
-      
-      layout_columns(
-        card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
-        card(card_header("MA plot"),plotOutput("ma_plot")),
-        card(card_header("Volcano plot"),plotOutput("volcano_plot")),
-        col_widths = c(12,6,6), row_heights = c("750px", "500px")
-      )
-    )
-  ),
-  nav_panel(
-    title = "Next steps",
-    "The next step in our analysis will be..."
-  ),
-  nav_spacer(),
-  nav_menu(
-    title = "Links",
-    align = "right",
-    nav_item(
-      tags$a(
-        shiny::icon("chart-simple"), "RU BRC - Learn more!",
-        href = "https://rockefelleruniversity.github.io/",
-        target = "_blank"
-      )
-    )
-  )
+* nav_panel(title = "DE Analysis",
+            layout_columns(
+              card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
+              card(card_header("MA plot"),plotOutput("ma_plot")),
+              card(card_header("Volcano plot"),plotOutput("volcano_plot")),
+              col_widths = c(12,6,6), row_heights = c("750px", "500px")
+            )),
+* nav_panel(title = "Next steps",  "The next step in our analysis will be...")
 )
 ```
 
 ---
-
 
 ## Use a navbar layout for multi-page app
 
@@ -843,6 +861,119 @@ ui_navbar &lt;- page_navbar(
 #same server function as previous
 shinyApp(ui = ui_navbar, server = server_data)
 ```
+
+&lt;img src="imgs/nav_bar_sidebyside.png"height="375" width="900"&gt;
+
+---
+
+## Navbar menu
+
+We can easily add a menu on the right hand side of our navbar as well with key links or information. The *nav_spacer* function will push the menu to the right hand side of the page, and the *nav_menu* function can contain multiple *nav_item* objects to comprise the list. 
+
+``` r
+ui_navbarMenu &lt;- page_navbar(
+  title = "RNAseq tools",
+  nav_panel(title = "DE Analysis",  
+            layout_columns(
+              card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
+              card(card_header("MA plot"),plotOutput("ma_plot")),
+              card(card_header("Volcano plot"),plotOutput("volcano_plot")),
+              col_widths = c(12,6,6), row_heights = c("750px", "500px")
+            )),
+  nav_panel(title = "Next steps",   "The next step in our analysis will be..."),
+* nav_spacer(),
+* nav_menu(
+*   title = "Links", align = "right",
+*   nav_item(
+*     tags$a(shiny::icon("chart-simple"), "RU BRC - Learn more!",href = "https://rockefelleruniversity.github.io/", target = "_blank")),
+*   nav_item(
+*     tags$a(shiny::icon("arrow-right"), "More about posit",href = "https://posit.co/", target = "_blank"))
+* )
+)
+```
+
+
+---
+
+
+## Use a navbar layout for multi-page app
+
+
+``` r
+#same server function as previous
+shinyApp(ui = ui_navbarMenu, server = server_data)
+```
+
+&lt;img src="imgs/navbar_menu.png"height="450" width="550"&gt;
+
+---
+
+## Add sidebars to a multi-page app
+
+Sidebars are easily integrated into the *page_navbar* set up. The 'sdiebar' argument of the *page_navbar* function will add the same sidebar to every page of the app.
+
+
+``` r
+ui_navbar_side &lt;- page_navbar( 
+  title = "RNAseq tools",
+* sidebar = sidebar("The same sidebar on every page...", width = 500),
+  nav_panel(title = "DE Analysis",  
+            layout_columns(
+              card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
+              card(card_header("MA plot"),plotOutput("ma_plot")),
+              card(card_header("Volcano plot"),plotOutput("volcano_plot")),
+              col_widths = c(12,6,6), row_heights = c("750px", "500px")
+            )),
+  nav_panel(title = "Next steps",  "The next step in our analysis will be...") 
+)
+```
+
+---
+
+## Add sidebars to a multi-page app
+
+
+``` r
+#same server function as previous
+shinyApp(ui = ui_navbar_side, server = server_data)
+```
+&lt;img src="imgs/navbar_sidebar_same.png"height="300" width="900"&gt;
+
+---
+
+## Add sidebars to select tabs
+
+Sidebars can also be added to some pages and not others by using the *layout_sidebar* function. For example, a *layout_sidebar* object within a *nav_panel* function will only put that sidebar on that panel/page. 
+
+
+``` r
+ui_navbar_side2 &lt;- page_navbar( 
+  title = "RNAseq tools",
+  nav_panel(title = "DE Analysis",  
+*           layout_sidebar(
+*             sidebar = sidebar("The side bar is only on this page...", width = 500),
+*             layout_columns(
+*               card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
+*               card(card_header("MA plot"),plotOutput("ma_plot")),
+*               card(card_header("Volcano plot"),plotOutput("volcano_plot")),
+*               col_widths = c(12,6,6), row_heights = c("750px", "500px"))
+*           ),
+  ),
+  nav_panel(title = "Next steps",  "The next step in our analysis will be...") 
+)
+```
+
+---
+
+## Add sidebars to select tabs
+
+
+``` r
+#same server function as previous
+shinyApp(ui = ui_navbar_side2, server = server_data)
+```
+&lt;img src="imgs/navbar_specific_page.png"height="300" width="900"&gt;
+
 
 ---
 class: inverse, center, middle
@@ -881,14 +1012,11 @@ bootswatch_themes()
 ``` r
 ui_cerulean &lt;- page_navbar(
   title = "RNAseq tools",
-  theme = bs_theme(version = 5, bootswatch = "cerulean"),
+* theme = bs_theme(version = 5, bootswatch = "cerulean"),
   nav_panel(
     title = "DE Analysis",
     layout_sidebar(
-      sidebar = sidebar(
-        "This is a sidebar",
-        width = 300,
-      ),
+      sidebar = sidebar("This is a sidebar", width = 300),
       
       layout_columns(
         card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
@@ -898,21 +1026,11 @@ ui_cerulean &lt;- page_navbar(
       )
     )
   ),
-  nav_panel(
-    title = "Next steps",
-    "The next step in our analysis will be..."
-  ),
+  nav_panel(title = "Next steps","The next step in our analysis will be..."),
   nav_spacer(),
-  nav_menu(
-    title = "Links",
-    align = "right",
-    nav_item(
-      tags$a(
-        shiny::icon("chart-simple"), "RU BRC - Learn more!",
-        href = "https://rockefelleruniversity.github.io/",
-        target = "_blank"
-      )
-    )
+  nav_menu(title = "Links",
+           align = "right",
+           nav_item(tags$a(shiny::icon("chart-simple"), "RU BRC - Learn more!", href = "https://rockefelleruniversity.github.io/",target = "_blank"))
   )
 )
 ```
@@ -927,6 +1045,8 @@ ui_cerulean &lt;- page_navbar(
 shinyApp(ui = ui_cerulean, server = server_data)
 ```
 
+&lt;img src="imgs/cerulean.png"height="450" width="550"&gt;
+
 ---
 
 ## Themes - Darkly
@@ -935,14 +1055,11 @@ shinyApp(ui = ui_cerulean, server = server_data)
 ``` r
 ui_darkly &lt;- page_navbar(
   title = "RNAseq tools",
-  theme = bs_theme(version = 5, bootswatch = "darkly"),
-  nav_panel(
+* theme = bs_theme(version = 5, bootswatch = "darkly"),
+ nav_panel(
     title = "DE Analysis",
     layout_sidebar(
-      sidebar = sidebar(
-        "This is a sidebar",
-        width = 300,
-      ),
+      sidebar = sidebar("This is a sidebar", width = 300),
       
       layout_columns(
         card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
@@ -952,21 +1069,11 @@ ui_darkly &lt;- page_navbar(
       )
     )
   ),
-  nav_panel(
-    title = "Next steps",
-    "The next step in our analysis will be..."
-  ),
+  nav_panel(title = "Next steps","The next step in our analysis will be..."),
   nav_spacer(),
-  nav_menu(
-    title = "Links",
-    align = "right",
-    nav_item(
-      tags$a(
-        shiny::icon("chart-simple"), "RU BRC - Learn more!",
-        href = "https://rockefelleruniversity.github.io/",
-        target = "_blank"
-      )
-    )
+  nav_menu(title = "Links",
+           align = "right",
+           nav_item(tags$a(shiny::icon("chart-simple"), "RU BRC - Learn more!", href = "https://rockefelleruniversity.github.io/",target = "_blank"))
   )
 )
 ```
@@ -980,6 +1087,8 @@ ui_darkly &lt;- page_navbar(
 #same server function as previous
 shinyApp(ui = ui_darkly, server = server_data)
 ```
+
+&lt;img src="imgs/darkly.png"height="450" width="550"&gt;
 
 ---
 
@@ -1021,14 +1130,11 @@ This custom theme object can then be used in the 'theme' argument of *page_sideb
 ``` r
 ui_custom &lt;- page_navbar(
   title = "RNAseq tools",
-  theme = custom_theme,
+* theme = custom_theme,
   nav_panel(
     title = "DE Analysis",
     layout_sidebar(
-      sidebar = sidebar(
-        "This is a sidebar",
-        width = 300,
-      ),
+      sidebar = sidebar("This is a sidebar", width = 300),
       
       layout_columns(
         card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
@@ -1038,21 +1144,11 @@ ui_custom &lt;- page_navbar(
       )
     )
   ),
-  nav_panel(
-    title = "Next steps",
-    "The next step in our analysis will be..."
-  ),
+  nav_panel(title = "Next steps","The next step in our analysis will be..."),
   nav_spacer(),
-  nav_menu(
-    title = "Links",
-    align = "right",
-    nav_item(
-      tags$a(
-        shiny::icon("chart-simple"), "RU BRC - Learn more!",
-        href = "https://rockefelleruniversity.github.io/",
-        target = "_blank"
-      )
-    )
+  nav_menu(title = "Links",
+           align = "right",
+           nav_item(tags$a(shiny::icon("chart-simple"), "RU BRC - Learn more!", href = "https://rockefelleruniversity.github.io/",target = "_blank"))
   )
 )
 ```
@@ -1066,36 +1162,12 @@ ui_custom &lt;- page_navbar(
 shinyApp(ui = ui_custom, server = server_data)
 ```
 
-
----
-## Further Resources
-
-* [Mastering Shiny book](https://mastering-shiny.org/index.html)
-* [More widgets](https://dreamrs.github.io/shinyWidgets/)
-
-
----
-## Exercises
-
-Exercise on Reproducibility in R can be found [here](../../exercises/exercises/Docker_exercise.html)
-
-
----
-## Contact
-
-Any suggestions, comments, edits or questions (about content or the slides themselves) please reach out to our [GitHub](https://github.com/RockefellerUniversity/Intro_to_Shiny/issues) and raise an issue.
-
-
---
-## Exercises
-The following few slides show you how to structure exercise slides.
-
-We often have several exercise slides per session. So you can just copy and paste and change the directory to the appropriate name. All 3 file types are made from you single exercise Rmd. 
+&lt;img src="imgs/custom_theme.png"height="450" width="550"&gt;
 
 ---
 ## Time for an exercise!
 
-??? exercise description here?? [here](../../exercises/exercises/shiny_exercise1_exercises.html)
+Exercises for Session 1 are [here](../../exercises/exercises/shiny_exercise1_exercises.html)
 
 ---
 ## Answers to exercise

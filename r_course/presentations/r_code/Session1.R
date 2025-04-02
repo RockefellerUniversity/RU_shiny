@@ -41,8 +41,8 @@ if(params$isSlides == "yes"){
 
 
 ## ----setwd_introtoR,eval=F----------------------------------------------------
-# setwd("/PathToMyDownload/RU_Course_template/r_course")
-# # e.g. setwd("~/Downloads/Intro_To_R_1Day/r_course")
+# setwd("/PathToMyDownload/RU_shiny/r_course")
+# # e.g. setwd("~/Downloads/RU_shiny/r_course")
 
 
 ## ----results='asis',include=TRUE,echo=FALSE-----------------------------------
@@ -126,7 +126,6 @@ server = function(input, output) {
 
 ## ----echo=T, eval=T, out.width="75%"------------------------------------------
 # read in table
-#de_table <- read.csv("shPTBP1_vs_control_DEG.csv")
 de_table <- read.csv("data/shP53_vs_control_DEG.csv")
 de_table$negLog10_pval <- -log10(de_table$pvalue)
 
@@ -138,25 +137,16 @@ head(de_table, 3)
 library(DT)
 
 ui_simple = page_fluid(
-  
   textOutput(outputId = "app_info"),
   
-  DT::DTOutput(outputId = "de_data")
+  DT::dataTableOutput(outputId = "de_data") #<<
 )
-
-
-
-
-## ----echo=T, eval=T, out.width="75%"------------------------------------------
 
 server_simple = function(input, output) {
   output$app_info = renderText("This is an app showing differential gene expression data")
   
-  output$de_data = renderDataTable({
-    datatable(de_table) 
-  })
+  output$de_data = renderDataTable(datatable(de_table)) #<<
 }
-
 
 
 ## ----addDT, echo=T, eval=F, out.width="75%"-----------------------------------
@@ -170,10 +160,10 @@ server_simple2 = function(input, output) {
   output$app_info = renderText("This is an app showing differential gene expression data")
   
   output$de_data = renderDataTable({
-    datatable(de_table,
-              filter = 'top') %>%
-      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
-      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+    datatable(de_table, #<<
+              filter = 'top') %>% #<<
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>% #<<
+      formatSignif(columns = c("pvalue", "padj"), digits = 3) #<<
   })
 }
 
@@ -189,9 +179,9 @@ ui_data = page_fluid(
   
   dataTableOutput(outputId = "de_data"),
   
-  plotOutput("ma_plot"),
+  plotOutput("ma_plot"), #<<
   
-  plotOutput("volcano_plot")
+  plotOutput("volcano_plot") #<<
 )
 
 
@@ -208,22 +198,15 @@ server_data = function(input, output) {
       formatSignif(columns = c("pvalue", "padj"), digits = 3)
   })
   
-  output$ma_plot = renderPlot({
-    ggplot(de_table, aes(x = baseMean, y = log2FoldChange)) +
-      geom_point() +
-      scale_x_log10() +
-      xlab("baseMean (log scale)") +
-      theme_bw() +
-      ggtitle("MA plot")
-  })
+  output$ma_plot = renderPlot({ #<<
+    ggplot(de_table, aes(x = baseMean, y = log2FoldChange)) +  geom_point() + #<<
+      scale_x_log10() + xlab("baseMean (log scale)") + theme_bw()#<<
+  }) #<<
   
-  output$volcano_plot = renderPlot({
-    ggplot(de_table, aes(x = log2FoldChange, y = negLog10_pval)) +
-      geom_point() +
-      theme_bw() +
-      ggtitle("Volcano plot")
-  })
-}
+  output$volcano_plot = renderPlot({ #<<
+    ggplot(de_table, aes(x = log2FoldChange, y = negLog10_pval)) + geom_point() + theme_bw() #<<
+  }) #<<
+} 
 
 
 
@@ -274,7 +257,7 @@ if(params$isSlides == "yes"){
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
 # 
-# ui_accordian <- page_fillable(
+# ui_accordion <- page_fillable(
 #   accordion(
 #     accordion_panel("Table of DE results",
 #                     dataTableOutput(outputId = "de_data")),
@@ -289,53 +272,9 @@ if(params$isSlides == "yes"){
 # 
 
 
-## ----accordian, echo=T, eval=F, out.width="75%"-------------------------------
+## ----accordion, echo=T, eval=F, out.width="75%"-------------------------------
 # #same server function as previous
-# shinyApp(ui = ui_accordian, server = server_data)
-
-
-## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# 
-# ui_accordian <- page_fillable(
-#   accordion(
-#     accordion_panel("Table of DE results",
-#                     dataTableOutput(outputId = "de_data")),
-# 
-#     accordion_panel("MA plot",
-#                     plotOutput("ma_plot")),
-# 
-#     accordion_panel("Volcano plot",
-#                     plotOutput("volcano_plot")),
-# 
-#     open = TRUE # will open all panels
-#   )
-# )
-# 
-
-
-## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# #same server function as previous
-# shinyApp(ui = ui_accordian, server = server_data)
-
-
-## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# 
-# ui_column <- page_fillable(
-#   layout_columns(
-#     col_widths = c(4,4,4),
-#     card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))),
-# 
-#     card(card_header("MA plot",plotOutput("ma_plot"))),
-# 
-#     card(card_header("Volcano plot",plotOutput("volcano_plot")))
-#     )
-#   )
-# 
-
-
-## ----columns, echo=T, eval=F, out.width="75%"---------------------------------
-# #same server function as previous
-# shinyApp(ui = ui_column, server = server_data)
+# shinyApp(ui = ui_accordion, server = server_data)
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
@@ -361,49 +300,7 @@ if(params$isSlides == "yes"){
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
 # 
-# ui_fixed <- page_fixed(
-#   layout_columns(
-#     card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))),
-# 
-#     card(card_header("MA plot",plotOutput("ma_plot"))),
-# 
-#     card(card_header("Volcano plot",plotOutput("volcano_plot"))),
-# 
-#     col_widths = c(12,6,6)
-#   )
-# )
-# 
-
-
-## ----fixed_page, echo=T, eval=F, out.width="75%"------------------------------
-# #same server function as previous
-# shinyApp(ui = ui_fixed, server = server_data)
-
-
-## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# 
-# ui_fluid <- page_fluid(
-#   layout_columns(
-#     card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))),
-# 
-#     card(card_header("MA plot",plotOutput("ma_plot"))),
-# 
-#     card(card_header("Volcano plot",plotOutput("volcano_plot"))),
-# 
-#     col_widths = c(12,6,6)
-#   )
-# )
-# 
-
-
-## ----fluid_page, echo=T, eval=F, out.width="75%"------------------------------
-# #same server function as previous
-# shinyApp(ui = ui_fluid, server = server_data)
-
-
-## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# 
-# ui_nested <- page_fluid(
+# ui_nested <- page_fillable(
 #   layout_columns(
 #     col_widths = 12,
 #     card(card_header("Table of DE results", dataTableOutput(outputId = "de_data")))),
@@ -428,15 +325,142 @@ if(params$isSlides == "yes"){
 # shinyApp(ui = ui_nested, server = server_data)
 
 
+## ----echo=T, eval=F, out.width="75%"------------------------------------------
+# 
+# ui_fillable <- page_fillable( #<<
+#   layout_columns(
+#     card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))),
+# 
+#     card(card_header("MA plot",plotOutput("ma_plot"))),
+# 
+#     card(card_header("Volcano plot",plotOutput("volcano_plot"))),
+# 
+#     col_widths = c(12,6,6)
+#   )
+# )
+# 
+
+
+## ----echo=T, eval=F, out.width="75%"------------------------------------------
+# #same server function as previous
+# shinyApp(ui = ui_fillable, server = server_data)
+
+
+## ----echo=T, eval=F, out.width="75%"------------------------------------------
+# 
+# ui_fixed <- page_fixed( #<<
+#   layout_columns(
+#     card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))),
+# 
+#     card(card_header("MA plot",plotOutput("ma_plot"))),
+# 
+#     card(card_header("Volcano plot",plotOutput("volcano_plot"))),
+# 
+#     col_widths = c(12,6,6)
+#   )
+# )
+# 
+
+
+## ----fixed_page, echo=T, eval=F, out.width="75%"------------------------------
+# #same server function as previous
+# shinyApp(ui = ui_fixed, server = server_data)
+
+
+## ----echo=T, eval=F, out.width="75%"------------------------------------------
+# 
+# ui_fluid <- page_fluid( #<<
+#   layout_columns(
+#     card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))),
+# 
+#     card(card_header("MA plot",plotOutput("ma_plot"))),
+# 
+#     card(card_header("Volcano plot",plotOutput("volcano_plot"))),
+# 
+#     col_widths = c(12,6,6)
+#   )
+# )
+# 
+
+
+## ----fluid_page, echo=T, eval=F, out.width="75%"------------------------------
+# #same server function as previous
+# shinyApp(ui = ui_fluid, server = server_data)
+
+
+## ----results='asis',include=TRUE,echo=FALSE-----------------------------------
+if(params$isSlides == "yes"){
+  cat("class: inverse, center, middle
+
+# Value boxes and sidebars
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
+
+---
+"    
+  )
+}else{
+  cat("# Value boxes and sidebars
+
+---
+"    
+  )
+  
+}
+
+
+
+## ----echo=T, eval=F, out.width="75%"------------------------------------------
+# 
+# ui_value_box <- page_fluid(
+#     layout_columns(
+#       layout_columns(
+#         value_box(title = "Number of genes that go up:", value = textOutput("num_up"), "Adjusted p-value < 0.05", showcase = icon("arrow-up"), theme = value_box_theme(bg = "#22b430")), #<<
+#       value_box(title = "Number of genes that go down:", value = textOutput("num_down"), "Adjusted p-value < 0.05", showcase = icon("arrow-down"), value_box_theme(bg ="#c34020" )), #<<
+#         col_widths = c(12,12)
+#       ),
+#       card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))),
+#       col_widths = c(3,9))
+# )
+# 
+# 
+
+
+## ----echo=T, eval=F, out.width="75%"------------------------------------------
+# #same server function as previous
+# shinyApp(ui = ui_value_box, server = server_data)
+
+
+## ----echo=T, eval=T, out.width="75%"------------------------------------------
+
+ui_sidebar_card <-page_fluid( 
+  layout_columns(
+    card(card_header("Table of DE results"),
+         layout_sidebar(sidebar = sidebar("Sidebar ONLY for table", width = 400), #<<
+                        dataTableOutput(outputId = "de_data"), #<<
+                        fillable = FALSE)), #<<
+    card(card_header("MA plot",plotOutput("ma_plot"))),
+    card(card_header("Volcano plot",plotOutput("volcano_plot"))),
+    col_widths = c(12,6,6)
+  )
+)
+
+
+
+## ----echo=T, eval=F, out.width="75%"------------------------------------------
+# #same server function as previous
+# shinyApp(ui = ui_sidebar_card, server = server_data)
+
+
 ## ----echo=T, eval=T, out.width="75%"------------------------------------------
 
 ui_sidebar <- page_sidebar(
   title = "RNAseq tools",
   
-  sidebar = sidebar(
-    "This is a sidebar",
-    width = 300,
-  ),
+  sidebar = sidebar( #<<
+    "This is a sidebar for the whole page", #<<
+    width = 300, #<<
+  ), #<<
   
   layout_columns(
     card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
@@ -448,47 +472,45 @@ ui_sidebar <- page_sidebar(
 
 
 
-## ----sidebar, echo=T, eval=F, out.width="75%"---------------------------------
+## ----echo=T, eval=F, out.width="75%"------------------------------------------
 # #same server function as previous
 # shinyApp(ui = ui_sidebar, server = server_data)
 
 
+## ----results='asis',include=TRUE,echo=FALSE-----------------------------------
+if(params$isSlides == "yes"){
+  cat("class: inverse, center, middle
+
+# Mutli-page apps
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
+
+---
+"    
+  )
+}else{
+  cat("# Mutli-page apps
+
+---
+"    
+  )
+  
+}
+
+
+
 ## ----echo=T, eval=T, out.width="75%"------------------------------------------
 
-ui_navbar <- page_navbar(
+ui_navbar <- page_navbar( #<<
   title = "RNAseq tools",
-  nav_panel(
-    title = "DE Analysis",
-    layout_sidebar(
-      sidebar = sidebar(
-        "This is a sidebar",
-        width = 300,
-      ),
-      
-      layout_columns(
-        card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
-        card(card_header("MA plot"),plotOutput("ma_plot")),
-        card(card_header("Volcano plot"),plotOutput("volcano_plot")),
-        col_widths = c(12,6,6), row_heights = c("750px", "500px")
-      )
-    )
-  ),
-  nav_panel(
-    title = "Next steps",
-    "The next step in our analysis will be..."
-  ),
-  nav_spacer(),
-  nav_menu(
-    title = "Links",
-    align = "right",
-    nav_item(
-      tags$a(
-        shiny::icon("chart-simple"), "RU BRC - Learn more!",
-        href = "https://rockefelleruniversity.github.io/",
-        target = "_blank"
-      )
-    )
-  )
+  nav_panel(title = "DE Analysis",  #<<
+            layout_columns(
+              card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
+              card(card_header("MA plot"),plotOutput("ma_plot")),
+              card(card_header("Volcano plot"),plotOutput("volcano_plot")),
+              col_widths = c(12,6,6), row_heights = c("750px", "500px")
+            )),
+  nav_panel(title = "Next steps",  "The next step in our analysis will be...") #<<
 )
 
 
@@ -496,6 +518,81 @@ ui_navbar <- page_navbar(
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
 # #same server function as previous
 # shinyApp(ui = ui_navbar, server = server_data)
+
+
+## ----echo=T, eval=T, out.width="75%"------------------------------------------
+
+ui_navbarMenu <- page_navbar(
+  title = "RNAseq tools",
+  nav_panel(title = "DE Analysis",  
+            layout_columns(
+              card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
+              card(card_header("MA plot"),plotOutput("ma_plot")),
+              card(card_header("Volcano plot"),plotOutput("volcano_plot")),
+              col_widths = c(12,6,6), row_heights = c("750px", "500px")
+            )),
+  nav_panel(title = "Next steps",   "The next step in our analysis will be..."),
+  nav_spacer(), #<<
+  nav_menu( #<<
+    title = "Links", align = "right", #<<
+    nav_item( #<<
+      tags$a(shiny::icon("chart-simple"), "RU BRC - Learn more!",href = "https://rockefelleruniversity.github.io/", target = "_blank")), #<<
+    nav_item( #<<
+      tags$a(shiny::icon("arrow-right"), "More about posit",href = "https://posit.co/", target = "_blank"))#<<
+  ) #<<
+)
+
+
+
+## ----echo=T, eval=F, out.width="75%"------------------------------------------
+# #same server function as previous
+# shinyApp(ui = ui_navbarMenu, server = server_data)
+
+
+## ----echo=T, eval=T, out.width="75%"------------------------------------------
+
+ui_navbar_side <- page_navbar( 
+  title = "RNAseq tools",
+  sidebar = sidebar("The same sidebar on every page...", width = 500), #<<
+  nav_panel(title = "DE Analysis",  
+            layout_columns(
+              card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
+              card(card_header("MA plot"),plotOutput("ma_plot")),
+              card(card_header("Volcano plot"),plotOutput("volcano_plot")),
+              col_widths = c(12,6,6), row_heights = c("750px", "500px")
+            )),
+  nav_panel(title = "Next steps",  "The next step in our analysis will be...") 
+)
+
+
+
+## ----echo=T, eval=F, out.width="75%"------------------------------------------
+# #same server function as previous
+# shinyApp(ui = ui_navbar_side, server = server_data)
+
+
+## ----echo=T, eval=T, out.width="75%"------------------------------------------
+
+ui_navbar_side2 <- page_navbar( 
+  title = "RNAseq tools",
+  nav_panel(title = "DE Analysis",  
+            layout_sidebar(#<<
+              sidebar = sidebar("The side bar is only on this page...", width = 500),  #<<
+              layout_columns(#<<
+                card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")), #<<
+                card(card_header("MA plot"),plotOutput("ma_plot")), #<<
+                card(card_header("Volcano plot"),plotOutput("volcano_plot")), #<<
+                col_widths = c(12,6,6), row_heights = c("750px", "500px")) #<<
+            ),  #<<
+  ),
+  nav_panel(title = "Next steps",  "The next step in our analysis will be...") 
+)
+
+
+
+## ----echo=T, eval=F, out.width="75%"------------------------------------------
+# #same server function as previous
+# shinyApp(ui = ui_navbar_side2, server = server_data)
 
 
 ## ----results='asis',include=TRUE,echo=FALSE-----------------------------------
@@ -528,14 +625,11 @@ bootswatch_themes()
 
 ui_cerulean <- page_navbar(
   title = "RNAseq tools",
-  theme = bs_theme(version = 5, bootswatch = "cerulean"),
+  theme = bs_theme(version = 5, bootswatch = "cerulean"), #<<
   nav_panel(
     title = "DE Analysis",
     layout_sidebar(
-      sidebar = sidebar(
-        "This is a sidebar",
-        width = 300,
-      ),
+      sidebar = sidebar("This is a sidebar", width = 300),
       
       layout_columns(
         card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
@@ -545,21 +639,11 @@ ui_cerulean <- page_navbar(
       )
     )
   ),
-  nav_panel(
-    title = "Next steps",
-    "The next step in our analysis will be..."
-  ),
+  nav_panel(title = "Next steps","The next step in our analysis will be..."),
   nav_spacer(),
-  nav_menu(
-    title = "Links",
-    align = "right",
-    nav_item(
-      tags$a(
-        shiny::icon("chart-simple"), "RU BRC - Learn more!",
-        href = "https://rockefelleruniversity.github.io/",
-        target = "_blank"
-      )
-    )
+  nav_menu(title = "Links",
+           align = "right",
+           nav_item(tags$a(shiny::icon("chart-simple"), "RU BRC - Learn more!", href = "https://rockefelleruniversity.github.io/",target = "_blank"))
   )
 )
 
@@ -574,14 +658,11 @@ ui_cerulean <- page_navbar(
 
 ui_darkly <- page_navbar(
   title = "RNAseq tools",
-  theme = bs_theme(version = 5, bootswatch = "darkly"),
-  nav_panel(
+  theme = bs_theme(version = 5, bootswatch = "darkly"), #<<
+ nav_panel(
     title = "DE Analysis",
     layout_sidebar(
-      sidebar = sidebar(
-        "This is a sidebar",
-        width = 300,
-      ),
+      sidebar = sidebar("This is a sidebar", width = 300),
       
       layout_columns(
         card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
@@ -591,21 +672,11 @@ ui_darkly <- page_navbar(
       )
     )
   ),
-  nav_panel(
-    title = "Next steps",
-    "The next step in our analysis will be..."
-  ),
+  nav_panel(title = "Next steps","The next step in our analysis will be..."),
   nav_spacer(),
-  nav_menu(
-    title = "Links",
-    align = "right",
-    nav_item(
-      tags$a(
-        shiny::icon("chart-simple"), "RU BRC - Learn more!",
-        href = "https://rockefelleruniversity.github.io/",
-        target = "_blank"
-      )
-    )
+  nav_menu(title = "Links",
+           align = "right",
+           nav_item(tags$a(shiny::icon("chart-simple"), "RU BRC - Learn more!", href = "https://rockefelleruniversity.github.io/",target = "_blank"))
   )
 )
 
@@ -646,14 +717,11 @@ custom_theme <- bs_theme(
 
 ui_custom <- page_navbar(
   title = "RNAseq tools",
-  theme = custom_theme,
+  theme = custom_theme, #<<
   nav_panel(
     title = "DE Analysis",
     layout_sidebar(
-      sidebar = sidebar(
-        "This is a sidebar",
-        width = 300,
-      ),
+      sidebar = sidebar("This is a sidebar", width = 300),
       
       layout_columns(
         card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
@@ -663,23 +731,14 @@ ui_custom <- page_navbar(
       )
     )
   ),
-  nav_panel(
-    title = "Next steps",
-    "The next step in our analysis will be..."
-  ),
+  nav_panel(title = "Next steps","The next step in our analysis will be..."),
   nav_spacer(),
-  nav_menu(
-    title = "Links",
-    align = "right",
-    nav_item(
-      tags$a(
-        shiny::icon("chart-simple"), "RU BRC - Learn more!",
-        href = "https://rockefelleruniversity.github.io/",
-        target = "_blank"
-      )
-    )
+  nav_menu(title = "Links",
+           align = "right",
+           nav_item(tags$a(shiny::icon("chart-simple"), "RU BRC - Learn more!", href = "https://rockefelleruniversity.github.io/",target = "_blank"))
   )
 )
+
 
 
 

@@ -8,7 +8,7 @@ knitr::opts_chunk$set(echo = TRUE, tidy = T)
 
 ## ----results='asis',include=TRUE,echo=FALSE-----------------------------------
 if(params$isSlides != "yes"){
-  cat("# ?? name of course?? (part 2)
+  cat("# Introduction to Shiny (part 2)
 
 ---
 "    
@@ -241,37 +241,6 @@ server_geneGood = function(input, output){
 # shinyApp(ui = ui_gene2, server = server_geneGood)
 
 
-## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# # sidebar app we previously made
-# shinyApp(ui = ui_custom, server = server_data)
-
-
-## ----echo=T, eval=T, results = 'hide'-----------------------------------------
-sidebar = sidebar(
-  width = 300,
-  numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005),
-  
-  numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1)
-)
-
-
-## ----echo=T, eval=T, results = 'hide'-----------------------------------------
-filtered_de <- reactive({
-    de_table %>%
-      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
-  })
-
-
-## ----echo=T, eval=F, results = 'hide'-----------------------------------------
-# output$de_data = renderDataTable({
-#     datatable(filtered_de(),
-#               selection = "none",
-#               filter = 'top') %>%
-#       formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
-#       formatSignif(columns = c("pvalue", "padj"), digits = 3)
-#   })
-
-
 ## ----echo=F, eval=T, out.width="75%"------------------------------------------
 # grab the custom theme from the previous session
 custom_css <- "
@@ -298,22 +267,16 @@ custom_theme <- bs_theme(
 
 
 
-## ----echo=T, eval=T-----------------------------------------------------------
+## ----echo=F, eval=T, out.width="75%"------------------------------------------
+# read in table
+de_table <- read.csv("data/shP53_vs_control_DEG.csv")
+de_table$negLog10_pval <- -log10(de_table$pvalue)
 
-ui_filter <- page_navbar(
-  title = "RNAseq tools",
-  theme = custom_theme,
+ui_custom <- page_navbar(title = "RNAseq tools", theme = custom_theme, 
   nav_panel(
     title = "DE Analysis",
     layout_sidebar(
-      sidebar = sidebar(
-        width = 300,
-        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005),
-    
-        numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1)
-        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-      ),
+      sidebar = sidebar( "This is a sidebar",width = 300,),
       
       layout_columns(
         card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
@@ -323,159 +286,132 @@ ui_filter <- page_navbar(
       )
     )
   ),
-  nav_panel(
-    title = "Next steps",
-    "The next step in our analysis will be..."
-  ),
+  nav_panel(title = "Next steps","The next step in our analysis will be..."),
   nav_spacer(),
-  nav_menu(
-    title = "Links",
-    align = "right",
-    nav_item(
-      tags$a(
-        shiny::icon("chart-simple"), "RU BRC - Learn more!",
-        href = "https://rockefelleruniversity.github.io/",
-        target = "_blank"
-      )
-    )
+  nav_menu(title = "Links",align = "right",
+           nav_item(tags$a(shiny::icon("chart-simple"), "RU BRC - Learn more!", href = "https://rockefelleruniversity.github.io/",target = "_blank"))
   )
 )
 
-
-
-## ----echo=T, eval=T, out.width="75%"------------------------------------------
-server_filter = function(input, output){ 
-  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  filtered_de <- reactive({
-    de_table %>%
-      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
-  })
-  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
+server_data = function(input, output) {
+  output$app_info = renderText("This is an app showing differential gene expression data")
+  
   output$de_data = renderDataTable({
-    # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    datatable(filtered_de(),
-              selection = "none", 
-              filter = 'top') %>%
+    datatable(de_table,filter = 'top') %>%
       formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
       formatSignif(columns = c("pvalue", "padj"), digits = 3)
-    # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   })
   
-  output$ma_plot = renderPlot({
-    ggplot(de_table, aes(x = baseMean, y = log2FoldChange)) +
-      geom_point() +
-      scale_x_log10() +
-      xlab("baseMean (log scale)") +
-      theme_bw() +
-      ggtitle("MA plot")
-  })
+  output$ma_plot = renderPlot({ 
+    ggplot(de_table, aes(x = baseMean, y = log2FoldChange)) +  geom_point() + scale_x_log10() + xlab("baseMean (log scale)") + theme_bw()
+  }) 
   
-  output$volcano_plot = renderPlot({
-    ggplot(de_table, aes(x = log2FoldChange, y = negLog10_pval)) +
-      geom_point() +
-      theme_bw() +
-      ggtitle("Volcano plot")
-  })
+  output$volcano_plot = renderPlot({ 
+    ggplot(de_table, aes(x = log2FoldChange, y = negLog10_pval)) + geom_point() + theme_bw() 
+  }) 
+} 
+
+
+
+## ----echo=T, eval=T-----------------------------------------------------------
+
+ui_filter <- page_fluid(
+  numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005), #<<
+  numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1), #<<
   
+  dataTableOutput(outputId = "de_data")
+)
+
+server_filter = function(input, output){ 
+  filtered_de <- reactive(de_table %>% dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter))
+
+  output$de_data = renderDataTable(datatable(filtered_de()))
 }
 
 
 
-## ----sidebar_DEfilter, echo=T, eval=F, out.width="75%"------------------------
+## ----echo=T, eval=T-----------------------------------------------------------
+
+ui_filter <- page_fluid(
+  numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005), 
+  numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1), 
+  
+  dataTableOutput(outputId = "de_data")
+)
+
+server_filter = function(input, output){ 
+  filtered_de <- reactive(de_table %>% dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)) #<< 
+
+  output$de_data = renderDataTable(datatable(filtered_de())) #<< 
+}
+
+
+
+## ----echo=T, eval=F, out.width="75%"------------------------------------------
 # shinyApp(ui = ui_filter, server = server_filter)
-
-
-## ----echo=T, eval=T, results = 'hide'-----------------------------------------
-actionButton("de_filter", "Apply filter")
-
-
-## ----echo=T, eval=T, results = 'hide'-----------------------------------------
-filtered_de <- reactive({
-    de_table %>%
-      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
-  }) %>%
-    bindEvent(input$de_filter)
 
 
 ## ----echo=T, eval=T-----------------------------------------------------------
 
-ui_filterButton <- page_navbar(
-  title = "RNAseq tools",
-  theme = custom_theme,
-  nav_panel(
-    title = "DE Analysis",
-    layout_sidebar(
-      sidebar = sidebar(
-        width = 300,
-        numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005),
-    
-        numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 1, min = 0, step = 0.1),
-        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        actionButton("de_filter", "Apply filter")
-        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-      ),
-      
-      layout_columns(
-        card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data")),
-        card(card_header("MA plot"),plotOutput("ma_plot")),
-        card(card_header("Volcano plot"),plotOutput("volcano_plot")),
-        col_widths = c(12,6,6), row_heights = c("750px", "500px")
-      )
-    )
-  ),
-  nav_panel(
-    title = "Next steps",
-    "The next step in our analysis will be..."
-  ),
-  nav_spacer(),
-  nav_menu(
-    title = "Links",
-    align = "right",
-    nav_item(
-      tags$a(
-        shiny::icon("chart-simple"), "RU BRC - Learn more!",
-        href = "https://rockefelleruniversity.github.io/",
-        target = "_blank"
-      )
-    )
-  )
+ui_filter_value <- page_fluid(
+  numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005), 
+  numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1), 
+  
+  layout_columns(
+      value_box(title = "Number of genes that go up:", value = textOutput("num_up"), showcase = icon("arrow-up"), theme = value_box_theme(bg = "#22b430")), #<<
+      value_box(title = "Number of genes that go down:", value = textOutput("num_down"), showcase = icon("arrow-down"), theme = value_box_theme(bg ="#c34020" )), #<<
+      col_widths = c(2,2)))
+
+server_filter_value = function(input, output){ 
+  filtered_de <- reactive(de_table %>% dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter))
+  
+  num_up_genes <- reactive(filtered_de() %>% dplyr::filter(log2FoldChange > 0 & padj < 0.05) %>% nrow) 
+  num_down_genes <- reactive(filtered_de() %>% dplyr::filter(log2FoldChange < 0 & padj < 0.05) %>% nrow) 
+  output$num_up <- renderText(num_up_genes())
+  output$num_down <- renderText(num_down_genes()) 
+}
+
+
+
+## ----echo=T, eval=T-----------------------------------------------------------
+
+ui_filter_value <- page_fluid(
+  numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005), 
+  numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1), 
+  
+  layout_columns(
+      value_box(title = "Number of genes that go up:", value = textOutput("num_up"), showcase = icon("arrow-up"), theme = value_box_theme(bg = "#22b430")), 
+      value_box(title = "Number of genes that go down:", value = textOutput("num_down"), showcase = icon("arrow-down"), theme = value_box_theme(bg ="#c34020" )), 
+      col_widths = c(2,2)))
+
+server_filter_value = function(input, output){ 
+  filtered_de <- reactive(de_table %>% dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter))
+  
+  num_up_genes <- reactive(filtered_de() %>% dplyr::filter(log2FoldChange > 0 & padj < 0.05) %>% nrow) #<<
+  num_down_genes <- reactive(filtered_de() %>% dplyr::filter(log2FoldChange < 0 & padj < 0.05) %>% nrow) #<<
+  output$num_up <- renderText(num_up_genes()) #<<
+  output$num_down <- renderText(num_down_genes()) #<<
+}
+
+
+## ----echo=T, eval=F, out.width="75%"------------------------------------------
+# shinyApp(ui = ui_filter_value, server = server_filter_value)
+
+
+## ----echo=T, eval=T-----------------------------------------------------------
+
+ui_filterButton <- page_fluid(theme = custom_theme,
+  numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005), 
+  numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1), 
+  actionButton("de_filter", "Apply filter"), #<<
+  card(card_header("Filtered data"), dataTableOutput(outputId = "de_data"), min_height = "750px")
 )
 
+server_filterButton = function(input, output){ 
+  filtered_de <- reactive(de_table %>% dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter))  %>%
+    bindEvent(input$de_filter) #<<
 
-
-## ----echo=T, eval=T, out.width="75%"------------------------------------------
-server_filterButton = function(input, output) {
-  filtered_de <- reactive({
-    de_table %>%
-      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
-  }) %>%
-    bindEvent(input$de_filter) # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-  output$de_data = renderDataTable({
-    datatable(filtered_de(),
-              selection = "none",
-              filter = 'top') %>%
-      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
-      formatSignif(columns = c("pvalue", "padj"), digits = 3)
-  })
-  
-  output$ma_plot = renderPlot({
-    ggplot(de_table, aes(x = baseMean, y = log2FoldChange)) +
-      geom_point() +
-      scale_x_log10() +
-      xlab("baseMean (log scale)") +
-      theme_bw() +
-      ggtitle("MA plot")
-  })
-  
-  output$volcano_plot = renderPlot({
-    ggplot(de_table, aes(x = log2FoldChange, y = negLog10_pval)) +
-      geom_point() +
-      theme_bw() +
-      ggtitle("Volcano plot")
-  })
-  
+  output$de_data = renderDataTable(datatable(filtered_de())) 
 }
 
 
@@ -484,38 +420,20 @@ server_filterButton = function(input, output) {
 # shinyApp(ui = ui_filterButton, server = server_filterButton)
 
 
-## ----echo=T, eval=T, out.width="75%"------------------------------------------
-server_filterButton2 = function(input, output) {
-  filtered_de <- reactive({
-    de_table %>%
-      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
-  }) %>%
-    bindEvent(input$de_filter, ignoreNULL = FALSE) # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+## ----echo=T, eval=T-----------------------------------------------------------
 
-  output$de_data = renderDataTable({
-    datatable(filtered_de(),
-              selection = "none",
-              filter = 'top') %>%
-      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
-      formatSignif(columns = c("pvalue", "padj"), digits = 3)
-  })
-  
-  output$ma_plot = renderPlot({
-    ggplot(de_table, aes(x = baseMean, y = log2FoldChange)) +
-      geom_point() +
-      scale_x_log10() +
-      xlab("baseMean (log scale)") +
-      theme_bw() +
-      ggtitle("MA plot")
-  })
-  
-  output$volcano_plot = renderPlot({
-    ggplot(de_table, aes(x = log2FoldChange, y = negLog10_pval)) +
-      geom_point() +
-      theme_bw() +
-      ggtitle("Volcano plot")
-  })
-  
+ui_filterButton <- page_fluid(theme = custom_theme,
+  numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005), 
+  numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1), 
+  actionButton("de_filter", "Apply filter"), 
+  card(card_header("Filtered data"), dataTableOutput(outputId = "de_data"), min_height = "750px")
+)
+
+server_filterButton2 = function(input, output){ 
+  filtered_de <- reactive(de_table %>% dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter))  %>%
+    bindEvent(input$de_filter, ignoreNULL = FALSE) #<<
+
+  output$de_data = renderDataTable(datatable(filtered_de())) 
 }
 
 
@@ -524,32 +442,100 @@ server_filterButton2 = function(input, output) {
 # shinyApp(ui = ui_filterButton, server = server_filterButton2)
 
 
-## ----echo=T, eval=T, results='hide'-------------------------------------------
-card(card_header("Table of DE results"), dataTableOutput(outputId = "de_data"))
+## ----echo=T, eval=T-----------------------------------------------------------
 
-
-## ----echo=T, eval=T, results='hide'-------------------------------------------
-navset_card_tab(
-  title = "DE result tables",
-  
-  nav_panel(card_header("DEGs"), dataTableOutput(outputId = "de_data")),
-  
-  nav_panel(card_header("All genes"), dataTableOutput(outputId = "all_data"))
+ui_tab <- page_fluid(theme = custom_theme,
+  numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005), 
+  numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1), 
+  actionButton("de_filter", "Apply filter"), 
+  navset_card_tab(title = "DE result tables", height = "750px", #<<
+                  nav_panel(card_header("DEGs"), dataTableOutput(outputId = "de_data")), #<<
+                  nav_panel(card_header("All genes"), dataTableOutput(outputId = "all_data"))), #<<
 )
 
+server_tab = function(input, output){ 
+  output$all_data = renderDataTable(datatable(de_table)) #<<
+  
+  filtered_de <- reactive(de_table %>% dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter))  %>%
+    bindEvent(input$de_filter, ignoreNULL = FALSE)
 
-## ----echo=T, eval=F-----------------------------------------------------------
-# output$all_data = renderDataTable({
-#     datatable(de_table,
-#               filter = 'top') %>%
-#       formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
-#       formatSignif(columns = c("pvalue", "padj"), digits = 3)
-#   })
+  output$de_data = renderDataTable(datatable(filtered_de())) 
+}
+
+
+
+## ----echo=T, eval=F, out.width="75%"------------------------------------------
+# shinyApp(ui = ui_tab, server = server_tab)
 
 
 ## ----echo=T, eval=T-----------------------------------------------------------
 
-ui_tab <- page_navbar(
+ui_colorDE <- page_fluid(theme = custom_theme,
+  numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005), 
+  numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1), 
+  actionButton("de_filter", "Apply filter"), 
+  card(card_header("MA plot"), plotOutput("ma_plot")) #<<
+)
+
+
+
+## ----echo=T, eval=T-----------------------------------------------------------
+
+server_colorDE = function(input, output){ 
+  ma_plot_reac <- reactive({ #<<
+    de_table %>% #<<
+      dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>% #<< 
+      ggplot(aes(x = baseMean, y = log2FoldChange, color = sig)) + geom_point() + scale_x_log10() + #<<
+        scale_color_manual(name = "DE status", values = c("red", "grey")) + #<<
+        xlab("baseMean (log scale)") + theme_bw() #<<
+  })  %>%
+    bindEvent(input$de_filter, ignoreNULL = FALSE) 
+  
+    output$ma_plot = renderPlot(ma_plot_reac())
+}
+
+
+
+## ----echo=T, eval=T-----------------------------------------------------------
+
+server_colorDE = function(input, output){ 
+  ma_plot_reac <- reactive({ 
+    de_table %>% 
+      dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>% 
+      ggplot(aes(x = baseMean, y = log2FoldChange, color = sig)) + geom_point() + scale_x_log10() +
+        scale_color_manual(name = "DE status", values = c("red", "grey")) + #
+        xlab("baseMean (log scale)") + theme_bw() 
+  })  %>%
+    bindEvent(input$de_filter, ignoreNULL = FALSE) #<<
+  
+    output$ma_plot = renderPlot(ma_plot_reac()) 
+}
+
+
+
+## ----echo=T, eval=T-----------------------------------------------------------
+
+server_colorDE = function(input, output){ 
+  ma_plot_reac <- reactive({ #<<
+    de_table %>% 
+      dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>% 
+      ggplot(aes(x = baseMean, y = log2FoldChange, color = sig)) + geom_point() + scale_x_log10() +
+        scale_color_manual(name = "DE status", values = c("red", "grey")) + 
+        xlab("baseMean (log scale)") + theme_bw() 
+  })  %>%
+    bindEvent(input$de_filter, ignoreNULL = FALSE) 
+  
+    output$ma_plot = renderPlot(ma_plot_reac()) #<<
+}
+
+
+
+## ----echo=T, eval=F, out.width="75%"------------------------------------------
+# shinyApp(ui = ui_colorDE, server = server_colorDE)
+
+
+## -----------------------------------------------------------------------------
+ui_filterMain <- page_navbar(
   title = "RNAseq tools",
   theme = custom_theme,
   nav_panel(
@@ -557,20 +543,18 @@ ui_tab <- page_navbar(
     layout_sidebar(
       sidebar = sidebar(
         width = 300,
-        numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005),
-    
-        numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 1, min = 0, step = 0.1),
- 
-        actionButton("de_filter", "Apply filter")
+        numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005), # >>>>>>>>>>>>>>>
+  
+        numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 1, min = 0, step = 0.1), # >>>>>>>>>>>>>>>
+        actionButton("de_filter", "Apply filter") # >>>>>>>>>>>>>>>
       ),
-      # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+      
       layout_columns(
-        navset_card_tab(
+        navset_card_tab( # >>>>>>>>>>>>>>>
           title = "DE result tables",
-          nav_panel(card_header("DEGs"), dataTableOutput(outputId = "de_data")),
-          nav_panel(card_header("All genes"), dataTableOutput(outputId = "all_data"))
+          nav_panel(card_header("DEGs"), dataTableOutput(outputId = "de_data")), # >>>>>>>>>>>>>>>
+          nav_panel(card_header("All genes"), dataTableOutput(outputId = "all_data")) # >>>>>>>>>>>>>>>
         ),
-        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         card(card_header("MA plot"),plotOutput("ma_plot")),
         card(card_header("Volcano plot"),plotOutput("volcano_plot")),
         col_widths = c(12,6,6), row_heights = c("750px", "500px")
@@ -596,82 +580,11 @@ ui_tab <- page_navbar(
 )
 
 
-
-## ----echo=T, eval=T, out.width="75%"------------------------------------------
-server_tab = function(input, output) {
-  
-  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  output$all_data = renderDataTable({
-    datatable(de_table,
-              selection = "none",
-              filter = 'top') %>%
-      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
-      formatSignif(columns = c("pvalue", "padj"), digits = 3)
-  })
-  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  
-  filtered_de <- reactive({
-    de_table %>%
-      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
-  }) %>%
-    bindEvent(input$de_filter, ignoreNULL = FALSE)
-
-  output$de_data = renderDataTable({
-    datatable(filtered_de(),
-              selection = "none",
-              filter = 'top') %>%
-      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
-      formatSignif(columns = c("pvalue", "padj"), digits = 3)
-  })
-  
-  output$ma_plot = renderPlot({
-    ggplot(de_table, aes(x = baseMean, y = log2FoldChange)) +
-      geom_point() +
-      scale_x_log10() +
-      xlab("baseMean (log scale)") +
-      theme_bw() +
-      ggtitle("MA plot")
-  })
-  
-  output$volcano_plot = renderPlot({
-    ggplot(de_table, aes(x = log2FoldChange, y = negLog10_pval)) +
-      geom_point() +
-      theme_bw() +
-      ggtitle("Volcano plot")
-  })
-  
-}
-
-
-
-## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# shinyApp(ui = ui_tab, server = server_tab)
-
-
-## ----echo=T, eval=F-----------------------------------------------------------
-# ma_plot_reac <- reactive({
-#     de_table %>%
-#       dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%
-#       ggplot(aes(x = baseMean, y = log2FoldChange, color = sig)) +
-#       geom_point() +
-#       scale_x_log10() +
-#       scale_color_manual(name = "DE status", values = c("red", "grey")) +
-#       xlab("baseMean (log scale)") +
-#       theme_bw() +
-#       ggtitle("MA plot")
-#   })  %>%
-#     bindEvent(input$de_filter, ignoreNULL = FALSE)
-# 
-#     output$ma_plot = renderPlot({
-#       ma_plot_reac()
-#     })
-
-
 ## ----echo=T, eval=T, out.width="75%"------------------------------------------
 
 
-server_deColor = function(input, output) {
-  output$all_data = renderDataTable({
+server_filterMain = function(input, output) {
+  output$all_data = renderDataTable({ # >>>>>>>>>>>>>>>
     datatable(de_table,
               selection = "none",
               filter = 'top') %>%
@@ -681,58 +594,51 @@ server_deColor = function(input, output) {
   
   filtered_de <- reactive({
     de_table %>%
-      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
+      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter) # >>>>>>>>>>>>>>>
   }) %>%
-    bindEvent(input$de_filter, ignoreNULL = FALSE)
+    bindEvent(input$de_filter, ignoreNULL = FALSE) # >>>>>>>>>>>>>>>
 
   output$de_data = renderDataTable({
-    datatable(filtered_de(),
+    datatable(filtered_de(), # >>>>>>>>>>>>>>>
               selection = "none",
               filter = 'top') %>%
       formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
       formatSignif(columns = c("pvalue", "padj"), digits = 3)
   })
   
-  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  
   ma_plot_reac <- reactive({
     de_table %>%
-      dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%
-      ggplot(aes(x = baseMean, y = log2FoldChange, color = sig)) +
-      geom_point() +
-      scale_x_log10() +
+      dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%  # >>>>>>>>>>>>>>>
+      ggplot(aes(x = baseMean, y = log2FoldChange, color = sig)) + geom_point() + scale_x_log10() +
       scale_color_manual(name = "DE status", values = c("red", "grey")) +
-      xlab("baseMean (log scale)") +
-      theme_bw() +
-      ggtitle("MA plot")
+      xlab("baseMean (log scale)") + theme_bw() 
   })  %>%
-    bindEvent(input$de_filter, ignoreNULL = FALSE)
+    bindEvent(input$de_filter, ignoreNULL = FALSE) # >>>>>>>>>>>>>>>
   
     output$ma_plot = renderPlot({
-      ma_plot_reac()
+      ma_plot_reac() 
     }) 
   
     volcano_plot_reac <- reactive({
       de_table %>%
-        dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%
-        ggplot(de_table_wSig, aes(x = log2FoldChange, y = negLog10_pval, color = sig)) +
-        geom_point() +
-        scale_color_manual(name = "DE status", values = c("red", "grey")) +
-        theme_bw() +
-        ggtitle("Volcano plot")
+        dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>% # >>>>>>>>>>>>>>>
+        ggplot(aes(x = log2FoldChange, y = negLog10_pval, color = sig)) + geom_point() +
+        scale_color_manual(name = "DE status", values = c("red", "grey")) + theme_bw()
     }) %>%
-      bindEvent(input$de_filter, ignoreNULL = FALSE)
+      bindEvent(input$de_filter, ignoreNULL = FALSE) # >>>>>>>>>>>>>>>
     
     
   output$volcano_plot = renderPlot({
-    volcano_plot_reac()
+    volcano_plot_reac() # >>>>>>>>>>>>>>>
   }) 
-  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  
 }
 
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# shinyApp(ui = ui_tab, server = server_deColor)
+# shinyApp(ui = ui_filterMain, server = server_filterMain)
 
 
 ## ----results='asis',include=TRUE,echo=FALSE-----------------------------------
@@ -982,7 +888,7 @@ ui_newPlots <- page_navbar(
           nav_panel(card_header("DEGs"), dataTableOutput(outputId = "de_data")),
           nav_panel(card_header("All genes"), dataTableOutput(outputId = "all_data"))
         ),
-        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        # >>>>>>>>>>>>>>>>>>>>>>>>
         # change to plotly and add download buttons to each card
         card(card_header("MA plot"),
              plotlyOutput("ma_plot"), 
@@ -990,26 +896,16 @@ ui_newPlots <- page_navbar(
         card(card_header("Volcano plot"),
              plotlyOutput("volcano_plot"),
              downloadButton("download_volcano_plot", "Download volcano plot", style = "width:40%;")), 
-        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        # >>>>>>>>>>>>>>>>>>>>>>>>
         col_widths = c(12,6,6), row_heights = c("750px", "500px")
       )
     )
   ),
-  nav_panel(
-    title = "Next steps",
-    "The next step in our analysis will be..."
-  ),
+  nav_panel(title = "Next steps","The next step in our analysis will be..."),
   nav_spacer(),
-  nav_menu(
-    title = "Links",
-    align = "right",
-    nav_item(
-      tags$a(
-        shiny::icon("chart-simple"), "RU BRC - Learn more!",
-        href = "https://rockefelleruniversity.github.io/",
-        target = "_blank"
-      )
-    )
+  nav_menu(title = "Links",
+           align = "right",
+           nav_item(tags$a(shiny::icon("chart-simple"), "RU BRC - Learn more!", href = "https://rockefelleruniversity.github.io/",target = "_blank"))
   )
 )
 
@@ -1019,7 +915,7 @@ ui_newPlots <- page_navbar(
 ## ----echo=T, eval=T, out.width="75%"------------------------------------------
 
 server_newPlots = function(input, output) {
-  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  # >>>>>>>>>>>>>>>>>>>>>>>>
   output$download_ma_plot <- downloadHandler(
     filename = function() {
       "maplot.pdf"
@@ -1037,7 +933,7 @@ server_newPlots = function(input, output) {
       ggsave(filename = file, plot = volcano_plot_reac())
     }
   )
-  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  # >>>>>>>>>>>>>>>>>>>>>>>>
   output$all_data = renderDataTable({
     datatable(de_table,
               filter = 'top') %>%
@@ -1059,283 +955,38 @@ server_newPlots = function(input, output) {
       formatSignif(columns = c("pvalue", "padj"), digits = 3)
   })
   
- ma_plot_reac <- reactive({
+ma_plot_reac <- reactive({
     de_table %>%
-      dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%
-      ggplot(aes(x = baseMean, y = log2FoldChange, color = sig, label = Symbol)) + # add symbol as the label
-      geom_point() +
-      scale_x_log10() +
+      dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%  
+      ggplot(aes(x = baseMean, y = log2FoldChange, color = sig, text = Symbol)) + geom_point() + scale_x_log10() +
       scale_color_manual(name = "DE status", values = c("red", "grey")) +
-      xlab("baseMean (log scale)") +
-      theme_bw() +
-      ggtitle("MA plot")
+      xlab("baseMean (log scale)") + theme_bw() 
   })  %>%
     bindEvent(input$de_filter, ignoreNULL = FALSE)
   
-    # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    # >>>>>>>>>>>>>>>>>>>>>>>>
     # use 'renderPlotly' and wrap plot in 'ggplotly'
     output$ma_plot = renderPlotly({
       ggplotly(ma_plot_reac())
     }) 
-    # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    # >>>>>>>>>>>>>>>>>>>>>>>>
     
     volcano_plot_reac <- reactive({
       de_table %>%
-        dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%
-        ggplot(aes(x = log2FoldChange, y = negLog10_pval, color = sig, label = Symbol)) + # add symbol as the label
-        geom_point() +
-        scale_color_manual(name = "DE status", values = c("red", "grey")) +
-        theme_bw() +
-        theme(legend.position="bottom", legend.text=element_text(size=12)) +
-        ggtitle("Volcano plot")
-    }) %>%
-      bindEvent(input$de_filter, ignoreNULL = FALSE)
+        dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>% 
+        ggplot(aes(x = log2FoldChange, y = negLog10_pval, color = sig, text = Symbol)) + geom_point() +
+        scale_color_manual(name = "DE status", values = c("red", "grey")) + theme_bw()
+    })
     
-  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  # >>>>>>>>>>>>>>>>>>>>>>>>
   output$volcano_plot = renderPlotly({
     ggplotly(volcano_plot_reac())
   }) 
-  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  # >>>>>>>>>>>>>>>>>>>>>>>>
 }
 
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
 # shinyApp(ui = ui_newPlots, server = server_newPlots)
-
-
-## ----echo=T, eval=T-----------------------------------------------------------
-ui_upload <- page_fluid(
-  fileInput("de_file", "Upload a DE file", accept = c(".csv", ".tsv", "xlsx", "xls")), #<<
-  
-  dataTableOutput(outputId = "all_data"),
-)
-
-server_upload <- function(input, output){
-  de_table_in <- reactive({
-    rio::import(input$de_file$datapath) %>% dplyr::mutate(negLog10_pval = -log10(pvalue))
-  })
-  
-  output$all_data = renderDataTable({
-    datatable(de_table_in(),
-              filter = 'top') %>%
-      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
-      formatSignif(columns = c("pvalue", "padj"), digits = 3)
-  })
-
-}
-
-
-
-## ----echo=T, eval=T-----------------------------------------------------------
-ui_upload <- page_fluid(
-  fileInput("de_file", "Upload a DE file", accept = c(".csv", ".tsv", "xlsx", "xls")), 
-  dataTableOutput(outputId = "all_data"),
-)
-
-server_upload <- function(input, output){
-  de_table_in <- reactive({
-    rio::import(input$de_file$datapath) %>%  #<<
-      dplyr::mutate(negLog10_pval = -log10(pvalue))
-  })
-  
-  output$all_data = renderDataTable({
-    datatable(de_table_in(),
-              filter = 'top') %>%
-      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
-      formatSignif(columns = c("pvalue", "padj"), digits = 3)
-  })
-
-}
-
-
-
-## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# shinyApp(ui = ui_upload, server = server_upload)
-
-
-## ----echo=T, eval=T-----------------------------------------------------------
-
-server_uploadReq <- function(input, output){
-  
-  de_table_in <- reactive({
-    req(input$de_file)  #<<
-    rio::import(input$de_file$datapath) %>%
-      dplyr::mutate(negLog10_pval = -log10(pvalue))
-  })
-  
-  output$all_data = renderDataTable({
-    datatable(de_table_in(),
-              filter = 'top') %>%
-      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
-      formatSignif(columns = c("pvalue", "padj"), digits = 3)
-  })
-}
-
-
-
-## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# shinyApp(ui = ui_upload, server = server_uploadReq)
-
-
-## ----echo=T, eval=T-----------------------------------------------------------
-
-ui_fileInput <- page_navbar(
-  title = "RNAseq tools",
-  theme = custom_theme,
-  nav_panel(
-    title = "DE Analysis",
-    layout_sidebar(
-      sidebar = sidebar(
-        width = 300,
-        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        fileInput("de_file", "Upload a DE file", accept = c(".csv", ".tsv", "xlsx", "xls")), 
-        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005),
-    
-        numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 1, min = 0, step = 0.1),
- 
-        actionButton("de_filter", "Apply filter")
-      ),
-      
-      layout_columns(
-        navset_card_tab(
-          title = "DE result tables",
-          nav_panel(card_header("DEGs"), dataTableOutput(outputId = "de_data")),
-          nav_panel(card_header("All genes"), dataTableOutput(outputId = "all_data"))
-        ),
-        card(card_header("MA plot"),
-             plotOutput("ma_plot"),
-             downloadButton("download_ma_plot", "Download MA plot", style = "width:40%;")), 
-        card(card_header("Volcano plot"),
-             plotOutput("volcano_plot"),
-             downloadButton("download_volcano_plot", "Download volcano plot", style = "width:40%;")), 
-        col_widths = c(12,6,6), row_heights = c("750px", "500px")
-      )
-    )
-  ),
-  nav_panel(
-    title = "Next steps",
-    "The next step in our analysis will be..."
-  ),
-  nav_spacer(),
-  nav_menu(
-    title = "Links",
-    align = "right",
-    nav_item(
-      tags$a(
-        shiny::icon("chart-simple"), "RU BRC - Learn more!",
-        href = "https://rockefelleruniversity.github.io/",
-        target = "_blank"
-      )
-    )
-  )
-)
-
-
-## ----echo=T, eval=F-----------------------------------------------------------
-# # part of server function, not run in isolation...
-# filtered_de <- reactive({
-#     de_table_in() %>% #<<
-#       dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
-#   }) %>%
-#     bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE) #<<
-# 
-
-
-## ----echo=T, eval=F-----------------------------------------------------------
-# # part of server function, not run in isolation...
-# ma_plot_reac <- reactive({
-#     de_table_in() %>% #<<
-#       dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%
-#       ggplot(aes(x = baseMean, y = log2FoldChange, color = sig, label = Symbol)) + geom_point() +
-#       scale_x_log10() + scale_color_manual(name = "DE status", values = c("red", "grey")) +
-#       xlab("baseMean (log scale)") + theme_bw() + ggtitle("MA plot")
-#   })  %>%
-#     bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE)  #<<
-# 
-
-
-## ----echo=T, eval=T, out.width="75%"------------------------------------------
-
-server_fileInput = function(input, output) {
-
-  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  de_table_in <- reactive({
-    req(input$de_file)
-    rio::import(input$de_file$datapath) %>% dplyr::mutate(negLog10_pval = -log10(pvalue))
-  })
-  # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  
-  output$download_ma_plot <- downloadHandler(
-    filename = function() {
-      "maplot.pdf"
-    },
-    content = function(file) {
-      ggsave(filename = file, plot = ma_plot_reac())
-    }
-  )
-  
-  output$download_volcano_plot <- downloadHandler(
-    filename = function() {
-      "volcanoplot.pdf"
-    },
-    content = function(file) {
-      ggsave(filename = file, plot = volcano_plot_reac())
-    }
-  )
-  
-  output$all_data = renderDataTable({
-    datatable(de_table_in(), # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-              filter = 'top') %>%
-      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
-      formatSignif(columns = c("pvalue", "padj"), digits = 3)
-  })
-  
-  filtered_de <- reactive({
-    de_table_in() %>% # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
-  }) %>%
-    bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE) # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-  output$de_data = renderDataTable({
-    datatable(filtered_de(), 
-              filter = 'top') %>%
-      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
-      formatSignif(columns = c("pvalue", "padj"), digits = 3)
-  })
-  
-  ma_plot_reac <- reactive({
-      de_table_in() %>% # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-      dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%
-      ggplot(aes(x = baseMean, y = log2FoldChange, color = sig, label = Symbol)) + geom_point() +
-      scale_x_log10() + scale_color_manual(name = "DE status", values = c("red", "grey")) +
-      xlab("baseMean (log scale)") + theme_bw() + ggtitle("MA plot")
-  })  %>%
-    bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE) # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-    output$ma_plot = renderPlot({
-      ma_plot_reac()
-    }) 
-  
-    volcano_plot_reac <- reactive({
-        de_table_in() %>% # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-          dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%
-          ggplot(aes(x = log2FoldChange, y = negLog10_pval, color = sig)) +
-          geom_point() +
-          scale_color_manual(name = "DE status", values = c("red","grey"),) +
-          ggtitle("Volcano plot")
-      
-    }) %>%
-      bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE) # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  
-    output$volcano_plot = renderPlot({
-      volcano_plot_reac()
-    }) 
-}
-
-
-
-## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# shinyApp(ui = ui_fileInput, server = server_fileInput)
 
