@@ -16,7 +16,7 @@
 <br>
 
 ### Overview
-This course will review the basic steps required to build your own interactive app using Shiny.
+This course will review the basic steps required to build your own interactive app using Shiny. We will start with the basics of setting up a simple user interface, and then learn how to make the interface reactive to the user of the app.  
 
 
 Course material and exercises are available to view as rendered HTML at https://rockefelleruniversity.github.io/RU_shiny/.

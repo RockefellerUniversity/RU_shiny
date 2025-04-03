@@ -1,9 +1,8 @@
 <br>
 
-#### **Intro to Shiny, Session 2**
+#### **Session 2 - Input types and Reactivity**
 
-??If you have more sections then do this again. what is session 2 about? keep adding more files if needed??
-
-* Course content
-* Building courses
-* Making it look nice
+* Input types
+* Basic reactivity
+* Interactive plots
+* Downloading files from apps
