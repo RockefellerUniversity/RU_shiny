@@ -1,6 +1,6 @@
 <br>
 
-#### **?? My course name?? , Session 1**
+#### **Intro to Shiny , Session 1**
 
 ??What am I focusing on in this section. Bullet point lists are good??
 

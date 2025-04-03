@@ -16,11 +16,8 @@
 <br>
 
 ### Overview
-?? This Section is used to build the course website ?? 
+This course will review the basic steps required to build your own interactive app using Shiny.
 
-?? What is this course about??
-
-?? Break down of course structure. You can look here for guidance: https://rockefelleruniversity.github.io/Intro_To_R_1Day/?? 
 
 Course material and exercises are available to view as rendered HTML at https://rockefelleruniversity.github.io/RU_shiny/.
 All material is available to download under GPL v2 license.

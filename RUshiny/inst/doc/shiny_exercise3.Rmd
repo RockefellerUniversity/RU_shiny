@@ -1,7 +1,7 @@
 ---
-title: "My Exercise 1"
+title: "Shiny Exercise 3"
 author: "Rockefeller University, Bioinformatics Resource Centre"
-date: "https://rockefelleruniversity.github.io/RU_course_template/"
+date: "https://rockefelleruniversity.github.io/RU_shiny/"
 output: 
   html_document:
     number_sections: false  ## if you want number sections at each table header
