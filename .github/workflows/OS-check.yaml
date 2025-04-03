@@ -128,6 +128,7 @@ jobs:
       - name: Install dependencies 3
         if: matrix.config.r != 'devel'
         run: |
+          BiocManager::install(version = "release", ask=F)
           BiocManager::install("rmarkdown")
           BiocManager::install("devtools")
           BiocManager::install("RockefellerUniversity/compileCourses",subdir="compileCourses")  
