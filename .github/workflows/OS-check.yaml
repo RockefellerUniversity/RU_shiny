@@ -107,7 +107,7 @@ jobs:
         if: ${{ matrix.config.os == 'macOS-latest' && matrix.config.r == 'devel' }}
         run: |
           brew install gettext
-          brew link --force gettext
+          brew link --force gettext --HEAD
           export CPPFLAGS="-I$(brew --prefix gettext)/include"
           export LDFLAGS="-L$(brew --prefix gettext)/lib"
 
@@ -116,25 +116,26 @@ jobs:
         run: |
           ## Edit below if you have any Windows system dependencies
         shell: Rscript {0}
-
-      - name: Install dependencies 1
+        
+      - name: Install dependencies - release
+        if: matrix.config.r != 'devel'
         run: |
           remotes::install_deps("RUshiny/",dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
           remotes::install_cran("BiocManager", force = TRUE)
-        shell: Rscript {0}
-        
-      - name: Install dependencies 2
-        if: matrix.config.r != 'devel'
-        run: |
+          c
           BiocManager::install("rmarkdown")
           BiocManager::install("devtools")
           BiocManager::install("RockefellerUniversity/compileCourses",subdir="compileCourses")  
         shell: Rscript {0}
         
-      - name: Install dependencies 3
+      - name: Install dependencies - devel
         if: matrix.config.r == 'devel'
         run: |
+          remotes::install_deps("RUshiny/",dependencies = TRUE)
+          remotes::install_cran("rcmdcheck")
+          remotes::install_cran("BiocManager", force = TRUE)
+          BiocManager::version()
           BiocManager::install(version = "devel", ask=F)
           BiocManager::install("rmarkdown", version = "devel")
           BiocManager::install("devtools", version = "devel")
