@@ -481,18 +481,35 @@ server_renderUI <- function(input, output){
 ```
 
 ---
-## div() function
+## The div() function
 
+You might have noticed in the server function that we wrapped the three UI elements within *renderUI* in a div() function call. 
 
+We do this because *renderUI* will only return a single UI element. The R function *div*  will group mutliple HTML elements into one object that is compatible with *renderUI*. 
 
-```{r}
- output$sidebar_filters_UI <- renderUI({ 
-    req(de_table_in()) #<<
-    div(numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.001), #<<
-        numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 1, min = 0, step = 0.1),
-        actionButton("de_filter", "Apply filter"))
+If you've ever looked at HTML code, you'll notice it's containerized into chunks divided by `<div>` tags, and *div* is one of the HTML helper functions in R, grouping mutliple elements into one of these containers. 
+
+```{r, echo = T, eval=F}
+server_renderUI <- function(input, output){
+  de_table_in <- reactive({ 
+    req(input$de_file)
+    rio::import(input$de_file$datapath) %>% dplyr::mutate(negLog10_pval = -log10(pvalue))})
+  
+  output$sidebar_filters_UI <- renderUI({ 
+    req(de_table_in()) 
+    div( #<<
+      numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.001),
+      numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 1, min = 0, step = 0.1),
+      actionButton("de_filter", "Apply filter")
+    ) #<<
   })
+}
 ```
+
+
+
+
+
 
 
 
