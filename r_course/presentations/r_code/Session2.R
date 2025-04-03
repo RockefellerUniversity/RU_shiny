@@ -867,7 +867,7 @@ server_download <- function(input, output){
 
 
 ## ----echo=T, eval=T-----------------------------------------------------------
-ui_newPlots <- page_navbar(
+ui_session2 <- page_navbar(
   title = "RNAseq tools",
   theme = custom_theme,
   nav_panel(
@@ -876,18 +876,28 @@ ui_newPlots <- page_navbar(
       sidebar = sidebar(
         width = 300,
         numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005),
-    
+        
         numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 1, min = 0, step = 0.1),
- 
-        actionButton("de_filter", "Apply filter")
+        
+        actionButton("de_filter", "Apply filter"),
+        # >>>>>>>>>>>>>>>>>>>>>>>>
+        # add value boxes (and new line spaces with br()) to the sidebar
+        br(),
+        br(),
+        value_box(title = "Number of genes that go up:", value = textOutput("num_up"), 
+                  showcase = icon("arrow-up"), 
+                  theme = value_box_theme(bg = "#22b430")), 
+        value_box(title = "Number of genes that go down:", value = textOutput("num_down"), 
+                  showcase = icon("arrow-down"), 
+                  theme = value_box_theme(bg ="#c34020" ))
+        # >>>>>>>>>>>>>>>>>>>>>>>>
       ),
-      
       layout_columns(
-        navset_card_tab(
-          title = "DE result tables",
-          nav_panel(card_header("DEGs"), dataTableOutput(outputId = "de_data")),
-          nav_panel(card_header("All genes"), dataTableOutput(outputId = "all_data"))
-        ),
+          navset_card_tab(
+            title = "DE result tables",
+            nav_panel(card_header("DEGs"), dataTableOutput(outputId = "de_data")),
+            nav_panel(card_header("All genes"), dataTableOutput(outputId = "all_data"))
+          ),
         # >>>>>>>>>>>>>>>>>>>>>>>>
         # change to plotly and add download buttons to each card
         card(card_header("MA plot"),
@@ -911,11 +921,72 @@ ui_newPlots <- page_navbar(
 
 
 
-
 ## ----echo=T, eval=T, out.width="75%"------------------------------------------
 
-server_newPlots = function(input, output) {
+server_session2 = function(input, output) {
+ 
+  output$all_data = renderDataTable({
+    datatable(de_table,
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+  filtered_de <- reactive({
+    de_table %>%
+      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
+  }) %>%
+    bindEvent(input$de_filter, ignoreNULL = FALSE)
+  
   # >>>>>>>>>>>>>>>>>>>>>>>>
+  # make reactives that return number of genes that go up or down based on user provided inputs
+  num_up_genes <- reactive(filtered_de() %>% dplyr::filter(log2FoldChange > 0 & padj < 0.05) %>% nrow) 
+  num_down_genes <- reactive(filtered_de() %>% dplyr::filter(log2FoldChange < 0 & padj < 0.05) %>% nrow) 
+  # >>>>>>>>>>>>>>>>>>>>>>>>
+  # make outputs that display the above reactives in the valueboxes
+  output$num_up <- renderText(num_up_genes())
+  output$num_down <- renderText(num_down_genes()) 
+  
+  output$de_data = renderDataTable({
+    datatable(filtered_de(),
+              selection = "single",
+              filter = 'top') %>%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+  ma_plot_reac <- reactive({
+    de_table %>%
+      dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%  
+      ggplot(aes(x = baseMean, y = log2FoldChange, color = sig, text = Symbol)) + geom_point() + scale_x_log10() +
+      scale_color_manual(name = "DE status", values = c("red", "grey")) +
+      xlab("baseMean (log scale)") + theme_bw() 
+  })  %>%
+    bindEvent(input$de_filter, ignoreNULL = FALSE)
+  
+  # >>>>>>>>>>>>>>>>>>>>>>>>
+  # use 'renderPlotly' and wrap plot in 'ggplotly' to make ma plot interactive
+  output$ma_plot = renderPlotly({
+    ggplotly(ma_plot_reac())
+  }) 
+  # >>>>>>>>>>>>>>>>>>>>>>>>
+  
+  volcano_plot_reac <- reactive({
+    de_table %>%
+      dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>% 
+      ggplot(aes(x = log2FoldChange, y = negLog10_pval, color = sig, text = Symbol)) + geom_point() +
+      scale_color_manual(name = "DE status", values = c("red", "grey")) + theme_bw()
+  })
+  
+  # >>>>>>>>>>>>>>>>>>>>>>>>
+  # use 'renderPlotly' and wrap plot in 'ggplotly' to make volcano plot interactive
+  output$volcano_plot = renderPlotly({
+    ggplotly(volcano_plot_reac())
+  }) 
+  # >>>>>>>>>>>>>>>>>>>>>>>>
+  
+   # >>>>>>>>>>>>>>>>>>>>>>>>
+  # download hanlders for each download button below each plot
   output$download_ma_plot <- downloadHandler(
     filename = function() {
       "maplot.pdf"
@@ -934,59 +1005,12 @@ server_newPlots = function(input, output) {
     }
   )
   # >>>>>>>>>>>>>>>>>>>>>>>>
-  output$all_data = renderDataTable({
-    datatable(de_table,
-              filter = 'top') %>%
-      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
-      formatSignif(columns = c("pvalue", "padj"), digits = 3)
-  })
   
-  filtered_de <- reactive({
-    de_table %>%
-      dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)
-  }) %>%
-    bindEvent(input$de_filter, ignoreNULL = FALSE)
-
-  output$de_data = renderDataTable({
-    datatable(filtered_de(),
-              selection = "single",
-              filter = 'top') %>%
-      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %>%
-      formatSignif(columns = c("pvalue", "padj"), digits = 3)
-  })
-  
-ma_plot_reac <- reactive({
-    de_table %>%
-      dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>%  
-      ggplot(aes(x = baseMean, y = log2FoldChange, color = sig, text = Symbol)) + geom_point() + scale_x_log10() +
-      scale_color_manual(name = "DE status", values = c("red", "grey")) +
-      xlab("baseMean (log scale)") + theme_bw() 
-  })  %>%
-    bindEvent(input$de_filter, ignoreNULL = FALSE)
-  
-    # >>>>>>>>>>>>>>>>>>>>>>>>
-    # use 'renderPlotly' and wrap plot in 'ggplotly'
-    output$ma_plot = renderPlotly({
-      ggplotly(ma_plot_reac())
-    }) 
-    # >>>>>>>>>>>>>>>>>>>>>>>>
-    
-    volcano_plot_reac <- reactive({
-      de_table %>%
-        dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>% 
-        ggplot(aes(x = log2FoldChange, y = negLog10_pval, color = sig, text = Symbol)) + geom_point() +
-        scale_color_manual(name = "DE status", values = c("red", "grey")) + theme_bw()
-    })
-    
-  # >>>>>>>>>>>>>>>>>>>>>>>>
-  output$volcano_plot = renderPlotly({
-    ggplotly(volcano_plot_reac())
-  }) 
-  # >>>>>>>>>>>>>>>>>>>>>>>>
 }
 
 
 
+
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# shinyApp(ui = ui_newPlots, server = server_newPlots)
+# shinyApp(ui = ui_session2, server = server_session2)
 

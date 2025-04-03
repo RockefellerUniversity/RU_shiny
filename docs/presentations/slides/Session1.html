@@ -112,8 +112,6 @@ class: inverse, center, middle
 
 
 
-
-
 ## Basic componenets of Shiny app
 A shiny app consists of the user interface (UI) and the server function
 * the UI object defines what will be seen on the page
@@ -224,46 +222,34 @@ The *Application name* you enter will be the name of a newly created directory t
 
 &lt;img src="imgs/shiny_file_dropdown.png"height="400" width="350"&gt;
 ]
+
 ---
 
-
-## Shiny resources for inputs and outputs 
-
-The Shiny [cheatsheet](https://shiny.posit.co/r/articles/start/cheatsheet/) is a great resource demonstrating built-in input and output options
-
-ADD IMAGE OF INPUTS FREOM CHEATSHEET!
-
-or go through inputs like mastering shiny book
-
-or go through the [posit widget gallery](https://shiny.posit.co/r/gallery/widgets/widget-gallery/)
----
-
-
-## Build a basic app
-
-**Talk about outputs and how outputs are paired with render functions**
+## Shiny basics
+    
+.pull-left[
 
 ``` r
+library(shiny)
+library(bslib)
+
+data &lt;- data.frame(col1 = 1:3, 
+                   col2 = 4:6)
+
 ui = page_fluid(
-  textOutput(outputId = "app_info")
+  textOutput(outputId = "app_info"),
+  
+  br(),
+  tags$b("Bold text in UI object"),
+  
+  br(),
+  tableOutput(outputId = "table_in")
 )
 
-print(as.character(ui))
-```
-
-```
-## [1] "&lt;div class=\"container-fluid\"&gt;\n  &lt;div id=\"app_info\" class=\"shiny-text-output\"&gt;&lt;/div&gt;\n&lt;/div&gt;"
-```
-
----
-
-## Build a basic app
-
-server function and launch app
-
-``` r
 server = function(input, output) {
-  output$app_info = renderText("Our first app!")
+  output$app_info &lt;- renderText("Rendered in server!")
+  
+  output$table_in &lt;- renderTable(data)
 }
 ```
 
@@ -271,17 +257,315 @@ server = function(input, output) {
 ``` r
 shinyApp(ui = ui, server = server)
 ```
+&lt;/div&gt;
+]
 
-&lt;img src="imgs/basic.png"height="400" width="500"&gt;
+.pull-right[
+Let's look at a very basic app.
+
+&lt;img src="imgs/basic.png"height="300" width="400"&gt;
+]
+
+
+---
+
+## Shiny basics
+    
+.pull-left[
+
+``` r
+*library(shiny)
+*library(bslib)
+
+*data &lt;- data.frame(col1 = 1:3,
+*                  col2 = 4:6)
+
+ui = page_fluid(
+  textOutput(outputId = "app_info"),
+  
+  br(),
+  tags$b("Bold text in UI object"),
+  
+  br(),
+  tableOutput(outputId = "table_in")
+)
+
+server = function(input, output) {
+  output$app_info &lt;- renderText("Rendered in server!")
+  
+  output$table_in &lt;- renderTable(data)
+}
+```
+
+
+``` r
+shinyApp(ui = ui, server = server)
+```
+]
+
+.pull-right[
+The top part of a Shiny R script contains any packages that a required, and any global code/variables. 
+
+* The code that is in this section will only be run once when the app is initialized, and cannot be updated once the app starts.
+* The variables after this code is run are avaialbe in the environment, and can be used in the server function.
+]
+
+---
+
+## Shiny basics
+    
+.pull-left[
+
+``` r
+library(shiny) 
+library(bslib) 
+
+data &lt;- data.frame(col1 = 1:3, 
+                   col2 = 4:6) 
+
+*ui = page_fluid(
+* textOutput(outputId = "app_info"),
+*  
+* br(),
+* tags$b("Bold text in UI object"),
+*  
+* br(),
+* tableOutput(outputId = "table_in")
+*) 
+
+server = function(input, output) {
+  output$app_info &lt;- renderText("Rendered in server!")
+  
+  output$table_in &lt;- renderTable(data)
+}
+```
+
+
+``` r
+shinyApp(ui = ui, server = server)
+```
+]
+
+.pull-right[
+The UI object sets up what the user sees on the page.
+
+Websites use HTML to set up the structure of the page, CSS for styling, and JavaScript for interactivity. The beauty of Shiny is that you can fully use R (or Python) code to utilize HTML, CSS, and JavaScript in the UI, while using R or Python behind the scenes for the server logic. 
+
+The UI object is a series of R functions that generates HTML code (see below).
+
+
+``` r
+print(as.character(ui))
+```
+
+```
+## [1] "&lt;div class=\"container-fluid\"&gt;\n  &lt;div id=\"app_info\" class=\"shiny-text-output\"&gt;&lt;/div&gt;\n  &lt;br/&gt;\n  &lt;b&gt;Bold text in UI object&lt;/b&gt;\n  &lt;br/&gt;\n  &lt;div id=\"table_in\" class=\"shiny-html-output\"&gt;&lt;/div&gt;\n&lt;/div&gt;"
+```
+]
+
+---
+
+## Shiny basics
+    
+.pull-left[
+
+``` r
+library(shiny) 
+library(bslib) 
+
+data &lt;- data.frame(col1 = 1:3, 
+                   col2 = 4:6) 
+
+ui = page_fluid(
+* textOutput(outputId = "app_info"),
+  
+  br(), 
+  tags$b("Bold text in UI object"),
+  
+  br(),
+  tableOutput(outputId = "table_in") 
+)
+
+server = function(input, output) {
+* output$app_info &lt;- renderText("Rendered in server!")
+  
+  output$table_in &lt;- renderTable(data)
+}
+```
+
+
+``` r
+shinyApp(ui = ui, server = server)
+```
+]
+
+.pull-right[
+The *Output* functions from Shiny will hold a space on the page for an HTML element in the UI object.
+
+Outputs are paired with a *render* function in the server that will determine the contents of this element based on R code run in the server function. 
+
+Here, we simply render some text to fill the output in the UI, but later on we will see how we can fill these UI components in a **reactive** manner, which is where the power of Shiny is apparent. 
+]
+
+---
+
+## Shiny basics
+    
+.pull-left[
+
+``` r
+library(shiny) 
+library(bslib) 
+
+data &lt;- data.frame(col1 = 1:3, 
+                   col2 = 4:6) 
+
+ui = page_fluid(
+  textOutput(outputId = "app_info"), 
+  
+* br(),
+* tags$b("Bold text in UI object"),
+*  
+* br(),
+  tableOutput(outputId = "table_in") 
+)
+
+server = function(input, output) {
+  output$app_info &lt;- renderText("Rendered in server!") 
+  
+  output$table_in &lt;- renderTable(data)
+}
+```
+
+
+``` r
+shinyApp(ui = ui, server = server)
+```
+]
+
+.pull-right[
+As we mentioned, the UI object translats R functions into HTML code.
+
+Shiny has many helper functions that allow us to insert common HTML elements, or tags, into our app. A glossary of Shiny tags is [here](https://shiny.posit.co/r/articles/build/tag-glossary/).
+
+Common tags have their own function, such as *br()* (creates a line break), while others are available using the *tags* object, like *tags$b()* in our example (makes text bold). 
+
+[HTML can be used](https://shiny.posit.co/r/articles/build/html-tags/) in Shiny in a variety of potentially complex ways, including as raw HTML. 
+]
+
+---
+
+## Shiny basics
+    
+.pull-left[
+
+``` r
+library(shiny) 
+library(bslib) 
+
+data &lt;- data.frame(col1 = 1:3, 
+                   col2 = 4:6) 
+
+ui = page_fluid(
+  textOutput(outputId = "app_info"), 
+  
+  br(), 
+  tags$b("Bold text in UI object"), 
+   
+  br(), 
+  tableOutput(outputId = "table_in") 
+)
+
+*server = function(input, output) {
+* output$app_info &lt;- renderText("Rendered in server!")
+*  
+* output$table_in &lt;- renderTable(data)
+}
+```
+
+
+``` r
+shinyApp(ui = ui, server = server)
+```
+]
+
+.pull-right[
+The server function takes the inputs from the UI object, and using R code will generate the output objects that are displayed in the UI.
+
+As the app runs the UI is then monitoring the *output* object to update the UI components.
+
+Here we simply use text or a table that are hard coded, but the main use of Shiny is the ability to use very complex R code in the server to react to the users actions and dynamically create outputs.
+
+We will start getting into reactivity in Session 2. 
+]
+
+---
+
+## Shiny basics
+    
+.pull-left[
+
+``` r
+library(shiny) 
+library(bslib) 
+
+data &lt;- data.frame(col1 = 1:3, 
+                   col2 = 4:6) 
+
+ui = page_fluid(
+  textOutput(outputId = "app_info"), 
+  
+  br(), 
+  tags$b("Bold text in UI object"), 
+   
+  br(), 
+  tableOutput(outputId = "table_in") 
+)
+
+server = function(input, output) { 
+  output$app_info &lt;- renderText("Rendered in server!")
+  
+  output$table_in &lt;- renderTable(data)
+}
+```
+
+
+``` r
+*shinyApp(ui = ui, server = server)
+```
+]
+
+.pull-right[
+The last part of a Shiny app is to run the *shinyApp* function. 
+
+This function does a lot, and it's not that important to know specifics to use Shiny, but it runs the app in the browser (or in RStudio) while using the UI object and server function to handle the interactions between inputs and outputs.
+]
+
+
+---
+
+
+## Shiny resources for inputs and outputs 
+
+The Shiny [cheatsheet](https://shiny.posit.co/r/articles/start/cheatsheet/) is a great resource demonstrating built-in input and output options
+
+&lt;img src="imgs/cheat_sheet.png"height="500" width="700"&gt;
+
 
 ---
 
 ## Adding global variables to app
 
-Global variables can be assigned in the script outside of the UI object and server function. This code is run once upon initiating the app and global variables and settings are available within the app.
+Let's start building a real app of our own. 
+
+This is the section outside the UI and server where we define global variables or functions. We read in a data frame that contains RNAseq differential expression results.
 
 
 ``` r
+library(shiny) 
+library(bslib) 
+library(dplyr)
+
 # read in table
 de_table &lt;- read.csv("data/shP53_vs_control_DEG.csv")
 de_table$negLog10_pval &lt;- -log10(de_table$pvalue)

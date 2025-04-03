@@ -103,19 +103,85 @@ library(DT)
 # shinyApp(ui, server)
 
 
-## ----echo=T, eval=T, out.width="75%"------------------------------------------
+## ----basic, echo=T, eval=T----------------------------------------------------
+library(shiny)
+library(bslib)
+
+data <- data.frame(col1 = 1:3, 
+                   col2 = 4:6)
+
 ui = page_fluid(
-  textOutput(outputId = "app_info")
+  textOutput(outputId = "app_info"),
+  
+  br(),
+  tags$b("Bold text in UI object"),
+  
+  br(),
+  tableOutput(outputId = "table_in")
 )
 
-print(as.character(ui))
+server = function(input, output) {
+  output$app_info <- renderText("Rendered in server!")
+  
+  output$table_in <- renderTable(data)
+}
 
 
-## ----basic, echo=T, eval=T, out.width="75%"-----------------------------------
 
+## ----echo=T, eval=F, out.width="75%"------------------------------------------
+# shinyApp(ui = ui, server = server)
+
+
+## ----echo=T, eval=T-----------------------------------------------------------
+library(shiny) #<<
+library(bslib) #<<
+
+data <- data.frame(col1 = 1:3, #<<
+                   col2 = 4:6) #<<
+
+ui = page_fluid(
+  textOutput(outputId = "app_info"),
+  
+  br(),
+  tags$b("Bold text in UI object"),
+  
+  br(),
+  tableOutput(outputId = "table_in")
+)
 
 server = function(input, output) {
-  output$app_info = renderText("Our first app!")
+  output$app_info <- renderText("Rendered in server!")
+  
+  output$table_in <- renderTable(data)
+}
+
+
+
+## ----echo=T, eval=F, out.width="75%"------------------------------------------
+# shinyApp(ui = ui, server = server)
+
+
+## ----echo=T, eval=T-----------------------------------------------------------
+library(shiny) 
+library(bslib) 
+
+data <- data.frame(col1 = 1:3, 
+                   col2 = 4:6) 
+
+ui = page_fluid( #<<
+  textOutput(outputId = "app_info"), #<<
+  #<<
+  br(), #<<
+  tags$b("Bold text in UI object"), #<<
+  #<<
+  br(), #<<
+  tableOutput(outputId = "table_in") #<<
+) #<<
+
+server = function(input, output) {
+  output$app_info <- renderText("Rendered in server!")
+  
+  output$table_in <- renderTable(data)
 }
 
 
@@ -125,6 +191,131 @@ server = function(input, output) {
 
 
 ## ----echo=T, eval=T, out.width="75%"------------------------------------------
+
+print(as.character(ui))
+
+
+## ----echo=T, eval=T-----------------------------------------------------------
+library(shiny) 
+library(bslib) 
+
+data <- data.frame(col1 = 1:3, 
+                   col2 = 4:6) 
+
+ui = page_fluid(
+  textOutput(outputId = "app_info"), #<<
+  
+  br(), 
+  tags$b("Bold text in UI object"),
+  
+  br(),
+  tableOutput(outputId = "table_in") 
+)
+
+server = function(input, output) {
+  output$app_info <- renderText("Rendered in server!") #<<
+  
+  output$table_in <- renderTable(data)
+}
+
+
+
+## ----echo=T, eval=F, out.width="75%"------------------------------------------
+# shinyApp(ui = ui, server = server)
+
+
+## ----echo=T, eval=T, message=F, warning=F-------------------------------------
+library(shiny) 
+library(bslib) 
+
+data <- data.frame(col1 = 1:3, 
+                   col2 = 4:6) 
+
+ui = page_fluid(
+  textOutput(outputId = "app_info"), 
+  
+  br(), #<<
+  tags$b("Bold text in UI object"), #<<
+   #<<
+  br(), #<<
+  tableOutput(outputId = "table_in") 
+)
+
+server = function(input, output) {
+  output$app_info <- renderText("Rendered in server!") 
+  
+  output$table_in <- renderTable(data)
+}
+
+
+
+## ----echo=T, eval=F, out.width="75%"------------------------------------------
+# shinyApp(ui = ui, server = server)
+
+
+## ----echo=T, eval=T, message=F, warning=F-------------------------------------
+library(shiny) 
+library(bslib) 
+
+data <- data.frame(col1 = 1:3, 
+                   col2 = 4:6) 
+
+ui = page_fluid(
+  textOutput(outputId = "app_info"), 
+  
+  br(), 
+  tags$b("Bold text in UI object"), 
+   
+  br(), 
+  tableOutput(outputId = "table_in") 
+)
+
+server = function(input, output) { #<<
+  output$app_info <- renderText("Rendered in server!")#<<
+  #<<
+  output$table_in <- renderTable(data)#<<
+}
+
+
+
+## ----echo=T, eval=F, out.width="75%"------------------------------------------
+# shinyApp(ui = ui, server = server)
+
+
+## ----echo=T, eval=T, message=F, warning=F-------------------------------------
+library(shiny) 
+library(bslib) 
+
+data <- data.frame(col1 = 1:3, 
+                   col2 = 4:6) 
+
+ui = page_fluid(
+  textOutput(outputId = "app_info"), 
+  
+  br(), 
+  tags$b("Bold text in UI object"), 
+   
+  br(), 
+  tableOutput(outputId = "table_in") 
+)
+
+server = function(input, output) { 
+  output$app_info <- renderText("Rendered in server!")
+  
+  output$table_in <- renderTable(data)
+}
+
+
+
+## ----echo=T, eval=F, out.width="75%"------------------------------------------
+# shinyApp(ui = ui, server = server) #<<
+
+
+## ----echo=T, eval=T, out.width="75%", message=F, warning=F--------------------
+library(shiny) 
+library(bslib) 
+library(dplyr)
+
 # read in table
 de_table <- read.csv("data/shP53_vs_control_DEG.csv")
 de_table$negLog10_pval <- -log10(de_table$pvalue)
@@ -133,7 +324,7 @@ de_table$negLog10_pval <- -log10(de_table$pvalue)
 head(de_table, 3)
 
 
-## ----echo=T, eval=T, out.width="75%"------------------------------------------
+## ----echo=T, eval=T, out.width="75%", message=F, warning=F--------------------
 library(DT)
 
 ui_simple = page_fluid(
