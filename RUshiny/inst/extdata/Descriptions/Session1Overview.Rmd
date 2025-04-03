@@ -1,9 +1,7 @@
 <br>
 
-#### **Intro to Shiny , Session 1**
+#### **Session 1 - Shiny Basics**
 
-??What am I focusing on in this section. Bullet point lists are good??
-
-* Course content
-* Building courses
-* Making it look nice
+* Basic Shiny components
+* App layouts
+* Themes 
