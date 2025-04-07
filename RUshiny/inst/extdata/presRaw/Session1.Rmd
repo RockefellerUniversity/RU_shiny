@@ -29,18 +29,6 @@ suppressPackageStartupMessages(require(knitr))
 knitr::opts_chunk$set(echo = TRUE, tidy = T)
 ```
 
-```{r, results='asis',include=TRUE,echo=FALSE}
-if(params$isSlides != "yes"){
-  cat("# Intro to Shiny
-
----
-"    
-  )
-  
-}
-
-```
-
 
 
 ```{r, results='asis',include=TRUE,echo=FALSE}
@@ -109,34 +97,33 @@ You may navigate to the unarchived RU_Course_help folder in the Rstudio menu.
 or in the console.
 
 ```{r setwd_introtoR,eval=F} 
-setwd("/PathToMyDownload/RU_shiny/r_course")
-# e.g. setwd("~/Downloads/RU_shiny/r_course")
+setwd("/PathToMyDownload/RU_shiny-master/r_course")
+# e.g. setwd("~/Downloads/RU_shiny-master/r_course")
 ```
 
 
 ---
-```{r, results='asis',include=TRUE,echo=FALSE}
-if(params$isSlides == "yes"){
-  cat("class: inverse, center, middle
 
-## What is Shiny? <br> Why do we use it?
+## Course outline
 
-<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
+  - Session 1 - 
+    + Shiny basics
+    + app layouts 
+    + app theming
+    
+  - Session 2 -
+    + Input types 
+    + basic reactivity 
+    + interactive plots 
+    + downloading files from apps
+    
+  - Session 3 - 
+    + uploading files and conditional UIs 
+    + observers
+    + publishing apps
+    + basic debugging
 
 ---
-"    
-  )
-}else{
-  cat("## What is Shiny? Why do we use it?
-
----
-"    
-  )
-  
-}
-
-```
-
 
 
 ```{r, echo=F, eval=T, message = F}
@@ -147,12 +134,22 @@ library(DT)
 
 ```
 
+## What is Shiny? Why do we use it?
 
-## Basic componenets of Shiny app
+Shiny allows us to **make powerful web applications** with only R code, **without the need to learn HTML, JavaScript, or CSS**. Deeper knowledge of these other languages can certianly be used with Shiny to improve your apps, but its not necessary. 
+
+This allows us to use the analytical tools that are the strengths or R, like statistics and visualization, when making these apps and dashboards.
+
+There are many use cases that depend on the developer's needs, but Shiny apps can be really useful in transforming common code workflows into user friendly dashboards or displaying and interacting with databases.   
+
+While Shiny was developed in R, and this is what we will cover in this course, there is now support for Shiny in Python (since 2023). While Shiny for Python is not as far along as for R (fewer community driven tools available), this will likely change in the future. 
+---
+
+## Basic components of Shiny app
 A shiny app consists of the user interface (UI) and the server function
-* the UI object defines what will be seen on the page
-* the server function contains code that combines R code with inputs (eg info from user, databases, or files) and provides instructions for generating outputs
-* the *shinyApp* function builds the shiny app from the the UI object and server function
+- the UI object defines what will be seen on the page
+- the server function contains code that combines R code with inputs (eg info from user, databases, or files) and provides instructions for generating outputs
+- the Shiny R package builds the shiny app from the the UI object and server function
 
 <img src="imgs/shiny_ui_server.png"height="300" width="800">
 
@@ -193,8 +190,21 @@ When you run the *shinyApp* function, your RStudio console will be busy and you'
 A window should pop up automatically showing the app. You can also copy and paste this address into a browser to open an instance of the app. 
 
 To close the app and free up the console, you can:
-* click on the console to hit the *ESC* button or Ctrl+C
-* click on the *Stop* button on the top right corner of the console
+- click on the console to hit the *ESC* button or Ctrl+C
+- click on the *Stop* button on the top right corner of the console
+
+---
+
+## Shiny - how to get started
+
+Shiny is well integrated into R Studio and there are a few additional features that make running apps easier.
+
+If you open a blank R script and add the shiny template code (see previous slide), once you save the file you should see a button in the upper right corner of the script that says *Run App*. 
+
+This will automatically launch the app. 
+
+
+<img src="imgs/runApp_button_pp.png"height="200" width="800">
 
 ---
 
@@ -218,18 +228,7 @@ shinyApp(ui, server)
 ```
 
 
----
 
-## Shiny - how to get started
-
-Shiny is well integrated into R Studio and there are a few additional features that make running apps easier.
-
-If you open a blank R script and add the shiny template code (see previous slide), once you save the file you should see a button in the upper right corner of the script that says *Run App*. 
-
-This will automatically launch the app. 
-
-
-<img src="imgs/runApp_button_pp.png"height="200" width="800">
 
 ---
 
@@ -303,7 +302,7 @@ Let's look at a very basic app.
 
 ---
 
-## Shiny basics
+## Shiny basics - packages and global code
     
 .pull-left[
 ```{r, echo=T, eval=T}
@@ -339,13 +338,14 @@ shinyApp(ui = ui, server = server)
 .pull-right[
 The top part of a Shiny R script contains any packages that a required, and any global code/variables. 
 
-* The code that is in this section will only be run once when the app is initialized, and cannot be updated once the app starts.
-* The variables after this code is run are avaialbe in the environment, and can be used in the server function.
+- The code that is in this section will only be run once when the app is initialized, and cannot be updated once the app starts.
+- The variables after this code is run are available in the environment, and can be used in the server function.
+- If an app is deployed in a server, the global environment is only loaded once and shared between users. Can help if data is large. 
 ]
 
 ---
 
-## Shiny basics
+## Shiny basics - UI object
     
 .pull-left[
 ```{r, echo=T, eval=T}
@@ -393,7 +393,7 @@ print(as.character(ui))
 
 ---
 
-## Shiny basics
+## Shiny basics - rendering outputs
     
 .pull-left[
 ```{r, echo=T, eval=T}
@@ -429,14 +429,14 @@ shinyApp(ui = ui, server = server)
 .pull-right[
 The *Output* functions from Shiny will hold a space on the page for an HTML element in the UI object.
 
-Outputs are paired with a *render* function in the server that will determine the contents of this element based on R code run in the server function. 
+Using the 'outputId' argument, outputs are paired with a *render* function in the server that will determine the contents of this element based on R code run in the server function. 
 
 Here, we simply render some text to fill the output in the UI, but later on we will see how we can fill these UI components in a **reactive** manner, which is where the power of Shiny is apparent. 
 ]
 
 ---
 
-## Shiny basics
+## Shiny basics - HTML helper functions
     
 .pull-left[
 ```{r, echo=T, eval=T, message=F, warning=F}
@@ -470,7 +470,7 @@ shinyApp(ui = ui, server = server)
 ]
 
 .pull-right[
-As we mentioned, the UI object translats R functions into HTML code.
+As we mentioned, the UI object translates R functions into HTML code.
 
 Shiny has many helper functions that allow us to insert common HTML elements, or tags, into our app. A glossary of Shiny tags is [here](https://shiny.posit.co/r/articles/build/tag-glossary/).
 
@@ -481,7 +481,7 @@ Common tags have their own function, such as *br()* (creates a line break), whil
 
 ---
 
-## Shiny basics
+## Shiny basics - server function
     
 .pull-left[
 ```{r, echo=T, eval=T, message=F, warning=F}
@@ -519,14 +519,14 @@ The server function takes the inputs from the UI object, and using R code will g
 
 As the app runs the UI is then monitoring the *output* object to update the UI components.
 
-Here we simply use text or a table that are hard coded, but the main use of Shiny is the ability to use very complex R code in the server to react to the users actions and dynamically create outputs.
+Here we simply use text or a table that are hard coded, but the main use of Shiny is the ability to use very complex R code in the server to react to user actions and dynamically create outputs.
 
 We will start getting into reactivity in Session 2. 
 ]
 
 ---
 
-## Shiny basics
+## Shiny basics - launch app
     
 .pull-left[
 ```{r, echo=T, eval=T, message=F, warning=F}
@@ -578,6 +578,42 @@ The Shiny [cheatsheet](https://shiny.posit.co/r/articles/start/cheatsheet/) is a
 
 ---
 
+## Shiny app folder structure
+
+You can run a Shiny app as we have from RStudio as a stand alone file. But once your apps get more complex and you have more support files that the app uses, you'll contain it in its own directory.
+
+There's a convention when setting up that folder as follows:
+
+<img src="imgs/app_structure.png"height="200" width="550">
+
+
+Then once you have this folder, you can use the *runApp* function from Shiny with the path to the folder (e.g. `runApp("/path/to/app")`), and it will launch the app with access to all of these support files. 
+---
+
+
+
+```{r, results='asis',include=TRUE,echo=FALSE}
+if(params$isSlides == "yes"){
+  cat("class: inverse, center, middle
+
+# Building our own app from scratch
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
+
+---
+"    
+  )
+}else{
+  cat("# Building our own app from scratch
+
+---
+"    
+  )
+  
+}
+
+```
+
 ## Adding global variables to app
 
 Let's start building a real app of our own. 
@@ -605,17 +641,17 @@ We are going to use the DT package to show the table in our app. This provides a
 
 We add the table using the *dataTableOutput* function in the UI, which is paired with the *renderDataTable* function in the server. 
 ```{r, echo=T, eval=T, out.width="75%", message=F, warning=F}
-library(DT)
+library(DT) #<<
 
-ui_simple = page_fluid(
-  textOutput(outputId = "app_info"),
+ui = page_fluid(
   
+  textOutput(outputId = "app_info"),
   DT::dataTableOutput(outputId = "de_data") #<<
 )
 
-server_simple = function(input, output) {
-  output$app_info = renderText("This is an app showing differential gene expression data")
+server = function(input, output) {
   
+  output$app_info = renderText("This is an app showing differential gene expression data")
   output$de_data = renderDataTable(datatable(de_table)) #<<
 }
 ```
@@ -626,7 +662,7 @@ server_simple = function(input, output) {
 ## App with datatable from DT package
 
 ```{r addDT, echo=T, eval=F, out.width="75%"}
-shinyApp(ui = ui_simple, server = server_simple)
+shinyApp(ui = ui, server = server)
 ```
 <img src="imgs/addDT.png"height="375" width="750">
 
@@ -641,7 +677,7 @@ Below we will add custom filters on top of each column and round the values to i
 ```{r, echo=T, eval=T, out.width="75%"}
 
 
-server_simple2 = function(input, output) {
+server = function(input, output) {
   output$app_info = renderText("This is an app showing differential gene expression data")
   
   output$de_data = renderDataTable({
@@ -661,7 +697,7 @@ server_simple2 = function(input, output) {
 ## Customize datatable
 
 ```{r customizeDT, echo=T, eval=F, out.width="75%"}
-shinyApp(ui = ui_simple, server = server_simple2)
+shinyApp(ui = ui, server = server)
 ```
 <img src="imgs/customizeDT.png"height="350" width="750">
 
@@ -669,10 +705,10 @@ shinyApp(ui = ui_simple, server = server_simple2)
 
 ## Other options for displaying tables
 
-  * [rhandsontable](https://jrowen.github.io/rhandsontable/) - based on javascript handsontable
+  - [rhandsontable](https://jrowen.github.io/rhandsontable/) - based on javascript handsontable
     + an excel like table that is easily editable by the user
-  * [reactable](https://glin.github.io/reactable/) - based on java script React Table
-    + similar to DT. depends on use case.  
+  - [reactable](https://glin.github.io/reactable/) - based on java script React Table
+    + similar to DT, depends on use case.  
 
 ---
 
@@ -681,7 +717,9 @@ shinyApp(ui = ui_simple, server = server_simple2)
 Add an MA plot and a Volcano plot to the page. First add the outputs to the UI object
 
 ```{r, echo=T, eval=T, out.width="75%"}
-ui_data = page_fluid(
+
+
+ui = page_fluid(
   textOutput(outputId = "app_info"),
   
   dataTableOutput(outputId = "de_data"),
@@ -700,9 +738,9 @@ ui_data = page_fluid(
 Then make the server function containing the *render* functions that tell shiny how to make the outputs from the IU object.
 
 ```{r, echo=T, eval=T, out.width="75%"}
+library(ggplot2)
 
-
-server_data = function(input, output) {
+server = function(input, output) {
   output$app_info = renderText("This is an app showing differential gene expression data")
   
   output$de_data = renderDataTable({
@@ -729,7 +767,7 @@ server_data = function(input, output) {
 ## Add plots to app
 
 ```{r addPlots, echo=T, eval=F, out.width="75%"}
-shinyApp(ui = ui_data, server = server_data)
+shinyApp(ui = ui, server = server)
 ```
 
 <img src="imgs/addPlots.png"height="500" width="450">
@@ -759,11 +797,17 @@ if(params$isSlides == "yes"){
 
 ## Tidy up app appearance with cards
 
-bslib has many functions that allow customizing the formatting of the page. Here we add ['cards'](https://rstudio.github.io/bslib/articles/cards/index.html), which are boxes that allow grouping of UI components
+bslib has many functions that allow customizing the formatting of the page. 
+
+NOTE: Older Shiny versions don't use bslib and used similar, but slightly different functions to set up page that you'll likely see on forums (fillPage, fluidPage, etc) - they still work just fine!
+
+Here we add ['cards'](https://rstudio.github.io/bslib/articles/cards/index.html), which are boxes that allow grouping of UI components.
+
+The basic arguments of the *card* function will be the a call to the *card_header* function, and the rest of the unnamed arguments being UI elements to go into the card body. 
 
 ```{r, echo=T, eval=F, out.width="75%"}
 
-ui_fillable <- page_fillable(
+ui <- page_fillable(
 
   card(card_header("Table of DE results"),
        dataTableOutput(outputId = "de_data")),
@@ -783,7 +827,7 @@ ui_fillable <- page_fillable(
 
 ```{r addCards, echo=T, eval=F, out.width="75%"}
 #same server function as previous
-shinyApp(ui = ui_fillable, server = server_data)
+shinyApp(ui = ui, server = server)
 ```
 
 <img src="imgs/addCards.png"height="450" width="400">
@@ -795,15 +839,15 @@ shinyApp(ui = ui_fillable, server = server_data)
 We can add the ability to hide certain boxes with accordions from the bslib package. By default only the top accordion is open, but the *accordian* function has an argument 'open' that allows you to select which are when the app is started. 
 ```{r, echo=T, eval=F, out.width="75%"}
 
-ui_accordion <- page_fillable(
+ui <- page_fillable(
   accordion(
-    accordion_panel("Table of DE results",
+    accordion_panel(title = "Table of DE results",
                     dataTableOutput(outputId = "de_data")),
     
-    accordion_panel("MA plot",
+    accordion_panel(title = "MA plot",
                     plotOutput("ma_plot")),
     
-    accordion_panel("Volcano plot",
+    accordion_panel(title = "Volcano plot",
                     plotOutput("volcano_plot"))
   )
 )
@@ -816,7 +860,7 @@ ui_accordion <- page_fillable(
 
 ```{r accordion, echo=T, eval=F, out.width="75%"}
 #same server function as previous
-shinyApp(ui = ui_accordion, server = server_data)
+shinyApp(ui = ui, server = server)
 ```
 
 <img src="imgs/accordion.png"height="450" width="900">
@@ -829,7 +873,7 @@ shinyApp(ui = ui_accordion, server = server_data)
 The 'col_widths' argument of the *layout_columns* function will control with width of the column. The bootstrap grid system is made up of 12 columns. A numeric vector is provided with widths for each card. Once the elements combined width goes above 12, then the elements are wrapped to the next row.
 ```{r, echo=T, eval=F, out.width="75%"}
 
-ui_twoRow <- page_fillable(
+ui <- page_fillable(
   layout_columns( 
     card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))),
     
@@ -849,7 +893,7 @@ ui_twoRow <- page_fillable(
 
 ```{r multiple_rows, echo=T, eval=F, out.width="75%"}
 #same server function as previous
-shinyApp(ui = ui_twoRow, server = server_data)
+shinyApp(ui = ui, server = server)
 ```
 
 <img src="imgs/multiple_rows.png"height="450" width="600">
@@ -862,13 +906,13 @@ More complicated layouts can be achieved by nesting *layout_columns* functions. 
 
 ```{r, echo=T, eval=F, out.width="75%"}
 
-ui_nested <- page_fillable(
+ui <- page_fillable(
   layout_columns(
     col_widths = 12,
     card(card_header("Table of DE results", dataTableOutput(outputId = "de_data")))),
   
   layout_columns(
-    col_widths = 6,
+    col_widths = c(6, 6),
     card(card_header("This is a tall box")),
     
     layout_columns(
@@ -887,7 +931,7 @@ ui_nested <- page_fillable(
 
 ```{r nested, echo=T, eval=F, out.width="75%"}
 #same server function as previous
-shinyApp(ui = ui_nested, server = server_data)
+shinyApp(ui = ui, server = server)
 ```
 
 <img src="imgs/nested.png"height="450" width="500">
@@ -898,9 +942,9 @@ shinyApp(ui = ui_nested, server = server_data)
 
 While we have been using the *page_fillable* function to build the UI, there are three main functions from bslib for slightly differnet page layout strategies: 
 
-  * **page_fillable** - UI components will be in a grid format that will automatically fill the whole page (both vertically and horizontally). 
-  * **page_fluid** - UI components will be in a grid format that will extend to fill the whole width of the webpage.
-  * **page_fixed** - UI components will be in a grid format that has a fixed width that will vary depending on the settings of the device. 
+  - **page_fillable** - UI components will be in a grid format that will automatically fill the whole page (both vertically and horizontally). 
+  - **page_fluid** - UI components will be in a grid format that will extend to fill the whole width of the webpage.
+  - **page_fixed** - UI components will be in a grid format that has a fixed width that will vary depending on the settings of the device. 
 
 <img src="imgs/page_layouts.png"height="200" width="600">
 
@@ -912,7 +956,7 @@ Image from the Posit tutorials (https://shiny.posit.co/r/articles/build/layout-g
 
 ```{r, echo=T, eval=F, out.width="75%"}
 
-ui_fillable <- page_fillable( #<<
+ui <- page_fillable( #<<
   layout_columns(
     card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))),
     
@@ -932,7 +976,7 @@ ui_fillable <- page_fillable( #<<
 
 ```{r, echo=T, eval=F, out.width="75%"}
 #same server function as previous
-shinyApp(ui = ui_fillable, server = server_data)
+shinyApp(ui = ui, server = server)
 ```
 
 
@@ -947,7 +991,7 @@ The cards do not fill the screen horizontally and dynamically, but when the wind
 
 ```{r, echo=T, eval=F, out.width="75%"}
 
-ui_fixed <- page_fixed( #<<
+ui <- page_fixed( #<<
   layout_columns(
     card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))),
     
@@ -967,7 +1011,7 @@ ui_fixed <- page_fixed( #<<
 
 ```{r fixed_page, echo=T, eval=F, out.width="75%"}
 #same server function as previous
-shinyApp(ui = ui_fixed, server = server_data)
+shinyApp(ui = ui, server = server)
 ```
 
 
@@ -1003,7 +1047,7 @@ ui_fluid <- page_fluid( #<<
 
 ```{r fluid_page, echo=T, eval=F, out.width="75%"}
 #same server function as previous
-shinyApp(ui = ui_fluid, server = server_data)
+shinyApp(ui = ui, server = server)
 ```
 
 The cards fill the screen horizontally and dynamically, but are a fixed height. When the window is not big enough, you need to scroll down to see the plots on the bottom of the page.
@@ -1037,17 +1081,17 @@ if(params$isSlides == "yes"){
 ## Value boxes
 [Value boxes](https://rstudio.github.io/bslib/articles/value-boxes/index.html) are another common UI element from the *bslib* package and are nice ways to show key numbers or information that you want to highlight for the user. 
  
-  * the 'value' argument in a value box will be the most prominent text
-  * the 'title' argument goes above the value and other unnamed arguments go below. 
-  * the color can be set by the 'theme' argument, which can be made with *value_box_theme* or use special [bootstrap](https://bootswatch.com/) themes (will see this later) 
-  * the 'showcase' argument can simply be an icon (see ?icon page) or can get more complex and [show a plot](https://rstudio.github.io/bslib/articles/value-boxes/index.html#expandable-sparklines)
+  - the 'value' argument in a value box will be the most prominent text
+  - the 'title' argument goes above the value and other unnamed arguments go below. 
+  - the color can be set by the 'theme' argument, which can be made with *value_box_theme* or use special [bootstrap](https://bootswatch.com/) themes (will see this later) 
+  - the 'showcase' argument can simply be an icon (see ?icon page) or can get more complex and [show a plot](https://rstudio.github.io/bslib/articles/value-boxes/index.html#expandable-sparklines)
 ```{r, echo=T, eval=F, out.width="75%"}
 
-ui_value_box <- page_fluid(
+ui <- page_fluid(
     layout_columns(
       layout_columns(
-        value_box(title = "Number of genes that go up:", value = textOutput("num_up"), "Adjusted p-value < 0.05", showcase = icon("arrow-up"), theme = value_box_theme(bg = "#22b430")), #<<
-      value_box(title = "Number of genes that go down:", value = textOutput("num_down"), "Adjusted p-value < 0.05", showcase = icon("arrow-down"), value_box_theme(bg ="#c34020" )), #<<
+        value_box(title = "Number of genes that go up:", value = 2000, "Adjusted p-value < 0.05", showcase = icon("arrow-up"), theme = value_box_theme(bg = "#22b430")), #<<
+      value_box(title = "Number of genes that go down:", value = 1000, "Adjusted p-value < 0.05", showcase = icon("arrow-down"), theme = value_box_theme(bg ="#c34020" )), #<<
         col_widths = c(12,12)
       ),
       card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))), 
@@ -1067,7 +1111,7 @@ Here we just hard code in numbers to show in the value boxes, but this will obvi
 
 ```{r, echo=T, eval=F, out.width="75%"}
 #same server function as previous
-shinyApp(ui = ui_value_box, server = server_data)
+shinyApp(ui = ui, server = server)
 ```
 
 <img src="imgs/valueboxes.png"height="350" width="600">
@@ -1082,7 +1126,7 @@ The *layout_sidebar* function is used to set this up within the card. By default
 
 ```{r, echo=T, eval=T, out.width="75%"}
 
-ui_sidebar_card <-page_fluid( 
+ui <-page_fluid( 
   layout_columns(
     card(card_header("Table of DE results"),
          layout_sidebar(sidebar = sidebar("Sidebar ONLY for table", width = 400), #<<
@@ -1102,7 +1146,7 @@ ui_sidebar_card <-page_fluid(
 
 ```{r, echo=T, eval=F, out.width="75%"}
 #same server function as previous
-shinyApp(ui = ui_sidebar_card, server = server_data)
+shinyApp(ui = ui, server = server)
 ```
 
 <img src="imgs/card_sidebar.png"height="400" width="900">
@@ -1117,7 +1161,7 @@ Page sidebars will remain static as you scroll up and down the page. They are of
 
 ```{r, echo=T, eval=T, out.width="75%"}
 
-ui_sidebar <- page_sidebar(
+ui <- page_sidebar(
   title = "RNAseq tools",
   
   sidebar = sidebar( #<<
@@ -1142,7 +1186,7 @@ ui_sidebar <- page_sidebar(
 
 ```{r , echo=T, eval=F, out.width="75%"}
 #same server function as previous
-shinyApp(ui = ui_sidebar, server = server_data)
+shinyApp(ui = ui, server = server)
 ```
 
 <img src="imgs/sidebar.png"height="450" width="550">
@@ -1178,7 +1222,7 @@ if(params$isSlides == "yes"){
 Oftentimes we want a multi-page layout where the user can click through tabs to see pages with different types of data or information. This can be done using the *page_navbar* function coupled with child *nav_panel* functions that contain the UI elements for each page. 
 ```{r, echo=T, eval=T, out.width="75%"}
 
-ui_navbar <- page_navbar( #<<
+ui <- page_navbar( #<<
   title = "RNAseq tools",
   nav_panel(title = "DE Analysis",  #<<
             layout_columns(
@@ -1198,7 +1242,7 @@ ui_navbar <- page_navbar( #<<
 
 ```{r, echo=T, eval=F, out.width="75%"}
 #same server function as previous
-shinyApp(ui = ui_navbar, server = server_data)
+shinyApp(ui = ui, server = server)
 ```
 
 <img src="imgs/nav_bar_sidebyside.png"height="375" width="900">
@@ -1210,7 +1254,7 @@ shinyApp(ui = ui_navbar, server = server_data)
 We can easily add a menu on the right hand side of our navbar as well with key links or information. The *nav_spacer* function will push the menu to the right hand side of the page, and the *nav_menu* function can contain multiple *nav_item* objects to comprise the list. 
 ```{r, echo=T, eval=T, out.width="75%"}
 
-ui_navbarMenu <- page_navbar(
+ui <- page_navbar(
   title = "RNAseq tools",
   nav_panel(title = "DE Analysis",  
             layout_columns(
@@ -1240,7 +1284,7 @@ ui_navbarMenu <- page_navbar(
 
 ```{r, echo=T, eval=F, out.width="75%"}
 #same server function as previous
-shinyApp(ui = ui_navbarMenu, server = server_data)
+shinyApp(ui = ui, server = server)
 ```
 
 <img src="imgs/navbar_menu.png"height="450" width="550">
@@ -1253,7 +1297,7 @@ Sidebars are easily integrated into the *page_navbar* set up. The 'sdiebar' argu
 
 ```{r, echo=T, eval=T, out.width="75%"}
 
-ui_navbar_side <- page_navbar( 
+ui <- page_navbar( 
   title = "RNAseq tools",
   sidebar = sidebar("The same sidebar on every page...", width = 500), #<<
   nav_panel(title = "DE Analysis",  
@@ -1274,7 +1318,7 @@ ui_navbar_side <- page_navbar(
 
 ```{r, echo=T, eval=F, out.width="75%"}
 #same server function as previous
-shinyApp(ui = ui_navbar_side, server = server_data)
+shinyApp(ui = ui, server = server)
 ```
 <img src="imgs/navbar_sidebar_same.png"height="300" width="900">
 
@@ -1286,7 +1330,7 @@ Sidebars can also be added to some pages and not others by using the *layout_sid
 
 ```{r, echo=T, eval=T, out.width="75%"}
 
-ui_navbar_side2 <- page_navbar( 
+ui <- page_navbar( 
   title = "RNAseq tools",
   nav_panel(title = "DE Analysis",  
             layout_sidebar(#<<
@@ -1309,7 +1353,7 @@ ui_navbar_side2 <- page_navbar(
 
 ```{r, echo=T, eval=F, out.width="75%"}
 #same server function as previous
-shinyApp(ui = ui_navbar_side2, server = server_data)
+shinyApp(ui = ui, server = server)
 ```
 <img src="imgs/navbar_specific_page.png"height="300" width="900">
 
@@ -1354,7 +1398,7 @@ bootswatch_themes()
 
 ```{r, echo=T, eval=T, out.width="75%"}
 
-ui_cerulean <- page_navbar(
+ui <- page_navbar(
   title = "RNAseq tools",
   theme = bs_theme(version = 5, bootswatch = "cerulean"), #<<
   nav_panel(
@@ -1386,7 +1430,7 @@ ui_cerulean <- page_navbar(
 
 ```{r, echo=T, eval=F, out.width="75%"}
 #same server function as previous
-shinyApp(ui = ui_cerulean, server = server_data)
+shinyApp(ui = ui, server = server)
 ```
 
 <img src="imgs/cerulean.png"height="450" width="550">
@@ -1429,7 +1473,7 @@ ui_darkly <- page_navbar(
 
 ```{r, echo=T, eval=F, out.width="75%"}
 #same server function as previous
-shinyApp(ui = ui_darkly, server = server_data)
+shinyApp(ui = ui, server = server)
 ```
 
 <img src="imgs/darkly.png"height="450" width="550">
@@ -1473,7 +1517,7 @@ This custom theme object can then be used in the 'theme' argument of *page_sideb
 
 ```{r, echo=T, eval=T, out.width="75%"}
 
-ui_custom <- page_navbar(
+ui <- page_navbar(
   title = "RNAseq tools",
   theme = custom_theme, #<<
   nav_panel(
@@ -1505,7 +1549,7 @@ ui_custom <- page_navbar(
 
 ```{r, echo=T, eval=F, out.width="75%"}
 #same server function as previous
-shinyApp(ui = ui_custom, server = server_data)
+shinyApp(ui = ui, server = server)
 ```
 
 <img src="imgs/custom_theme.png"height="450" width="550">
