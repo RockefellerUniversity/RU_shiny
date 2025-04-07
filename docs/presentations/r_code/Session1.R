@@ -7,18 +7,6 @@ knitr::opts_chunk$set(echo = TRUE, tidy = T)
 
 
 ## ----results='asis',include=TRUE,echo=FALSE-----------------------------------
-if(params$isSlides != "yes"){
-  cat("# Intro to Shiny
-
----
-"    
-  )
-  
-}
-
-
-
-## ----results='asis',include=TRUE,echo=FALSE-----------------------------------
 if(params$isSlides == "yes"){
   cat("class: inverse, center, middle
 
@@ -41,30 +29,8 @@ if(params$isSlides == "yes"){
 
 
 ## ----setwd_introtoR,eval=F----------------------------------------------------
-# setwd("/PathToMyDownload/RU_shiny/r_course")
-# # e.g. setwd("~/Downloads/RU_shiny/r_course")
-
-
-## ----results='asis',include=TRUE,echo=FALSE-----------------------------------
-if(params$isSlides == "yes"){
-  cat("class: inverse, center, middle
-
-## What is Shiny? <br> Why do we use it?
-
-<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
-
----
-"    
-  )
-}else{
-  cat("## What is Shiny? Why do we use it?
-
----
-"    
-  )
-  
-}
-
+# setwd("/PathToMyDownload/RU_shiny-master/r_course")
+# # e.g. setwd("~/Downloads/RU_shiny-master/r_course")
 
 
 ## ----echo=F, eval=T, message = F----------------------------------------------
@@ -311,6 +277,28 @@ server = function(input, output) {
 # shinyApp(ui = ui, server = server) #<<
 
 
+## ----results='asis',include=TRUE,echo=FALSE-----------------------------------
+if(params$isSlides == "yes"){
+  cat("class: inverse, center, middle
+
+# Building our own app from scratch
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
+
+---
+"    
+  )
+}else{
+  cat("# Building our own app from scratch
+
+---
+"    
+  )
+  
+}
+
+
+
 ## ----echo=T, eval=T, out.width="75%", message=F, warning=F--------------------
 library(shiny) 
 library(bslib) 
@@ -325,29 +313,29 @@ head(de_table, 3)
 
 
 ## ----echo=T, eval=T, out.width="75%", message=F, warning=F--------------------
-library(DT)
+library(DT) #<<
 
-ui_simple = page_fluid(
-  textOutput(outputId = "app_info"),
+ui = page_fluid(
   
+  textOutput(outputId = "app_info"),
   DT::dataTableOutput(outputId = "de_data") #<<
 )
 
-server_simple = function(input, output) {
-  output$app_info = renderText("This is an app showing differential gene expression data")
+server = function(input, output) {
   
+  output$app_info = renderText("This is an app showing differential gene expression data")
   output$de_data = renderDataTable(datatable(de_table)) #<<
 }
 
 
 ## ----addDT, echo=T, eval=F, out.width="75%"-----------------------------------
-# shinyApp(ui = ui_simple, server = server_simple)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----echo=T, eval=T, out.width="75%"------------------------------------------
 
 
-server_simple2 = function(input, output) {
+server = function(input, output) {
   output$app_info = renderText("This is an app showing differential gene expression data")
   
   output$de_data = renderDataTable({
@@ -361,11 +349,13 @@ server_simple2 = function(input, output) {
 
 
 ## ----customizeDT, echo=T, eval=F, out.width="75%"-----------------------------
-# shinyApp(ui = ui_simple, server = server_simple2)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----echo=T, eval=T, out.width="75%"------------------------------------------
-ui_data = page_fluid(
+
+
+ui = page_fluid(
   textOutput(outputId = "app_info"),
   
   dataTableOutput(outputId = "de_data"),
@@ -378,9 +368,9 @@ ui_data = page_fluid(
 
 
 ## ----echo=T, eval=T, out.width="75%"------------------------------------------
+library(ggplot2)
 
-
-server_data = function(input, output) {
+server = function(input, output) {
   output$app_info = renderText("This is an app showing differential gene expression data")
   
   output$de_data = renderDataTable({
@@ -402,7 +392,7 @@ server_data = function(input, output) {
 
 
 ## ----addPlots, echo=T, eval=F, out.width="75%"--------------------------------
-# shinyApp(ui = ui_data, server = server_data)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----results='asis',include=TRUE,echo=FALSE-----------------------------------
@@ -429,7 +419,7 @@ if(params$isSlides == "yes"){
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
 # 
-# ui_fillable <- page_fillable(
+# ui <- page_fillable(
 # 
 #   card(card_header("Table of DE results"),
 #        dataTableOutput(outputId = "de_data")),
@@ -443,20 +433,20 @@ if(params$isSlides == "yes"){
 
 ## ----addCards, echo=T, eval=F, out.width="75%"--------------------------------
 # #same server function as previous
-# shinyApp(ui = ui_fillable, server = server_data)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
 # 
-# ui_accordion <- page_fillable(
+# ui <- page_fillable(
 #   accordion(
-#     accordion_panel("Table of DE results",
+#     accordion_panel(title = "Table of DE results",
 #                     dataTableOutput(outputId = "de_data")),
 # 
-#     accordion_panel("MA plot",
+#     accordion_panel(title = "MA plot",
 #                     plotOutput("ma_plot")),
 # 
-#     accordion_panel("Volcano plot",
+#     accordion_panel(title = "Volcano plot",
 #                     plotOutput("volcano_plot"))
 #   )
 # )
@@ -465,12 +455,12 @@ if(params$isSlides == "yes"){
 
 ## ----accordion, echo=T, eval=F, out.width="75%"-------------------------------
 # #same server function as previous
-# shinyApp(ui = ui_accordion, server = server_data)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
 # 
-# ui_twoRow <- page_fillable(
+# ui <- page_fillable(
 #   layout_columns(
 #     card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))),
 # 
@@ -486,18 +476,18 @@ if(params$isSlides == "yes"){
 
 ## ----multiple_rows, echo=T, eval=F, out.width="75%"---------------------------
 # #same server function as previous
-# shinyApp(ui = ui_twoRow, server = server_data)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
 # 
-# ui_nested <- page_fillable(
+# ui <- page_fillable(
 #   layout_columns(
 #     col_widths = 12,
 #     card(card_header("Table of DE results", dataTableOutput(outputId = "de_data")))),
 # 
 #   layout_columns(
-#     col_widths = 6,
+#     col_widths = c(6, 6),
 #     card(card_header("This is a tall box")),
 # 
 #     layout_columns(
@@ -513,12 +503,12 @@ if(params$isSlides == "yes"){
 
 ## ----nested, echo=T, eval=F, out.width="75%"----------------------------------
 # #same server function as previous
-# shinyApp(ui = ui_nested, server = server_data)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
 # 
-# ui_fillable <- page_fillable( #<<
+# ui <- page_fillable( #<<
 #   layout_columns(
 #     card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))),
 # 
@@ -534,12 +524,12 @@ if(params$isSlides == "yes"){
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
 # #same server function as previous
-# shinyApp(ui = ui_fillable, server = server_data)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
 # 
-# ui_fixed <- page_fixed( #<<
+# ui <- page_fixed( #<<
 #   layout_columns(
 #     card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))),
 # 
@@ -555,7 +545,7 @@ if(params$isSlides == "yes"){
 
 ## ----fixed_page, echo=T, eval=F, out.width="75%"------------------------------
 # #same server function as previous
-# shinyApp(ui = ui_fixed, server = server_data)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
@@ -576,7 +566,7 @@ if(params$isSlides == "yes"){
 
 ## ----fluid_page, echo=T, eval=F, out.width="75%"------------------------------
 # #same server function as previous
-# shinyApp(ui = ui_fluid, server = server_data)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----results='asis',include=TRUE,echo=FALSE-----------------------------------
@@ -603,11 +593,11 @@ if(params$isSlides == "yes"){
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
 # 
-# ui_value_box <- page_fluid(
+# ui <- page_fluid(
 #     layout_columns(
 #       layout_columns(
-#         value_box(title = "Number of genes that go up:", value = textOutput("num_up"), "Adjusted p-value < 0.05", showcase = icon("arrow-up"), theme = value_box_theme(bg = "#22b430")), #<<
-#       value_box(title = "Number of genes that go down:", value = textOutput("num_down"), "Adjusted p-value < 0.05", showcase = icon("arrow-down"), value_box_theme(bg ="#c34020" )), #<<
+#         value_box(title = "Number of genes that go up:", value = 2000, "Adjusted p-value < 0.05", showcase = icon("arrow-up"), theme = value_box_theme(bg = "#22b430")), #<<
+#       value_box(title = "Number of genes that go down:", value = 1000, "Adjusted p-value < 0.05", showcase = icon("arrow-down"), theme = value_box_theme(bg ="#c34020" )), #<<
 #         col_widths = c(12,12)
 #       ),
 #       card(card_header("Table of DE results", dataTableOutput(outputId = "de_data"))),
@@ -619,12 +609,12 @@ if(params$isSlides == "yes"){
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
 # #same server function as previous
-# shinyApp(ui = ui_value_box, server = server_data)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----echo=T, eval=T, out.width="75%"------------------------------------------
 
-ui_sidebar_card <-page_fluid( 
+ui <-page_fluid( 
   layout_columns(
     card(card_header("Table of DE results"),
          layout_sidebar(sidebar = sidebar("Sidebar ONLY for table", width = 400), #<<
@@ -640,12 +630,12 @@ ui_sidebar_card <-page_fluid(
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
 # #same server function as previous
-# shinyApp(ui = ui_sidebar_card, server = server_data)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----echo=T, eval=T, out.width="75%"------------------------------------------
 
-ui_sidebar <- page_sidebar(
+ui <- page_sidebar(
   title = "RNAseq tools",
   
   sidebar = sidebar( #<<
@@ -665,7 +655,7 @@ ui_sidebar <- page_sidebar(
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
 # #same server function as previous
-# shinyApp(ui = ui_sidebar, server = server_data)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----results='asis',include=TRUE,echo=FALSE-----------------------------------
@@ -692,7 +682,7 @@ if(params$isSlides == "yes"){
 
 ## ----echo=T, eval=T, out.width="75%"------------------------------------------
 
-ui_navbar <- page_navbar( #<<
+ui <- page_navbar( #<<
   title = "RNAseq tools",
   nav_panel(title = "DE Analysis",  #<<
             layout_columns(
@@ -708,12 +698,12 @@ ui_navbar <- page_navbar( #<<
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
 # #same server function as previous
-# shinyApp(ui = ui_navbar, server = server_data)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----echo=T, eval=T, out.width="75%"------------------------------------------
 
-ui_navbarMenu <- page_navbar(
+ui <- page_navbar(
   title = "RNAseq tools",
   nav_panel(title = "DE Analysis",  
             layout_columns(
@@ -737,12 +727,12 @@ ui_navbarMenu <- page_navbar(
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
 # #same server function as previous
-# shinyApp(ui = ui_navbarMenu, server = server_data)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----echo=T, eval=T, out.width="75%"------------------------------------------
 
-ui_navbar_side <- page_navbar( 
+ui <- page_navbar( 
   title = "RNAseq tools",
   sidebar = sidebar("The same sidebar on every page...", width = 500), #<<
   nav_panel(title = "DE Analysis",  
@@ -759,12 +749,12 @@ ui_navbar_side <- page_navbar(
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
 # #same server function as previous
-# shinyApp(ui = ui_navbar_side, server = server_data)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----echo=T, eval=T, out.width="75%"------------------------------------------
 
-ui_navbar_side2 <- page_navbar( 
+ui <- page_navbar( 
   title = "RNAseq tools",
   nav_panel(title = "DE Analysis",  
             layout_sidebar(#<<
@@ -783,7 +773,7 @@ ui_navbar_side2 <- page_navbar(
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
 # #same server function as previous
-# shinyApp(ui = ui_navbar_side2, server = server_data)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----results='asis',include=TRUE,echo=FALSE-----------------------------------
@@ -814,7 +804,7 @@ bootswatch_themes()
 
 ## ----echo=T, eval=T, out.width="75%"------------------------------------------
 
-ui_cerulean <- page_navbar(
+ui <- page_navbar(
   title = "RNAseq tools",
   theme = bs_theme(version = 5, bootswatch = "cerulean"), #<<
   nav_panel(
@@ -842,7 +832,7 @@ ui_cerulean <- page_navbar(
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
 # #same server function as previous
-# shinyApp(ui = ui_cerulean, server = server_data)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----echo=T, eval=T, out.width="75%"------------------------------------------
@@ -875,7 +865,7 @@ ui_darkly <- page_navbar(
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
 # #same server function as previous
-# shinyApp(ui = ui_darkly, server = server_data)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----echo=T, eval=T, out.width="75%"------------------------------------------
@@ -906,7 +896,7 @@ custom_theme <- bs_theme(
 
 ## ----echo=T, eval=T, out.width="75%"------------------------------------------
 
-ui_custom <- page_navbar(
+ui <- page_navbar(
   title = "RNAseq tools",
   theme = custom_theme, #<<
   nav_panel(
@@ -935,5 +925,5 @@ ui_custom <- page_navbar(
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
 # #same server function as previous
-# shinyApp(ui = ui_custom, server = server_data)
+# shinyApp(ui = ui, server = server)
 

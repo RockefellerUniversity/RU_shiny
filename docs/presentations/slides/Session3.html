@@ -48,7 +48,25 @@ class: inverse, center, middle
 
 ---
 
-## Recap
+##  Recap
+
+
+  - Session 1 - 
+    + Shiny basics
+    + app layouts 
+    + app theming
+    
+  - Session 2 -
+    + Input types 
+    + basic reactivity 
+    + interactive plots 
+    + downloading files from apps
+    
+  - **Session 3** - 
+    + uploading files and conditional UIs 
+    + observers
+    + publishing apps
+    + basic debugging
 
 ---
 
@@ -69,13 +87,13 @@ We can use the *fileInput* function in the UI to allow the user to input a file.
 
 
 ``` r
-ui_upload &lt;- page_fluid(
+ui &lt;- page_fluid(
 * fileInput("de_file", "Upload a DE file", accept = c(".csv", ".tsv", "xlsx", "xls")),
   
   dataTableOutput(outputId = "all_data"),
 )
 
-server_upload &lt;- function(input, output){
+server &lt;- function(input, output){
   de_table_in &lt;- reactive({
     rio::import(input$de_file$datapath) %&gt;% dplyr::mutate(negLog10_pval = -log10(pvalue))
   })
@@ -99,12 +117,12 @@ This path is used below in the *de_table_in* reactive expression to read in the 
 
 
 ``` r
-ui_upload &lt;- page_fluid(
+ui &lt;- page_fluid(
   fileInput("de_file", "Upload a DE file", accept = c(".csv", ".tsv", "xlsx", "xls")), 
   dataTableOutput(outputId = "all_data"),
 )
 
-server_upload &lt;- function(input, output){
+server &lt;- function(input, output){
   de_table_in &lt;- reactive({
 *   rio::import(input$de_file$datapath) %&gt;%
       dplyr::mutate(negLog10_pval = -log10(pvalue))
@@ -125,7 +143,7 @@ server_upload &lt;- function(input, output){
 
 
 ``` r
-shinyApp(ui = ui_upload, server = server_upload)
+shinyApp(ui = ui, server = server)
 ```
 
 &lt;img src="imgs/upload_before_after.png"height="400" width="800"&gt;
@@ -140,7 +158,7 @@ Shiny has a handy function *req* that can be added to a reactive context and the
 
 
 ``` r
-server_uploadReq &lt;- function(input, output){
+server &lt;- function(input, output){
   
   de_table_in &lt;- reactive({
 *   req(input$de_file)
@@ -162,7 +180,7 @@ server_uploadReq &lt;- function(input, output){
 ## The req() function
 
 ``` r
-shinyApp(ui = ui_upload, server = server_uploadReq)
+shinyApp(ui = ui, server = server)
 ```
 &lt;img src="imgs/addReq.png"height="400" width="800"&gt;
 
@@ -174,7 +192,7 @@ shinyApp(ui = ui_upload, server = server_uploadReq)
 
 
 ``` r
-ui_fileInput &lt;- page_navbar(
+ui &lt;- page_navbar(
   title = "RNAseq tools",
   theme = custom_theme,
   nav_panel(
@@ -230,38 +248,10 @@ ui_fileInput &lt;- page_navbar(
 ## Add upload to main app - server
 
 The filtered table reactive and plot reactives use this table to apply the filtering cut offs, so we change these reactives to use this table and add de_table_in() to *bindEvent* so that they are updated when a new dataset is uploaded.
-  
-
-``` r
-# part of server function, not run in isolation...
-filtered_de &lt;- reactive({
-  req(input$de_file)
-*   de_table_in() %&gt;%
-      dplyr::filter(padj &lt; input$padj_filter &amp; abs(log2FoldChange) &gt; input$lfc_filter)
-  }) %&gt;%
-*   bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE)
-```
 
 
 ``` r
-# part of server function, not run in isolation...
-ma_plot_reac &lt;- reactive({
-    de_table_in() %&gt;% #
-      dplyr::mutate(sig = ifelse(padj &lt; input$padj_filter &amp; abs(log2FoldChange) &gt; input$lfc_filter, "DE", "Not_DE")) %&gt;%
-      ggplot(aes(x = baseMean, y = log2FoldChange, color = sig, label = Symbol)) + geom_point() +
-      scale_x_log10() + scale_color_manual(name = "DE status", values = c("red", "grey")) +
-      xlab("baseMean (log scale)") + theme_bw() 
-  })  %&gt;%
-*   bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE)
-```
-
----
-
-## Add upload to main app - server
-
-
-``` r
-server_fileInput = function(input, output) {
+server = function(input, output) {
   
   # &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
   de_table_in &lt;- reactive({ 
@@ -349,7 +339,7 @@ server_fileInput = function(input, output) {
 
 
 ``` r
-shinyApp(ui = ui_fileInput, server = server_fileInput)
+shinyApp(ui = ui, server = server)
 ```
 &lt;img src="imgs/mainApp_beforeUI.png"height="400" width="900"&gt;
 
@@ -392,12 +382,12 @@ The inputs for applying filters to our differential table are replaced with a *u
 
 
 ``` r
-ui_renderUI &lt;- page_fluid(
+ui &lt;- page_fluid(
   fileInput("de_file", "Upload a DE file", accept = c(".csv", ".tsv", "xlsx", "xls")), 
 *  uiOutput("sidebar_filters_UI"),
 )
 
-server_renderUI &lt;- function(input, output){
+server &lt;- function(input, output){
   de_table_in &lt;- reactive({
     req(input$de_file)
     rio::import(input$de_file$datapath) %&gt;% dplyr::mutate(negLog10_pval = -log10(pvalue))
@@ -421,12 +411,12 @@ These inputs are moved to the server within an output object paired with *render
 ``` r
 library(rio)
 
-ui_renderUI &lt;- page_fluid(
+ui &lt;- page_fluid(
   fileInput("de_file", "Upload a DE file", accept = c(".csv", ".tsv", "xlsx", "xls")), 
    uiOutput("sidebar_filters_UI"), 
 )
 
-server_renderUI &lt;- function(input, output){
+server &lt;- function(input, output){
   de_table_in &lt;- reactive({
     req(input$de_file)
     rio::import(input$de_file$datapath) %&gt;% dplyr::mutate(negLog10_pval = -log10(pvalue))
@@ -452,7 +442,7 @@ If you've ever looked at HTML code, you'll notice it's containerized into chunks
 
 
 ``` r
-server_renderUI &lt;- function(input, output){
+server &lt;- function(input, output){
   de_table_in &lt;- reactive({ 
     req(input$de_file)
     rio::import(input$de_file$datapath) %&gt;% dplyr::mutate(negLog10_pval = -log10(pvalue))})
@@ -479,7 +469,7 @@ server_renderUI &lt;- function(input, output){
 ## Launch uiOutput/renderUI app
 
 ``` r
-shinyApp(ui = ui_renderUI, server = server_renderUI)
+shinyApp(ui = ui, server = server)
 ```
 
 &lt;img src="imgs/filterInputs_renderUI.png"height="350" width="800"&gt;
@@ -499,17 +489,17 @@ We will also hide the tables and plots since they are of no use until a file is 
 ---
 ## Using uiOutput/renderUI functions
 
-Conditional UIs can also take advantage of more complex if statements to determine what is shown. In the example below, if not data frame is loaded, then we output a message for the user and once data is loaded, the table is shown.
+Conditional UIs can also take advantage of more complex if statements to determine what is shown. In the example below, if no data frame is loaded, then we output a message for the user and once data is loaded, the table is shown.
 
 
 ``` r
-ui_renderUI_table &lt;- page_fluid(
+ui &lt;- page_fluid(
   fileInput("de_file", "Upload a DE file", accept = c(".csv", ".tsv", "xlsx", "xls")), 
   
 * uiOutput("all_data_UI")
 )
 
-server_renderUI_table &lt;- function(input, output){
+server &lt;- function(input, output){
   de_table_in &lt;- reactive({
     req(input$de_file)
     rio::import(input$de_file$datapath) %&gt;% dplyr::mutate(negLog10_pval = -log10(pvalue))})
@@ -530,7 +520,7 @@ server_renderUI_table &lt;- function(input, output){
 ## Launch uiOutput/renderUI app
 
 ``` r
-shinyApp(ui = ui_renderUI_table , server = server_renderUI_table)
+shinyApp(ui = ui , server = server)
 ```
 
 &lt;img src="imgs/table_renderUI.png"height="350" width="800"&gt;
@@ -554,7 +544,7 @@ Note that the conditional statement takes a different form then we are used to, 
 We won't use this function in our app, but here is a simple example of *conditionalPanel* using a nested structure which creates a cascading set of panels. 
 
 ``` r
-ui_cond &lt;- page_fluid(
+ui &lt;- page_fluid(
   checkboxInput("question", "Do you want to use my app?"),
   conditionalPanel(condition = "input.question == '1'",
                    selectInput("experiment", "What kind of experiment is this?",
@@ -566,7 +556,7 @@ ui_cond &lt;- page_fluid(
   
 )
 
-server_cond = function(input, output){}
+server = function(input, output){}
 ```
 
 ---
@@ -575,113 +565,50 @@ server_cond = function(input, output){}
 ## Launch conditionalPanel app
 
 ``` r
-shinyApp(ui = ui_cond , server = server_cond)
+shinyApp(ui = ui, server = server)
 ```
 .pull-left[
 &lt;img src="imgs/cond_panel.png"height="450" width="500"&gt;
 ]
 
 .pull-right[
-  * When the user checks the box, the dropdown appears 
+  - When the user checks the box, the dropdown appears 
     + condtion = "input.question == '1'".
-* If the user selects RNAseq, then we let them upload a file.
-  + condition = "input.experiment == 'RNAseq'"
-* If the user selects ATACseq, we give a message saying this app isn't for them. 
-  + condition = "input.experiment == 'ATACseq'"
+  - If the user selects RNAseq, then we let them upload a file.
+    + condition = "input.experiment == 'RNAseq'"
+  - If the user selects ATACseq, we give a message saying this app isn't for them. 
+    + condition = "input.experiment == 'ATACseq'"
 ]
 
 ---
 
 ## conditionalPanel vs uiOutput
 
-  * *conditionalPanel* works nicely when the UI that you want hidden will not change how it looks based on things that are happening in the server function. 
+  - *conditionalPanel* works nicely when the UI that you want hidden will not change how it looks based on things that are happening in the server function. 
     + In our example, we know exactly how the *selectInput*, *fileInput*, and text will look. They are fixed, but we just want them hidden and dependent on inputs that are already in the UI object.
 
-  * Once you start depending on server side logic to render your UI elements, then *uiOutput* is likely the better option. 
+  - Once you start depending on server side logic to render your UI elements, then *uiOutput* is likely the better option. 
     + In our example, we need the reactive that reads the table to return a dataframe before we can display the table. This needs work in the server function to figure this out, so we use *uiOutput*. 
 
-  * In more complicated apps that are beyond the scope of this course, you can dynamically make varying numbers of inputs based on user input, and *uiOutput* is good for this as well. 
+  - In more complicated apps that are beyond the scope of this course, you can dynamically make varying numbers of inputs based on user input, and *uiOutput* is good for this as well. 
 
 ---
 
-## Handling invalid input files
 
-A common problem when allowing an input file is the likelihood a user uploads a file that causes an error in the app. Here we are looking for a table with speific columns, so we should confirm that the file is valid.
-
-There are a few ways to do this in Shiny, and we will introduce a new Shiny function to handle this, the *validate* function.
-
-
-``` r
-shinyApp(ui = ui_renderUI_table , server = server_renderUI_table)
-```
-
-&lt;img src="imgs/bad_input_file.png"height="400" width="500"&gt;
-
----
-## Use validate function to check input file
-
-*Validate* prevents the alarming red error messages that are unhelpful to the user. This function can be used within a reactive expression, and the validation test is often called within a *need* function call.
-
-*Need* takes an expression to evaluate, and if it is FALSE, then it will display a string provided in the 'message' argument in any output that depends on this reactive.
-
----
-## Use validate function to check input file
-
-We use *validate* in the server function to check for the key columns in the table as we know that not having these columns will cause a downstream error in the app. 
-
-
-``` r
-ui_validate_small &lt;- page_fluid(
-  fileInput("de_file", "Upload a DE file", accept = c(".csv", ".tsv", "xlsx", "xls")), 
-  uiOutput("all_data_UI")
-)
-
-server_validate_small &lt;- function(input, output){
-  de_table_in &lt;- reactive({
-    req(input$de_file)
-    file_in &lt;- rio::import(input$de_file$datapath)
-*   validate(need(expr = all(c("baseMean", "log2FoldChange", "lfcSE", "stat", "pvalue", "padj") %in% colnames(file_in)),
-*                 message = "You must have the following columns: 'baseMean', 'log2FoldChange', 'lfcSE', 'stat', 'pvalue', 'padj'"))
-    file_in %&gt;% dplyr::mutate(negLog10_pval = -log10(pvalue))
-  })
-  
-  output$all_data_UI &lt;- renderUI({
-    if(is.null(input$de_file)) {
-      div("You must load data!", style = "color: #273449; font-weight: bold;")
-    }else if(!is.null(de_table_in())){ 
-      navset_card_tab(nav_panel(card_header("All genes"), dataTableOutput(outputId = "all_data")))
-    }
-  })
-  
-  output$all_data = renderDataTable(datatable(de_table_in()))
-}
-```
-
----
-## Use validate function to check input file
-
-``` r
-shinyApp(ui = ui_validate_small, server = server_validate_small)
-```
-&lt;img src="imgs/validate_small.png"height="300" width="800"&gt;
-
----
 ## Update main app
 
 Recap of changes:
-  * use *uiOutput/renderUI* to make the filter inputs and button from the sidebar conditional on the table being uploaded
-  * use *uiOutput/renderUI* to display a message if there is not datapath loaded and only show the DE table one a valid table is read into the app.
-  * add *validate* + *need* to the reactive expression where we read in the table from the user to make sure a valid inut file was used
-  
+  - use *uiOutput/renderUI* to make the filter inputs and button from the sidebar conditional on the table being uploaded
+  - use *uiOutput/renderUI* to display a message if there is no datapath loaded and only show the DE table one a valid table is read into the app.
+
   
 ---
 ## Update main app - UI
 
 
 
-
 ``` r
-ui_renderUIall &lt;- page_navbar(
+ui &lt;- page_navbar(
   title = "RNAseq tools",
   theme = custom_theme,
   nav_panel(
@@ -710,24 +637,11 @@ ui_renderUIall &lt;- page_navbar(
 
 
 ``` r
-server_renderUIall = function(input, output) {
+server = function(input, output) {
   
   de_table_in &lt;- reactive({
     req(input$de_file)
-    file_in &lt;- rio::import(input$de_file$datapath)
-    # &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
-    validate(
-      need(expr = all(c("baseMean", "log2FoldChange", "lfcSE", "stat", "pvalue", "padj") %in% colnames(file_in)), 
-           message = "You must have the following columns: 'baseMean', 'log2FoldChange', 'lfcSE', 'stat', 'pvalue', 'padj'")
-    )
-    # &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
-    file_in %&gt;% dplyr::mutate(negLog10_pval = -log10(pvalue))
-  })
-  
-  output$all_data = renderDataTable({
-    datatable(de_table_in(), filter = 'top') %&gt;%
-      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %&gt;%
-      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+    file_in &lt;- rio::import(input$de_file$datapath) %&gt;% dplyr::mutate(negLog10_pval = -log10(pvalue))
   })
 
   # &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
@@ -762,10 +676,24 @@ server_renderUIall = function(input, output) {
         
         numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 1, min = 0, step = 0.1),
         
-        actionButton("de_filter", "Apply filter")
+        actionButton("de_filter", "Apply filter"),
+        br(),
+        br(),
+        value_box(title = "Number of genes that go up:", value = textOutput("num_up"), 
+                  showcase = icon("arrow-up"), 
+                  theme = value_box_theme(bg = "#22b430")), 
+        value_box(title = "Number of genes that go down:", value = textOutput("num_down"), 
+                  showcase = icon("arrow-down"), 
+                  theme = value_box_theme(bg ="#c34020" ))
       )
   })
   # &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+  
+  output$all_data = renderDataTable({
+    datatable(de_table_in(), filter = 'top') %&gt;%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %&gt;%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
   
   filtered_de &lt;- reactive({
     de_table_in() %&gt;% 
@@ -773,7 +701,47 @@ server_renderUIall = function(input, output) {
   }) %&gt;%
     bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE)
 
-  output$download_ma_plot &lt;- downloadHandler(
+  num_up_genes &lt;- reactive(filtered_de() %&gt;% dplyr::filter(log2FoldChange &gt; 0 &amp; padj &lt; 0.05) %&gt;% nrow) 
+  num_down_genes &lt;- reactive(filtered_de() %&gt;% dplyr::filter(log2FoldChange &lt; 0 &amp; padj &lt; 0.05) %&gt;% nrow) 
+  output$num_up &lt;- renderText(num_up_genes())
+  output$num_down &lt;- renderText(num_down_genes())
+  
+  output$de_data = renderDataTable({
+    datatable(filtered_de(),
+              filter = 'top') %&gt;%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %&gt;%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
+  })
+  
+    ma_plot_reac &lt;- reactive({
+      de_table_in() %&gt;% 
+        dplyr::mutate(sig = ifelse(padj &lt; input$padj_filter &amp; abs(log2FoldChange) &gt; input$lfc_filter, "DE", "Not_DE")) %&gt;%
+         ggplot(aes(x = baseMean, y = log2FoldChange, color = sig, label = Symbol)) + geom_point() +
+          scale_x_log10() + scale_color_manual(name = "DE status", values = c("red", "grey")) +
+          xlab("baseMean (log scale)") + theme_bw()
+  })  %&gt;%
+    bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE) 
+
+    output$ma_plot = renderPlotly({
+      ggplotly(ma_plot_reac())
+    }) 
+  
+    volcano_plot_reac &lt;- reactive({
+        de_table_in() %&gt;% 
+          dplyr::mutate(sig = ifelse(padj &lt; input$padj_filter &amp; abs(log2FoldChange) &gt; input$lfc_filter, "DE", "Not_DE")) %&gt;%
+          ggplot(aes(x = log2FoldChange, y = negLog10_pval, color = sig, label = Symbol)) +
+            geom_point() +
+            scale_color_manual(name = "DE status", values = c("red","grey"),) + theme_bw() 
+      
+    }) %&gt;%
+      bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE) 
+  
+    output$volcano_plot = renderPlotly({
+      ggplotly(volcano_plot_reac())
+    })
+  
+    # download handlers for plots
+    output$download_ma_plot &lt;- downloadHandler(
     filename = function() {
       "maplot.pdf"
     },
@@ -791,41 +759,6 @@ server_renderUIall = function(input, output) {
     }
   )
   
-  output$de_data = renderDataTable({
-    datatable(filtered_de(),
-              filter = 'top') %&gt;%
-      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %&gt;%
-      formatSignif(columns = c("pvalue", "padj"), digits = 3)
-  })
-  
-    ma_plot_reac &lt;- reactive({
-      de_table_in() %&gt;% 
-      dplyr::mutate(sig = ifelse(padj &lt; input$padj_filter &amp; abs(log2FoldChange) &gt; input$lfc_filter, "DE", "Not_DE")) %&gt;%
-      ggplot(aes(x = baseMean, y = log2FoldChange, color = sig, label = Symbol)) + geom_point() +
-      scale_x_log10() + scale_color_manual(name = "DE status", values = c("red", "grey")) +
-      xlab("baseMean (log scale)") + theme_bw()
-  })  %&gt;%
-    bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE) 
-
-    output$ma_plot = renderPlotly({
-      ggplotly(ma_plot_reac())
-    }) 
-  
-    volcano_plot_reac &lt;- reactive({
-        de_table_in() %&gt;% 
-          dplyr::mutate(sig = ifelse(padj &lt; input$padj_filter &amp; abs(log2FoldChange) &gt; input$lfc_filter, "DE", "Not_DE")) %&gt;%
-          ggplot(aes(x = log2FoldChange, y = negLog10_pval, color = sig)) +
-          geom_point() +
-          scale_color_manual(name = "DE status", values = c("red","grey"),) + theme_bw() 
-          ggtitle("Volcano plot")
-      
-    }) %&gt;%
-      bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE) 
-  
-    output$volcano_plot = renderPlotly({
-      ggplotly(volcano_plot_reac())
-    })
-  
 }
 ```
 
@@ -833,17 +766,83 @@ server_renderUIall = function(input, output) {
 ## Update main app - launch
 
 ``` r
-shinyApp(ui = ui_renderUIall, server = server_renderUIall)
+shinyApp(ui = ui, server = server)
 ```
 
+&lt;img src="imgs/renderUI_mainApp.png"height="450" width="900"&gt;
 
 ---
 
 class: inverse, center, middle
 
-# Observers
+# User Feedback and observers
 
 &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=720px&gt;&lt;/html&gt; 
+
+---
+
+## Handling invalid input files
+
+A common problem when allowing an input file is the likelihood a user uploads a file that causes an error in the app. Here we are looking for a table with speific columns, so we should confirm that the file is valid.
+
+
+
+
+``` r
+shinyApp(ui = ui, server = server)
+```
+
+&lt;img src="imgs/bad_input_file.png"height="400" width="500"&gt;
+
+---
+## Use validate function to check input file
+
+There are a few ways to do this in Shiny, and we will introduce a new Shiny function to handle this, the *validate* function.
+
+*Validate* prevents the alarming red error messages that are unhelpful to the user. This function can be used within a reactive expression, and the validation test is often called within a *need* function call.
+
+*Need* takes an expression to evaluate, and if it is FALSE, then it will display a string provided in the 'message' argument in any output that depends on this reactive.
+
+---
+## Use validate function to check input file
+
+We use *validate* in the server function to check for the key columns in the table as we know that not having these columns will cause a downstream error in the app. 
+
+
+``` r
+ui &lt;- page_fluid(
+  fileInput("de_file", "Upload a DE file", accept = c(".csv", ".tsv", "xlsx", "xls")), 
+  uiOutput("all_data_UI")
+)
+
+server &lt;- function(input, output){
+  de_table_in &lt;- reactive({
+    req(input$de_file)
+    file_in &lt;- rio::import(input$de_file$datapath)
+*   validate(need(expr = all(c("baseMean", "log2FoldChange", "lfcSE", "stat", "pvalue", "padj") %in% colnames(file_in)),
+*                 message = "You must have the following columns: 'baseMean', 'log2FoldChange', 'lfcSE', 'stat', 'pvalue', 'padj'"))
+    file_in %&gt;% dplyr::mutate(negLog10_pval = -log10(pvalue))
+  })
+  
+  output$all_data_UI &lt;- renderUI({
+    if(is.null(input$de_file)) {
+      div("You must load data!", style = "color: #273449; font-weight: bold;")
+    }else if(!is.null(de_table_in())){ 
+      navset_card_tab(nav_panel(card_header("All genes"), dataTableOutput(outputId = "all_data")))
+    }
+  })
+  
+  output$all_data = renderDataTable(datatable(de_table_in()))
+}
+```
+
+---
+## Use validate function to check input file
+
+``` r
+shinyApp(ui = ui, server = server)
+```
+&lt;img src="imgs/validate_small.png"height="300" width="800"&gt;
 
 ---
 
@@ -853,10 +852,12 @@ Sometimes we might want our app to react to a change in an input, but we don't n
 
 Often the *observe* function is used for this purpose, to perform a side effect when an input changes.
 
-Like the *reactive* function or an output, *observe* creates a reactive context that takes dependencies on inputs. Though unlike a reactive expression, an observer does not return a value and is eager in its evaluation, meaning it will evaluate the code every time an input it depends on changes. 
+Like the *reactive* function or an output, *observe* creates a reactive context that takes dependencies on inputs. 
+
+Though unlike a reactive expression, an observer does not return a value and is eager in its evaluation, meaning that it will evaluate the code **every time** an input it depends on changes. 
+
 
 ---
-
 ## Observers - notification for user
 
 We will add a nice message for the user to notify them that a new data set has been loaded.
@@ -871,11 +872,11 @@ This function is within an *observe* function call in the server and takes a dep
 
 
 ``` r
-ui_notify &lt;- page_fluid(
+ui &lt;- page_fluid(
   fileInput("de_file", "Upload a DE file", accept = c(".csv", ".tsv", "xlsx", "xls")), 
   uiOutput("all_data_UI"))
 
-server_notify &lt;- function(input, output){
+server &lt;- function(input, output){
   de_table_in &lt;- reactive({
     req(input$de_file)
     file_in &lt;- rio::import(input$de_file$datapath)
@@ -900,7 +901,7 @@ server_notify &lt;- function(input, output){
 ## Observers - notification for user
 
 ``` r
-shinyApp(ui = ui_notify, server = server_notify)
+shinyApp(ui = ui, server = server)
 ```
 
 &lt;img src="imgs/notify_small.png"height="450" width="700"&gt;
@@ -908,11 +909,172 @@ shinyApp(ui = ui_notify, server = server_notify)
 
 ---
 
-## Update app with notification - server 
+## Modals for messages to user
+
+Another commonly used element paired with *observe* is an modal, which is essentially a pop up window that can simply display a message to the user, or contain additional UI elements.
+
+In the simple app below, we use the *showModal* and *modalDialog* functions within an observer that takes the button from the UI as a dependency.
+
+.pull-left[
+
+``` r
+ui &lt;- page_fluid(
+  
+  actionButton("show_modal", 
+               "Click me for modal!")
+)
+
+server &lt;- function(input, output){
+  observe({
+    showModal(
+      modalDialog(
+        title = "The button was clicked!",
+        easyClose = TRUE, 
+        footer = modalButton("Dismiss")))
+  }) %&gt;% bindEvent(input$show_modal)
+}
+```
 
 
 ``` r
-server_notify = function(input, output) {
+shinyApp(ui = ui, server = server)
+```
+]
+
+.pull-right[
+
+&lt;img src="imgs/modal_button.png"height="350" width="300"&gt;
+]
+
+---
+
+## Modals to confirm user action
+
+Modals are often used to show additional UI elements, including user inputs, plots or tables. This can be especially useful to confirm actions that make permanent changes, such as writing to a database.    
+
+Modals can also be helpful to gather more information from the user for a particular action, and in the following app we add UI elements to the modal to get a file name from the user before downloading the file. 
+
+UI: 
+
+``` r
+de_table &lt;- read.csv("data/shP53_vs_control_DEG.csv")
+de_table$negLog10_pval &lt;- -log10(de_table$pvalue)
+
+ui &lt;- page_fluid(
+  
+  plotOutput("volcano_plot"),
+  actionButton("volcano_download_modal", "Download volcano plot")
+)
+```
+
+---
+
+## Modals to confirm user action
+
+In the server we add the UI elements to the *modalDialog* function and the use the name from the modal in the file name for download.  
+
+``` r
+server &lt;- function(input, output){
+  volcano_plot_reac &lt;- reactive(ggplot(de_table, aes(x = log2FoldChange, y = negLog10_pval, text = Symbol)) + geom_point() + theme_bw())
+  
+  output$volcano_plot = renderPlot(ggplot(de_table, aes(x = log2FoldChange, y = negLog10_pval, text = Symbol)) + geom_point() + theme_bw()) 
+  
+  observe({
+    showModal(
+      modalDialog(title = "Are you sure you want to download this plot? If so, provide a name for the file.",
+*                 textInput("file_name", "Name for file (no extension):", value = "volcano_modal"),
+*                 downloadButton("confirm_download", "Download plot"),
+                  modalButton("Don't download plot"),
+                  easyClose = TRUE, footer = NULL))
+  }) %&gt;% bindEvent(input$volcano_download_modal)
+  
+  output$confirm_download &lt;- downloadHandler(
+    filename = function() {
+*     paste0(input$file_name, ".pdf")
+    }, content = function(file) { 
+      ggsave(filename = file, plot = volcano_plot_reac()) 
+    }) 
+}
+```
+
+---
+
+## Modals to confirm user action
+
+
+``` r
+shinyApp(ui = ui, server = server)
+```
+
+&lt;img src="imgs/volcano_modal.png"height="350" width="900"&gt;
+
+---
+
+## Other user feedback packages
+
+
+  - [shinyFeedback](https://github.com/merlinoa/shinyFeedback) or [shinyValidate](https://rstudio.github.io/shinyvalidate/) to validate individual inputs
+  - [shinybusy](https://cran.r-project.org/web/packages/shinybusy/vignettes/shinybusy.html) for busy spinners
+  - [shinycssloaders](https://cran.r-project.org/web/packages/shinycssloaders/readme/README.html) for alerts and busy spinners
+  - [Progress bars in shiny](https://shiny.posit.co/r/articles/build/progress/)
+  - [Progress bars with waiter pacakge](https://waiter.john-coene.com/#/) 
+---
+
+## Update main app
+
+Recap of changes:
+  - add *validate* + *need* to the reactive expression where we read in the table from the user to make sure a valid input file was used
+  - add notification to user that a table has been uploaded
+  - add modal dialog to confirm download and get filename
+  
+---
+## Update main app - UI
+
+The UI has not changed since we previously modified it, but it's shown below. 
+
+``` r
+ui &lt;- page_navbar(
+  title = "RNAseq tools",
+  theme = custom_theme,
+  nav_panel(
+    title = "DE Analysis",
+    layout_sidebar(
+      
+      sidebar = sidebar(
+        width = 300,
+        fileInput("de_file", "Upload a DE file", accept = c(".csv", ".tsv", "xlsx", "xls")), 
+        uiOutput("sidebar_filters_UI") 
+      ),
+      uiOutput("table_plots_UI"),
+    )
+  ),
+  nav_panel(title = "Next steps","The next step in our analysis will be..."),
+  nav_spacer(),
+  nav_menu(title = "Links",
+           align = "right",
+           nav_item(tags$a(shiny::icon("chart-simple"), "RU BRC - Learn more!", href = "https://rockefelleruniversity.github.io/",target = "_blank"))
+  )
+)
+```
+---
+
+## Update app with user feedback - server 
+
+
+``` r
+server = function(input, output) {
+  
+  de_table_in &lt;- reactive({
+    req(input$de_file)
+    file_in &lt;- rio::import(input$de_file$datapath)
+    # &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+    validate(
+      need(expr = all(c("baseMean", "log2FoldChange", "lfcSE", "stat", "pvalue", "padj") %in% colnames(file_in)), 
+           message = "You must have the following columns: 'baseMean', 'log2FoldChange', 'lfcSE', 'stat', 'pvalue', 'padj'")
+    )
+    # &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+    file_in %&gt;% dplyr::mutate(negLog10_pval = -log10(pvalue))
+  })
   
   # &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
   observe({
@@ -921,22 +1083,26 @@ server_notify = function(input, output) {
     bindEvent(de_table_in())
   # &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
   
-  de_table_in &lt;- reactive({
-    req(input$de_file)
-    file_in &lt;- rio::import(input$de_file$datapath)
-    validate(
-      need(expr = all(c("baseMean", "log2FoldChange", "lfcSE", "stat", "pvalue", "padj") %in% colnames(file_in)), 
-           message = "You must have the following columns: 'baseMean', 'log2FoldChange', 'lfcSE', 'stat', 'pvalue', 'padj'")
-    )
-    file_in %&gt;% dplyr::mutate(negLog10_pval = -log10(pvalue))
+  output$sidebar_filters_UI &lt;- renderUI({
+    req(de_table_in())
+      div(
+        "DE filters",
+        numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.001),
+        
+        numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 1, min = 0, step = 0.1),
+        
+        actionButton("de_filter", "Apply filter"),
+        br(),
+        br(),
+        value_box(title = "Number of genes that go up:", value = textOutput("num_up"), 
+                  showcase = icon("arrow-up"), 
+                  theme = value_box_theme(bg = "#22b430")), 
+        value_box(title = "Number of genes that go down:", value = textOutput("num_down"), 
+                  showcase = icon("arrow-down"), 
+                  theme = value_box_theme(bg ="#c34020" ))
+      )
   })
   
-  output$all_data = renderDataTable({
-    datatable(de_table_in(), filter = 'top') %&gt;%
-      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %&gt;%
-      formatSignif(columns = c("pvalue", "padj"), digits = 3)
-  })
-
   output$table_plots_UI &lt;- renderUI({
     if(is.null(input$de_file)) { 
       layout_columns("No data has been loaded! Upload a DE table with the following columns: 'baseMean', 'log2FoldChange', 'lfcSE', 'stat', 'pvalue', 'padj'", style = "color: #273449; font-weight: bold;")
@@ -949,26 +1115,49 @@ server_notify = function(input, output) {
         ),
         card(card_header("MA plot"),
              plotlyOutput("ma_plot"),
-             downloadButton("download_ma_plot", "Download MA plot", style = "width:40%;")), 
+             actionButton("ma_download_modal", "Download MA plot", width = "40%")),# &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
         card(card_header("Volcano plot"),
              plotlyOutput("volcano_plot"),
-             downloadButton("download_volcano_plot", "Download volcano plot", style = "width:40%;")),
+             actionButton("volcano_download_modal", "Download volcano plot", width = "40%")), # &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
         col_widths = c(12,6,6), row_heights = c("750px", "500px")
       )
       }
   })
   
-  output$sidebar_filters_UI &lt;- renderUI({
-    req(de_table_in())
-      div(
-        "DE filters",
-        numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.001),
-        
-        numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 1, min = 0, step = 0.1),
-        
-        actionButton("de_filter", "Apply filter")
-      )
+  # &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+  observe({
+    showModal(
+      modalDialog(title = "Are you sure you want to download this plot? If so, provide a name for the file.",
+                  textInput("file_name_ma", "Name for file (no extension):", value = "ma_plot"), 
+                  downloadButton("download_ma_plot", "Download MA plot", style = "width:40%;"),
+                  br(),
+                  br(),
+                  modalButton("Don't download plot"),
+                  easyClose = TRUE, footer = NULL))
+  }) %&gt;% 
+    bindEvent(input$ma_download_modal)
+  # &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+  
+  # &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+  observe({
+    showModal(
+      modalDialog(title = "Are you sure you want to download this plot? If so, provide a name for the file.",
+                  textInput("file_name_volcano", "Name for file (no extension):", value = "volcano_plot"), 
+                  downloadButton("download_volcano_plot", "Download plot", style = "width:40%;"),
+                  br(), 
+                  br(),
+                  modalButton("Don't download plot"),
+                  easyClose = TRUE, footer = NULL))
+  }) %&gt;% 
+    bindEvent(input$volcano_download_modal)
+  # &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+  
+  output$all_data = renderDataTable({
+    datatable(de_table_in(), filter = 'top') %&gt;%
+      formatRound(columns = c("baseMean", "log2FoldChange", "lfcSE", "stat"), digits = 3) %&gt;%
+      formatSignif(columns = c("pvalue", "padj"), digits = 3)
   })
+  
   
   filtered_de &lt;- reactive({
     de_table_in() %&gt;% 
@@ -976,23 +1165,10 @@ server_notify = function(input, output) {
   }) %&gt;%
     bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE)
 
-  output$download_ma_plot &lt;- downloadHandler(
-    filename = function() {
-      "maplot.pdf"
-    },
-    content = function(file) {
-      ggsave(filename = file, plot = ma_plot_reac())
-    }
-  )
-  
-  output$download_volcano_plot &lt;- downloadHandler(
-    filename = function() {
-      "volcanoplot.pdf"
-    },
-    content = function(file) {
-      ggsave(filename = file, plot = volcano_plot_reac())
-    }
-  )
+  num_up_genes &lt;- reactive(filtered_de() %&gt;% dplyr::filter(log2FoldChange &gt; 0 &amp; padj &lt; 0.05) %&gt;% nrow) 
+  num_down_genes &lt;- reactive(filtered_de() %&gt;% dplyr::filter(log2FoldChange &lt; 0 &amp; padj &lt; 0.05) %&gt;% nrow) 
+  output$num_up &lt;- renderText(num_up_genes())
+  output$num_down &lt;- renderText(num_down_genes())
   
   output$de_data = renderDataTable({
     datatable(filtered_de(),
@@ -1017,7 +1193,7 @@ server_notify = function(input, output) {
     volcano_plot_reac &lt;- reactive({
         de_table_in() %&gt;% 
           dplyr::mutate(sig = ifelse(padj &lt; input$padj_filter &amp; abs(log2FoldChange) &gt; input$lfc_filter, "DE", "Not_DE")) %&gt;%
-          ggplot(aes(x = log2FoldChange, y = negLog10_pval, color = sig)) +geom_point() +
+          ggplot(aes(x = log2FoldChange, y = negLog10_pval, color = sig, label = Symbol)) +geom_point() +
           scale_color_manual(name = "DE status", values = c("red","grey"),) +theme_bw()
     }) %&gt;%
       bindEvent(input$de_filter, de_table_in(), ignoreNULL = FALSE) 
@@ -1025,6 +1201,25 @@ server_notify = function(input, output) {
     output$volcano_plot = renderPlotly({
       ggplotly(volcano_plot_reac())
     })
+    
+    output$download_ma_plot &lt;- downloadHandler(
+    filename = function() {
+      paste0(input$file_name_ma, ".pdf")
+    },
+    content = function(file) {
+      ggsave(filename = file, plot = ma_plot_reac())
+    }
+  )
+  
+  output$download_volcano_plot &lt;- downloadHandler(
+    filename = function() {
+      paste0(input$file_name_volcano, ".pdf")
+    },
+    content = function(file) {
+      ggsave(filename = file, plot = volcano_plot_reac())
+    }
+  )
+  
 }
 ```
 
@@ -1033,13 +1228,134 @@ server_notify = function(input, output) {
 ## Notification for user - app
 
 ``` r
-shinyApp(ui = ui_renderUIall, server = server_notify)
+shinyApp(ui = ui, server = server)
+```
+
+&lt;img src="imgs/feedback_mainApp.png"height="400" width="900"&gt;
+
+---
+
+## reactiveValues and reactiveVal
+
+We will briefly introduce two more types of reactive variables that can be useful for certain use cases: *reactiveVal* and *reactiveValues*. 
+
+These differ from other reactive elements becuase they **are mutable** and **can be updated** in different parts of your app. 
+
+  -  **reactiveVal** - a single reactive variable 
+    + `counter &lt;- reactiveVal(0)` - create a reactiveVal *counter* with a value of zero
+    + `counter &lt;- counter(counter+1)` - increase the value of *counter* with the current value of *counter* +1 (so now = 1)
+  - **reactiveValues** - a list-like object that can store many reactive values
+    + `rv &lt;- reactiveValues(counter = 0, tracker = FALSE)` - create a reactiveValues object with two elements, *rv$counter* and *rv$tracker*.
+    + `rv$counter &lt;- rv$counter + 1` - increase value of only *rv$counter* to 1, while *rv$tracker* is unchanged. 
+    + `rv$tracker &lt;- TRUE` - change value of *rv$tracker* to TRUE
+  
+
+---
+
+## reactiveValues and reactiveVal
+
+There are many use cases for these two types of variables, and often it's more useful in more complicated apps, so we won't get into too much detail here. 
+
+Whether you use *reactiveVal* or *reactiveValues* is often a matter of personal preference as they can oftne be used to accomplish the same thing. 
+
+Here are a couple of examples of how they may be used: 
+
+  -  Tracking the state of the app, for example to know how **many times** something has happened (a button click) or know **if** something key has happened.
+  - If a reactive value needs to be updated in different ways by two distinct dependencies, reactiveValues and reactiveVal can be used. 
+    + See the next slide for an example of this.
+
+
+---
+
+## reactiveValues example
+
+We have a simple app where the user is generating a list of genes of interest as they go through the app. We have a button to add a gene to this list and another to remove a gene from this list.
+
+A reactiveVal or reactiveValues object makes it easy to modify this gene list, and importantly, they are reactive and can be used in reactive contexts (see server function) 
+
+``` r
+de_table &lt;- read.csv("data/shP53_vs_control_DEG.csv")
+
+ui &lt;- page_fluid(
+  
+  dataTableOutput(outputId = "all_data"),
+  actionButton("add_gene", "Add gene to list"),
+  actionButton("remove_gene", "Remove gene from list"),
+  br(),
+  br(),
+  textOutput("selected_gene_info")
+)
 ```
 
 ---
-use observer to let user enter file name for plots?
 
-also can use observer when you introduce the update* series of functions
+## reactiveValues example
+
+We make two separate observers that make distinct modifications to the reactiveValues object *rv$genes*. 
+
+``` r
+server &lt;- function(input, output){
+  # initialize the reactiveValues object
+* rv &lt;- reactiveValues(genes = character())
+  
+  output$all_data = renderDataTable(datatable(de_table, selection = "single", filter = 'top'))
+  
+  observe({
+    selected_gene &lt;- de_table[input$all_data_rows_selected, "Symbol"]
+*   rv$genes &lt;- c(rv$genes, selected_gene)
+  }) %&gt;% bindEvent(input$add_gene) # observer when 'add_gene' button is pressed
+
+  observe({
+    selected_gene &lt;- de_table[input$all_data_rows_selected, "Symbol"]
+*   rv$genes &lt;- rv$genes[!rv$genes == selected_gene]
+  }) %&gt;% bindEvent(input$remove_gene) # observer when 'remove_gene' button is pressed
+  
+  output$selected_gene_info &lt;- renderText({
+    paste0("The selected genes are ", paste(rv$genes, collapse = ", ")) 
+  })
+}
+```
+
+---
+
+## reactiveValues example
+
+Then because *rv$genes* is reactive, using it within *output$selected_gene_info* will trigger that output to change as we add and remove genes. 
+
+``` r
+server &lt;- function(input, output){
+  
+  rv &lt;- reactiveValues(genes = character())
+  
+  output$all_data = renderDataTable(datatable(de_table, selection = "single", filter = 'top'))
+  
+  observe({
+    selected_gene &lt;- de_table[input$all_data_rows_selected, "Symbol"]
+    rv$genes &lt;- c(rv$genes, selected_gene) 
+  }) %&gt;% bindEvent(input$add_gene)
+    
+  observe({
+    selected_gene &lt;- de_table[input$all_data_rows_selected, "Symbol"]
+    rv$genes &lt;- rv$genes[!rv$genes == selected_gene] 
+  }) %&gt;% bindEvent(input$remove_gene)
+  
+  output$selected_gene_info &lt;- renderText({ 
+*   paste0("The selected genes are ", paste(rv$genes, collapse = ", "))
+  }) 
+}
+```
+
+---
+
+## reactiveValues example
+
+
+``` r
+shinyApp(ui, server)
+```
+
+&lt;img src="imgs/reactiveValues.png"height="300" width="900"&gt;
+
 ---
 
 ## Publishing apps on shinyapps.io
@@ -1053,17 +1369,6 @@ We first need to install and load the *rsconnect* package.
 
 ``` r
 library(rsconnect)
-```
-
-```
-## 
-## Attaching package: 'rsconnect'
-```
-
-```
-## The following object is masked from 'package:shiny':
-## 
-##     serverInfo
 ```
 
 ---
@@ -1096,20 +1401,237 @@ The *rsconnect* package will then bundle the app and any packages the app uses. 
 
 ---
 
-# other ideas for later on
+## Debugging
 
-* reactiveValues()
-* intorduce ways to include custom HTML
-* custom CSS?
-* debugging?
-* mention shiny in python?
+Debugging can be tricky in Shiny apps due to the fact that the code is not run sequentially and you aren't actually running the code yourself, it's run in the background as the app is running. Especially once you have a lot of reactivity finding the exact source of the bug can be challenging.
+
+You'll find the ways that work best for you, but two common strategies I use are the following:
+  - print variables to the screen within an *observe* function or within specific reactives
+  - use the *browser* function
+  
+
+---
+
+## Debugging
+
+Here is an app that contains a couple simple bugs and opportunities for optimization where these strategies can be helpful. This app exists as a file called 'app_debug.R' in the data folder of the course. 
+
+``` r
+ui &lt;- page_fluid(
+  fileInput("de_file", "Upload a DE file", accept = c(".csv", ".tsv", "xlsx", "xls")), 
+  uiOutput("all_data_UI")
+)
+
+server &lt;- function(input, output){
+
+  de_table_in &lt;- reactive({
+    req(input$de_file)
+    rio::import(input$de_file) %&gt;% dplyr::mutate(negLog10_pval = -log10(pvalue))})
+  
+  output$all_data_UI &lt;- renderUI({ 
+    req(de_table_in)
+    card(card_header("All genes"), dataTableOutput(outputId = "all_data"))
+  }) 
+  
+  output$all_data = renderDataTable(datatable(de_table_in()))
+}
+
+shinyApp(ui = ui, server = server)
+```
+
+---
+
+## Debugging
+
+Two bugs are apparent:
+
+&lt;img src="imgs/bug_descriptions.png"height="500" width="900"&gt;
+
+---
+
+# Upload error - print to screen
+
+Usually bugs with reasonable errors printed to the console are easier to debug, so we will start there. Here is the error form the console:
+&lt;img src="imgs/uploadBug.png"height="200" width="700"&gt;
+
+If you think you know the variable causing the bug, then printing it to the screen is one way to peek inside the app and look at it. We can tell from the error in the console that it's occurring in the *de_table_in* reactive and some kind of issue with a 'file' argument. It must be a problem with the command `rio::import(input$de_file)`
+
+
+
+
+
+---
+
+# Upload error - print to screen
+
+You can use the *observe* function to print a reactive variable, like *input$de_file*, and every time it changes, the observer will run and the variable will print to the screen.
+
+``` r
+# UI object not shown
+server &lt;- function(input, output){
+
+  observe({
+*   print("file_path")
+*   print(input$de_file)
+  }) 
+  
+  de_table_in &lt;- reactive({
+    req(input$de_file)
+    rio::import(input$de_file) %&gt;% dplyr::mutate(negLog10_pval = -log10(pvalue))})
+  
+  output$all_data_UI &lt;- renderUI({ 
+    req(de_table_in)
+    card(card_header("All genes"), dataTableOutput(outputId = "all_data"))
+  }) 
+  
+  output$all_data = renderDataTable(datatable(de_table_in()))
+}
+
+shinyApp(ui = ui, server = server)
+```
+
+---
+
+# Upload error - print to screen
+
+From the console, we can see that the variable *input$de_file* is a dataframe, not a file path like we need for this command. We then remember that we actually want *input$de_file$datapath*. 
+
+&lt;img src="imgs/uploadBug_print.png"height="300" width="800"&gt;
+
+---
+
+# Upload error - print to screen
+
+We could also put the *print* function within the specific reactive context where we think it breaks, in this case the *de_table_in()* reactive. 
+
+Sometimes you might want to know the value of *input$de_file* only within this reactive and this would be the best strategy, and sometimes you might want to track how its changing as the user goes through the app, and printing within an *observe* function might be more useful. 
+
+``` r
+# UI object not shown
+server &lt;- function(input, output){
+  
+  de_table_in &lt;- reactive({
+    req(input$de_file)
+*   print("file_path")
+*   print(input$de_file)
+    rio::import(input$de_file) %&gt;% dplyr::mutate(negLog10_pval = -log10(pvalue))})
+  
+  output$all_data_UI &lt;- renderUI({ 
+    req(de_table_in)
+    card(card_header("All genes"), dataTableOutput(outputId = "all_data"))
+  }) 
+  
+  output$all_data = renderDataTable(datatable(de_table_in()))
+}
+
+shinyApp(ui = ui, server = server)
+```
+
+---
+
+## Upload error - browser
+
+The browser in R, called with the function *browser()* is a really useful way to debug functions and Shiny apps. In both cases, code is being run within a contained environment without you running it line by line. 
+
+By inserting *browser()* into an app or function, the code execution will pause, allowing you to manually run code **within the environment of the app**. So any temporary variables available to that function or Shiny app can be viewed.
+
+Note: the browser won't work properly if you are running this within an R markdown chunk, so open up the demo app ('app_debug.R') and run the app using the 'runApp' button at the top right.
+
+
+
+---
+
+## Upload error - browser
+
+We insert a *browser* function call within the *de_table_in* reactive, and when we run this (run in separate script), after a file is uploaded we can go into the console and run code from within the app environment. 
+
+``` r
+# UI object not shown
+server &lt;- function(input, output){
+
+  de_table_in &lt;- reactive({
+    req(input$de_file)
+*   browser()
+    rio::import(input$de_file) %&gt;% dplyr::mutate(negLog10_pval = -log10(pvalue))})
+  
+  output$all_data_UI &lt;- renderUI({ 
+    req(de_table_in)
+    card(card_header("All genes"), dataTableOutput(outputId = "all_data"))
+  }) 
+  
+  output$all_data = renderDataTable(datatable(de_table_in()))
+}
+
+shinyApp(ui = ui, server = server)
+```
+
+---
+
+## Upload error - browser
+
+By printing *input$de_file* within the browser, its clear that we need to change it to *input$de_file$datapath*
+
+&lt;img src="imgs/uploadBug_browser.png"height="450" width="600"&gt;
+
+---
+
+## uiOutput error - browser
+
+The second bug is trickier because there is no error. A version of this app with the upload bug from above fixed is in the 'data' folder of the course materials called 'app_debug2.R'. Run this script with the 'Run App' button to see the bug. 
+
+&lt;img src="imgs/bug_descriptions2.png"height="450" width="800"&gt;
+---
+
+## uiOutput error - browser
+
+We don't have an error to pinpoint where in our app the bug exists, but since the card is appearing inappropriately, we can assume it's an issue in the *renderUI* function that renders the card. 
+
+Similar to the last bug, we can insert a *browser* function call within *renderUI* and every time that funciton is run, we will know and can explore the issue. 
+
+``` r
+# UI object not shown
+server &lt;- function(input, output){
+
+  de_table_in &lt;- reactive({
+    req(input$de_file)
+    rio::import(input$de_file$datapath) %&gt;% dplyr::mutate(negLog10_pval = -log10(pvalue))})
+  
+  output$all_data_UI &lt;- renderUI({ 
+    req(de_table_in)
+*   browser()
+    card(card_header("All genes"), dataTableOutput(outputId = "all_data"))
+  }) 
+  
+  output$all_data = renderDataTable(datatable(de_table_in()))
+}
+
+shinyApp(ui = ui, server = server)
+```
+
+---
+
+## uiOutput error - browser
+
+.pull-left[
+In the browser we are able to look at the *de_table_in* variable we have used in *req()* a d notive that it's a function, not a table as we intended. 
+
+It's clear now that we forgot to add the parenthesis required to get the actual value from the reactive. We have returned the reactive function itself. Because this is not null, the *req()* function was satisfied and the card was rendered. 
+
+The old line of code `req(de_table_in)` should be changed to `req(de_table_in())`.
+]
+
+.pull-right[
+&lt;img src="imgs/uiBug_browser.png"height="350" width="450"&gt;
+]
+
 
 
 ---
 ## Further Resources
 
-* [Mastering Shiny book](https://mastering-shiny.org/index.html)
-* [More widgets](https://dreamrs.github.io/shinyWidgets/)
+- [Mastering Shiny book](https://mastering-shiny.org/index.html)
+- [The Shiny cheatsheet](https://shiny.posit.co/r/articles/start/cheatsheet/)
+- [More widgets](https://dreamrs.github.io/shinyWidgets/)
 
 
 ---
@@ -1117,12 +1639,6 @@ The *rsconnect* package will then bundle the app and any packages the app uses. 
 
 Any suggestions, comments, edits or questions (about content or the slides themselves) please reach out to our [GitHub](https://github.com/RockefellerUniversity/Intro_to_Shiny/issues) and raise an issue.
 
-
---
-## Exercises
-The following few slides show you how to structure exercise slides.
-
-We often have several exercise slides per session. So you can just copy and paste and change the directory to the appropriate name. All 3 file types are made from you single exercise Rmd. 
 
 ---
 ## Time for an exercise!

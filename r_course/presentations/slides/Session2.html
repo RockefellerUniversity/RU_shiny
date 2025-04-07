@@ -41,10 +41,24 @@ Bioinformatics Resource Center - Rockefeller University
 
 ##  Recap
 
-Session 1 covered...
 
-- [Topic 1](https://rockefelleruniversity.github.io/Intro_To_R_1Day/r_course/presentations/singlepage/introToR_Session1.html#background-to-r)
-- [Topic 2](https://rockefelleruniversity.github.io/Intro_To_R_1Day/r_course/presentations/singlepage/introToR_Session1.html#background-to-r)
+  - Session 1 - 
+    + Shiny basics
+    + app layouts 
+    + app theming
+    
+  - **Session 2** -
+    + Input types 
+    + basic reactivity 
+    + interactive plots 
+    + downloading files from apps
+    
+  - Session 3 - 
+    + uploading files and conditional UIs 
+    + observers
+    + publishing apps
+    + basic debugging
+
 
 ---
 class: inverse, center, middle
@@ -55,12 +69,28 @@ class: inverse, center, middle
 
 ---
 
+## Inputs
+
+Inputs are UI elements that take some kind of information from the user that we can then use in the server function of the app.
+
+In the server function, there will be an list called 'input' available that contains all of the inputs in the app.
+
+Typically an input will have two required arguments:
+  - inputId - this is a text string that will be linked to the 'input' list in the server function
+    +  if `inputID = "user_info"`, then in the server there will be an element in the 'input' list called *input$user_info* that is available for reactive contexts. More on this later.
+    + depending on the input type, the element put into the list will differ (string, number, date, a vector of these, etc)
+    
+  - label - the text that is displayed above the input element
+    
+    
+---
+
 ## Inputs - text boxes
 
-should probably explain in detail how the input functons work in general (Arguments, etc)
 
 ``` r
-ui_textInputs = page_fluid(
+ui = page_fluid(
+  
   textInput(inputId = "text_box", label = "Experiment name:"),
   textAreaInput(inputId = "big_text_box", "Describe your experiment:", rows = 3)
 )
@@ -68,7 +98,7 @@ ui_textInputs = page_fluid(
 
 
 ``` r
-shinyApp(ui = ui_textInputs, server = function(input, output){})
+shinyApp(ui = ui, server = function(input, output){})
 ```
 
 &lt;img src="imgs/text_boxes.png"height="250" width="350"&gt;
@@ -82,7 +112,7 @@ shinyApp(ui = ui_textInputs, server = function(input, output){})
 
 
 ``` r
-ui_selInputs &lt;- page_fluid(
+ui &lt;- page_fluid(
   selectInput("dropdown", "Select a gene:", 
               choices = c("TP53", "PTEN", "HRAS", "PI3K")),
   
@@ -102,7 +132,7 @@ ui_selInputs &lt;- page_fluid(
 
 
 ``` r
-shinyApp(ui = ui_selInputs, server = function(input, output){})
+shinyApp(ui = ui, server = function(input, output){})
 ```
 
 &lt;img src="imgs/dropdowns.png"height="350" width="650"&gt;
@@ -114,7 +144,7 @@ shinyApp(ui = ui_selInputs, server = function(input, output){})
 
 
 ``` r
-ui_pickInputs &lt;- page_fluid(
+ui &lt;- page_fluid(
 
   "If you want the user to only select one option from a list, radioButtons work well",
   radioButtons("radio", "Select only one gene from the radio selections:", 
@@ -136,7 +166,7 @@ ui_pickInputs &lt;- page_fluid(
 
 
 ``` r
-shinyApp(ui = ui_pickInputs, server = function(input, output){})
+shinyApp(ui = ui, server = function(input, output){})
 ```
 
 &lt;img src="imgs/pickInputs.png"height="400" width="550"&gt;
@@ -148,7 +178,7 @@ shinyApp(ui = ui_pickInputs, server = function(input, output){})
 
 
 ``` r
-ui_numInputs &lt;- page_fluid(
+ui &lt;- page_fluid(
   
   numericInput("numeric", "Number of samples", value = 1, min = 0, max = 100),
   
@@ -160,7 +190,7 @@ ui_numInputs &lt;- page_fluid(
 
 
 ``` r
-shinyApp(ui = ui_numInputs, server = function(input, output){})
+shinyApp(ui = ui, server = function(input, output){})
 ```
 
 &lt;img src="imgs/numInputs.png"height="250" width="350"&gt;
@@ -172,7 +202,7 @@ shinyApp(ui = ui_numInputs, server = function(input, output){})
 
 
 ``` r
-ui_dateInputs &lt;- page_fluid(
+ui &lt;- page_fluid(
   dateInput("date", "Choose a date:"),
   
   dateRangeInput("date_range", "Choose a range of dates:")
@@ -181,7 +211,7 @@ ui_dateInputs &lt;- page_fluid(
 
 
 ``` r
-shinyApp(ui = ui_dateInputs, server = function(input, output){})
+shinyApp(ui = ui, server = function(input, output){})
 ```
 
 &lt;img src="imgs/dateInputs.png"height="300" width="250"&gt;
@@ -193,14 +223,14 @@ shinyApp(ui = ui_dateInputs, server = function(input, output){})
 To have the user trigger downstream events by clicking a button, we can use an *actionButton*
 
 ``` r
-ui_button &lt;- page_fluid(
+ui &lt;- page_fluid(
   actionButton("button", "Click me!"),
 )
 ```
 
 
 ``` r
-shinyApp(ui = ui_button, server = function(input, output){})
+shinyApp(ui = ui, server = function(input, output){})
 ```
 &lt;img src="imgs/actionButton.png"height="100" width="250"&gt;
 
@@ -221,17 +251,21 @@ We have seen many types of inputs, but these would be pointless if we can't dete
 
 Every input returns some kind of value, and changes in this value can be recorded by shiny. This introduces the concept of 'reactivity', the key element of shiny that makes apps useful and cool.
 
+**We need to use reactive elements (eg an input value) in reactive contexts.** These reactive contexts are designed to listen for changes in the reactive dependencies in contains, and then communicate those changes to the UI. 
+
+So far the *render_* functions are the only reactive contexts we have learned about.
+
 ---
 
 ## Using reactivity
 
-If we include an output and it's corresponding render function that uses inputs we have created, we can see the return value of the input.
+This is an example of simple reactivity, we change the gene, and the *gene_text* output detects this and displays the new gene name, which is the value of *input$gene*. 
 
-This is an example of simple reactivity, we change the gene, and the *gene_name* output detects this and displays the new gene name. 
+Note that *input$gene* must be within a reactive context in the server, which in this case is the *renderText* function.
 
 
 ``` r
-ui_gene &lt;- page_fluid(
+ui &lt;- page_fluid(
   radioButtons("gene", "Select only one gene from the radio selections:", 
               choices = c("TP53", "PTEN", "HRAS", "PI3K"), 
               selected = "HRAS"),
@@ -239,7 +273,7 @@ ui_gene &lt;- page_fluid(
   textOutput("gene_text")
 )
 
-server_gene = function(input, output){
+server = function(input, output){
    output$gene_text &lt;- renderText({
      paste0("We will study ", input$gene)
    })
@@ -254,7 +288,7 @@ server_gene = function(input, output){
 
 
 ``` r
-shinyApp(ui = ui_gene, server = server_gene)
+shinyApp(ui = ui, server = server)
 ```
 
 .pull-left[
@@ -266,31 +300,53 @@ shinyApp(ui = ui_gene, server = server_gene)
 &lt;img src="imgs/pi3k.png"height="200" width="250"&gt;
 ]
 
+
+
 ---
 
-## Reactive graph
+## Using reactivity
 
-&lt;img src="imgs/input_output.png"height="300" width="700"&gt;
+
+``` r
+shinyApp(ui = ui, server = server)
+```
+
+.pull-left[
+&lt;img src="imgs/hras.png"height="200" width="250"&gt;
+]
+
+.pull-right[
+
+&lt;img src="imgs/pi3k.png"height="200" width="250"&gt;
+]
+
+Reactive Graph: 
+
+&lt;img src="imgs/input_output.png"height="200" width="500"&gt;
+
 
 ---
 
 ## Reactive contexts
 
-Inputs are considered a 'reactive value'. This means that when that value changes, anything that relies on this value will also change. 
-
-The requires special handling, and a reactive value can only be used in certain contexts.  For example, we get an error if we just try and print *input$gene* without putting it inside a reactive handler, such as *renderText*. 
+To reiterate, a reactive value can only be used in certain contexts.  For example, we get an error if we just try and print *input$gene* without putting it inside a reactive handler, such as *renderText*. 
 
 We will learn more about other reactive contexts later on. 
 
 ``` r
-server_geneBad = function(input, output){
+ui &lt;- page_fluid(
+  radioButtons("gene", "Select only one gene from the radio selections:", 
+              choices = c("TP53", "PTEN", "HRAS", "PI3K"), 
+              selected = "HRAS"))
+
+server = function(input, output){
     print(paste0("We will study ", input$gene))
  }
 ```
 
 
 ``` r
-shinyApp(ui = ui_gene, server = server_geneBad)
+shinyApp(ui = ui, server = server)
 ```
 
 &lt;img src="imgs/reactive_error.png"height="65" width="500"&gt;
@@ -303,7 +359,7 @@ Here is a slightly more complicated reactive situation where we have more than o
 
 
 ``` r
-ui_gene2 &lt;- page_fluid(
+ui &lt;- page_fluid(
   radioButtons("gene", "Select only one gene from the radio selections:", 
               choices = c("TP53", "PTEN", "HRAS", "PI3K"), 
               selected = "HRAS"),
@@ -315,12 +371,14 @@ ui_gene2 &lt;- page_fluid(
   textOutput("study_summary")
 )
 
-server_gene2 = function(input, output){
+server = function(input, output){
    output$study_summary &lt;- renderText({
-     paste0("We will study ", input$gene, " and use ", input$conditions, " samples, with ", input$replicates, " replicates of each. This will give ", input$conditions*input$replicates, " total samples.")
+     paste0("We will study ", input$gene, " and there will be ", input$conditions*input$replicates, " total samples.")
    })
  }
 ```
+
+
 
 ---
 
@@ -328,13 +386,14 @@ server_gene2 = function(input, output){
 
 
 ``` r
-shinyApp(ui = ui_gene2, server = server_gene2)
+shinyApp(ui = ui, server = server)
 ```
 
+&lt;img src="imgs/app_gene2.png"height="400" width="400"&gt;
 ---
 
 ## Reactivity
- This sets up a reactive graph where we have one output, *output$study_summary*, that depends on three inputs and a separate calculation that involves the two numeric inputs. 
+ This sets up a reactive graph where we have one output, *output$study_summary*, that depends on three inputs, including a calculation that involves the two numeric inputs. 
 
 &lt;img src="imgs/no_reactive_graph1.png"height="300" width="400"&gt;
 
@@ -349,64 +408,68 @@ This is okay for this situation, but if a more intensive calculation was being d
 &lt;img src="imgs/no_reactive_graph2.png"height="300" width="800"&gt;
 
 ---
-## Lazy evaluation of reactive functions
-
-A key aspect of reactivity in Shiny is that evaluation in a shiny app is generally 'lazy'. This means that any code in the app is only evaluated when it is needed, typically when a dependency changes. This is different than a typical R script that runs from top to bottom.
-
-We will introduce a new shiny function that helps to make reactivity much more efficient and utilizes the advantage of lazy code evaluation in shiny. 
-
-That would be the *reactive* function, which creates a reactive expression. A reactive expression usually takes inputs as dependencies and it's value is often used by an output.
-
-&lt;img src="imgs/reactive_intro.png"height="250" width="700"&gt;
-
----
 
 ## Reactive expressions
 
-Key aspects of a reactive function:
+We will introduce a new shiny function that helps to make reactivity much more efficient. 
 
-  * It usually depends on one or more reactive inputs
-  * If one of these dependencies changes, then it is invalidated and the next time that reactive expression is called it will be computed again.
-  * The output of the function is cached and is available for use within the app. 
-  * When the expression is called in the app and the value of a reactive function is valid, this value is retrieved without any further computation. 
+That would be the *reactive* function, which takes a chunk of R code that will contain other reactive values (eg inputs) and returns a value like a regular R function. 
 
-
----
-
-## Reactive expressions
-
-A *reactive* function takes a chunk of R code and returns a value like a regular R function. To use the result, use the name of the expression followed by parenthesis, e.g. total_samples() below. It will return the object made by the last line, or you can use the *return* function, just like any other function in R.
+To use the result, use the name of the expression followed by parenthesis, e.g. total_samples() below. It will return the object made by the last line, or you can use the *return* function, just like any other function in R.
 
 
 ``` r
-server_geneGood = function(input, output){
+server = function(input, output){
   
   total_samples &lt;- reactive({
-    input$conditions*input$replicates
-  })
+*   input$conditions*input$replicates
+  }) 
   
    output$study_summary &lt;- renderText({
-     paste0("We will study ", input$gene, " and use ", input$conditions, " samples, with ", input$replicates, " replicates of each. This will give ", total_samples(), " total samples.")
+     paste0("We will study ", input$gene, " and there will be ", total_samples(), " total samples.")
    })
 }
 ```
 
 
 ``` r
-shinyApp(ui = ui_gene2, server = server_geneGood)
+shinyApp(ui = ui, server = server)
 ```
 
-
 ---
+
 ## Reactive expressions
 
-Applied to our previous example, *output$study_summary* calls *total_samples()*, which takes dependencies on the two numeric inputs to make this calculation. 
+Looking at the reactive graph, *output$study_summary* calls *total_samples()*, which takes dependencies on the two numeric inputs to make this calculation. 
 
 
 
 &lt;img src="imgs/reactivity_with_reactive1.png"height="300" width="500"&gt;
 
+
 ---
+
+## Reactive expressions
+
+
+.pull-left[
+Key aspects of a reactive function:
+
+  - It usually depends on one or more reactive inputs
+  
+  - The output of the function is **cached** and is available for use within the app.
+  
+  - If a dependency changes, the reactive is invalidated and **will only be computed the next time it is called**.
+  
+  - If the reactive is called in the app and the value of that reactive has not changed, this value is **retrieved without any further computation**. 
+]
+
+.pull-right[
+&lt;img src="imgs/reactive_intro.png"height="150" width="700"&gt;
+]
+
+---
+
 ## Reactive expressions
 
 *total_samples()* is only calculated if *input$conditions* or *input$replicates* has changed since the last time this text was rendered. 
@@ -416,13 +479,39 @@ If the *input$gene* is changed, then the cached value of *total_samples()* is us
 &lt;img src="imgs/reactivity_with_reactive2.png"height="300" width="750"&gt;
 
 
+---
+## Lazy evaluation
+
+A key aspect of reactivity in Shiny is that evaluation in a shiny app is generally 'lazy'. 
+
+This means that any code in the app is only evaluated when it is needed, typically when a dependency changes. This is different than a typical R script that runs from top to bottom.
+
 
 ---
-## Reactive expressions
 
-As a reminder, when this calculation was previously housed within the *renderText* function and not in a reactive expression, the total number of samples would be recalculated if *input$gene* changed, even though the calculation doesn't depend on it.  
+## Lazy evaluation and output typos
 
-&lt;img src="imgs/no_reactive_graph2.png"height="300" width="800"&gt;
+Quick tip - the lazy evaluation of Shiny is great for making apps efficient, but can sometimes cause confusion with bugs. 
+
+In the following very simple app, it will run with no errors, but the table will never appear. This is because I misspelled 'all_data' to be 'al_data' in the server function. 
+
+Misspelled variables usually cause errors in R, but here because Shiny is never instructed to look for *output$al_data*, it doesn't know or care that is isn't spelled correctly. Typos in outputs are oftne a good place to start if an app isnt behaving as you want. 
+
+``` r
+# read in table
+de_table &lt;- read.csv("data/shP53_vs_control_DEG.csv")
+de_table$negLog10_pval &lt;- -log10(de_table$pvalue)
+
+ui &lt;- page_fluid(
+*  dataTableOutput(outputId = "all_data")
+)
+
+server &lt;- function(input, output){
+* output$al_data = renderDataTable(datatable(de_table_in()))
+}
+
+shinyApp(ui = ui, server = server)
+```
 
 
 
@@ -452,14 +541,18 @@ Here we use those input values from the user and filter the table:
 
 
 ``` r
-ui_filter &lt;- page_fluid(
+# read in table
+de_table &lt;- read.csv("data/shP53_vs_control_DEG.csv")
+de_table$negLog10_pval &lt;- -log10(de_table$pvalue)
+
+ui &lt;- page_fluid(
 * numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005),
 * numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1),
   
   dataTableOutput(outputId = "de_data")
 )
 
-server_filter = function(input, output){ 
+server = function(input, output){ 
   filtered_de &lt;- reactive(de_table %&gt;% dplyr::filter(padj &lt; input$padj_filter &amp; abs(log2FoldChange) &gt; input$lfc_filter))
 
   output$de_data = renderDataTable(datatable(filtered_de()))
@@ -475,14 +568,18 @@ We then use this table in the *renderDataTable* function where we render the tab
 
 
 ``` r
-ui_filter &lt;- page_fluid(
+# read in table
+de_table &lt;- read.csv("data/shP53_vs_control_DEG.csv")
+de_table$negLog10_pval &lt;- -log10(de_table$pvalue)
+
+ui &lt;- page_fluid(
   numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005), 
   numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1), 
   
   dataTableOutput(outputId = "de_data")
 )
 
-server_filter = function(input, output){ 
+server = function(input, output){ 
 * filtered_de &lt;- reactive(de_table %&gt;% dplyr::filter(padj &lt; input$padj_filter &amp; abs(log2FoldChange) &gt; input$lfc_filter))
 
 * output$de_data = renderDataTable(datatable(filtered_de()))
@@ -494,7 +591,7 @@ server_filter = function(input, output){
 
 
 ``` r
-shinyApp(ui = ui_filter, server = server_filter)
+shinyApp(ui = ui, server = server)
 ```
 
 &lt;img src="imgs/small_filter.png"height="300" width="800"&gt;
@@ -508,7 +605,7 @@ This will be paired with a *renderText* function in the server to use the inputs
 
 
 ``` r
-ui_filter_value &lt;- page_fluid(
+ui &lt;- page_fluid(
   numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005), 
   numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1), 
   
@@ -517,7 +614,7 @@ ui_filter_value &lt;- page_fluid(
 *     value_box(title = "Number of genes that go down:", value = textOutput("num_down"), showcase = icon("arrow-down"), theme = value_box_theme(bg ="#c34020" )),
       col_widths = c(2,2)))
 
-server_filter_value = function(input, output){ 
+server = function(input, output){ 
   filtered_de &lt;- reactive(de_table %&gt;% dplyr::filter(padj &lt; input$padj_filter &amp; abs(log2FoldChange) &gt; input$lfc_filter))
   
   num_up_genes &lt;- reactive(filtered_de() %&gt;% dplyr::filter(log2FoldChange &gt; 0 &amp; padj &lt; 0.05) %&gt;% nrow) 
@@ -537,7 +634,7 @@ These reactives contain both the padj and log2 fold change inputs, so whenever t
 
 
 ``` r
-ui_filter_value &lt;- page_fluid(
+ui &lt;- page_fluid(
   numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005), 
   numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1), 
   
@@ -546,7 +643,7 @@ ui_filter_value &lt;- page_fluid(
       value_box(title = "Number of genes that go down:", value = textOutput("num_down"), showcase = icon("arrow-down"), theme = value_box_theme(bg ="#c34020" )), 
       col_widths = c(2,2)))
 
-server_filter_value = function(input, output){ 
+server = function(input, output){ 
   filtered_de &lt;- reactive(de_table %&gt;% dplyr::filter(padj &lt; input$padj_filter &amp; abs(log2FoldChange) &gt; input$lfc_filter))
   
 * num_up_genes &lt;- reactive(filtered_de() %&gt;% dplyr::filter(log2FoldChange &gt; 0 &amp; padj &lt; 0.05) %&gt;% nrow)
@@ -562,7 +659,7 @@ server_filter_value = function(input, output){
 In the app, we see that the numbers in the box react when we change the log2FC input.
 
 ``` r
-shinyApp(ui = ui_filter_value, server = server_filter_value)
+shinyApp(ui = ui, server = server)
 ```
 
 &lt;img src="imgs/value_box_filter.png"height="450" width="450"&gt;
@@ -586,14 +683,14 @@ In the server function, we modify the reactive expression to be dependent on thi
 
 
 ``` r
-ui_filterButton &lt;- page_fluid(theme = custom_theme,
+ui &lt;- page_fluid(theme = custom_theme,
   numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005), 
   numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1), 
 * actionButton("de_filter", "Apply filter"),
   card(card_header("Filtered data"), dataTableOutput(outputId = "de_data"), min_height = "750px")
 )
 
-server_filterButton = function(input, output){ 
+server = function(input, output){ 
   filtered_de &lt;- reactive(de_table %&gt;% dplyr::filter(padj &lt; input$padj_filter &amp; abs(log2FoldChange) &gt; input$lfc_filter))  %&gt;%
 *   bindEvent(input$de_filter)
 
@@ -608,7 +705,7 @@ You'll notice that the table doesn't appear initially, and only appears once we 
 
 
 ``` r
-shinyApp(ui = ui_filterButton, server = server_filterButton)
+shinyApp(ui = ui, server = server)
 ```
 
 &lt;img src="imgs/button_ignoreNULL_issue.png"height="350" width="800"&gt;
@@ -620,14 +717,14 @@ The *bindEvent* function has an argument 'ignoreNULL' that tells it whether to n
 
 
 ``` r
-ui_filterButton &lt;- page_fluid(theme = custom_theme,
+ui &lt;- page_fluid(theme = custom_theme,
   numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005), 
   numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1), 
   actionButton("de_filter", "Apply filter"), 
   card(card_header("Filtered data"), dataTableOutput(outputId = "de_data"), min_height = "750px")
 )
 
-server_filterButton2 = function(input, output){ 
+server = function(input, output){ 
   filtered_de &lt;- reactive(de_table %&gt;% dplyr::filter(padj &lt; input$padj_filter &amp; abs(log2FoldChange) &gt; input$lfc_filter))  %&gt;%
 *   bindEvent(input$de_filter, ignoreNULL = FALSE)
 
@@ -640,7 +737,7 @@ server_filterButton2 = function(input, output){
 
 
 ``` r
-shinyApp(ui = ui_filterButton, server = server_filterButton2)
+shinyApp(ui = ui, server = server)
 ```
 &lt;img src="imgs/button_ignoreNULL_resolved.png"height="450" width="550"&gt;
 
@@ -665,7 +762,7 @@ In the UI, the *navset_card_tab* function is added with two *nav_panel* objects,
 
 
 ``` r
-ui_tab &lt;- page_fluid(theme = custom_theme,
+ui &lt;- page_fluid(theme = custom_theme,
   numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005), 
   numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1), 
   actionButton("de_filter", "Apply filter"), 
@@ -674,7 +771,7 @@ ui_tab &lt;- page_fluid(theme = custom_theme,
 *                 nav_panel(card_header("All genes"), dataTableOutput(outputId = "all_data"))),
 )
 
-server_tab = function(input, output){ 
+server = function(input, output){ 
 * output$all_data = renderDataTable(datatable(de_table))
   
   filtered_de &lt;- reactive(de_table %&gt;% dplyr::filter(padj &lt; input$padj_filter &amp; abs(log2FoldChange) &gt; input$lfc_filter))  %&gt;%
@@ -689,7 +786,7 @@ server_tab = function(input, output){
 ## Launch app with tabs
 
 ``` r
-shinyApp(ui = ui_tab, server = server_tab)
+shinyApp(ui = ui, server = server)
 ```
 
 &lt;img src="imgs/tab_small.png"height="350" width="900"&gt;
@@ -704,7 +801,8 @@ Most of the work here will be done with server logic, but in the simple app belo
 
 
 ``` r
-ui_colorDE &lt;- page_fluid(theme = custom_theme,
+ui &lt;- page_fluid(theme = custom_theme,
+                 
   numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005), 
   numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1), 
   actionButton("de_filter", "Apply filter"), 
@@ -715,13 +813,13 @@ ui_colorDE &lt;- page_fluid(theme = custom_theme,
 ---
 ## Color the DE genes in plots - server
 
-* Since the plots will now be dependent on the filtering inputs, it's good practice to make the ggplot objects reactive expressions
-* Add the inputs to the newly created *reactive* function that creates the ggplot object
+- Since the plots will now be dependent on the filtering inputs, it's good practice to make the ggplot objects reactive expressions
+- Add the inputs to the newly created *reactive* function that creates the ggplot object
 
 
 
 ``` r
-server_colorDE = function(input, output){ 
+server = function(input, output){ 
 * ma_plot_reac &lt;- reactive({
 *   de_table %&gt;%
 *     dplyr::mutate(sig = ifelse(padj &lt; input$padj_filter &amp; abs(log2FoldChange) &gt; input$lfc_filter, "DE", "Not_DE")) %&gt;%
@@ -739,14 +837,14 @@ server_colorDE = function(input, output){
 ## Color the DE genes in plots - server
 
 
-* Since the plots will now be dependent on the filtering inputs, it's good practice to make the ggplot objects reactive expressions
-* Add the inputs to the newly created *reactive* function that creates the ggplot object
-* **Wrap with or add a pipe to a *bindEvent* function so that the *reactive* function with the plot takes a dependency on the button**
+- Since the plots will now be dependent on the filtering inputs, it's good practice to make the ggplot objects reactive expressions
+- Add the inputs to the newly created *reactive* function that creates the ggplot object
+- **Wrap with or add a pipe to a *bindEvent* function so that the *reactive* function with the plot takes a dependency on the button**
 
 
 
 ``` r
-server_colorDE = function(input, output){ 
+server = function(input, output){ 
   ma_plot_reac &lt;- reactive({ 
     de_table %&gt;% 
       dplyr::mutate(sig = ifelse(padj &lt; input$padj_filter &amp; abs(log2FoldChange) &gt; input$lfc_filter, "DE", "Not_DE")) %&gt;% 
@@ -764,15 +862,15 @@ server_colorDE = function(input, output){
 ## Color the DE genes in plots - server
 
 
-* Since the plots will now be dependent on the filtering inputs, it's good practice to make the ggplot objects reactive expressions
-* Filter the table using the inputs in the newly created *reactive* function before making the plot 
-* Wrap with or add a pipe to a *bindEvent* function so that the *reactive* function with the plot takes a dependency on the button
-* **Use the reactive expression in the render function**
+- Since the plots will now be dependent on the filtering inputs, it's good practice to make the ggplot objects reactive expressions
+- Filter the table using the inputs in the newly created *reactive* function before making the plot 
+- Wrap with or add a pipe to a *bindEvent* function so that the *reactive* function with the plot takes a dependency on the button
+- **Use the reactive expression in the render function**
 
 
 ``` r
-server_colorDE = function(input, output){ 
-* ma_plot_reac &lt;- reactive({
+server = function(input, output){ 
+  ma_plot_reac &lt;- reactive({ 
     de_table %&gt;% 
       dplyr::mutate(sig = ifelse(padj &lt; input$padj_filter &amp; abs(log2FoldChange) &gt; input$lfc_filter, "DE", "Not_DE")) %&gt;% 
       ggplot(aes(x = baseMean, y = log2FoldChange, color = sig)) + geom_point() + scale_x_log10() +
@@ -790,7 +888,7 @@ server_colorDE = function(input, output){
 
 
 ``` r
-shinyApp(ui = ui_colorDE, server = server_colorDE)
+shinyApp(ui = ui, server = server)
 ```
 
  &lt;img src="imgs/color_filter_small.png"height="400" width="900"&gt;
@@ -809,11 +907,11 @@ In the app we built in Session 1, we have a blank sidebar and this would be a go
 ## Add filters and tabs to main app UI
 
 Recap of changes to UI:
-  * In the sidebar, add inputs for padj and log2FC filter values and the button to control when those changes happen
-  * Make a *navset_card_tab* that will have two tabs, one for the filtered data based on the user inputs and another showing the entire data set. 
+  - In the sidebar, add inputs for padj and log2FC filter values and the button to control when those changes happen
+  - Make a *navset_card_tab* that will have two tabs, one for the filtered data based on the user inputs and another showing the entire data set. 
 
 ``` r
-ui_filterMain &lt;- page_navbar(
+ui &lt;- page_navbar(
   title = "RNAseq tools",
   theme = custom_theme,
   nav_panel(
@@ -862,14 +960,14 @@ ui_filterMain &lt;- page_navbar(
 ## Add filters and tabs to main app server 
 
 Recap of changes to server:
-  * Add a reactive expression that returns the filtered table and then use that table as an output in the *renderDataTable* function.
-  * Add an output and *renderDataTable* function for the whole data set.
-  * Convert the ggplot objects into reactive expressions and add a column to the data indicating whether a gene should be colored as passing filters from user. These reactives are used in the *renderPlot* functions.
-  * Add *bindEvent* function calls to the filtered table and ggplot reative expressions so they will update when the user changes the filters. 
+  - Add a reactive expression that returns the filtered table and then use that table as an output in the *renderDataTable* function.
+  - Add an output and *renderDataTable* function for the whole data set.
+  - Convert the ggplot objects into reactive expressions and add a column to the data indicating whether a gene should be colored as passing filters from user. These reactives are used in the *renderPlot* functions.
+  - Add *bindEvent* function calls to the filtered table and ggplot reative expressions so they will update when the user changes the filters. 
   
 
 ``` r
-server_filterMain = function(input, output) {
+server = function(input, output) {
   output$all_data = renderDataTable({ # &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
     datatable(de_table,
               selection = "none",
@@ -927,7 +1025,7 @@ server_filterMain = function(input, output) {
 
 
 ``` r
-shinyApp(ui = ui_filterMain, server = server_filterMain)
+shinyApp(ui = ui, server = server)
 ```
 
 &lt;img src="imgs/de_filter_main.png"height="350" width="900"&gt;
@@ -936,11 +1034,87 @@ shinyApp(ui = ui_filterMain, server = server_filterMain)
 
 class: inverse, center, middle
 
+# Downloading files
+
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=720px&gt;&lt;/html&gt; 
+
+---
+
+## Downloading plots - UI
+
+Shiny makes it easy to download components of the app in the same way you would save any R object. To do this we use a special kind of button, called a *downloadButton*. 
+
+
+
+``` r
+library(plotly)
+ui &lt;- page_fluid(
+  plotlyOutput("volcano_plotly"),
+  
+* downloadButton("download_volcano_plot", "Download volcano plot", style = "width:40%;")
+)
+```
+
+---
+## In line CSS to style button
+
+NOTE: the download button does not have a 'width' argument like the action button, so we set this by giving inline CSS commands to the 'style' argument. We won't get into CSS much in this course, but it can be a powerful way to highly customize any UI components in your Shiny app if you know how to use it. You will also likely often see people using it on message boards.
+
+
+``` r
+library(plotly)
+ui &lt;- page_fluid(
+  plotlyOutput("volcano_plotly"),
+  
+* downloadButton("download_volcano_plot", "Download volcano plot", style = "width:40%;")
+)
+```
+
+---
+## Downloading plots - server
+
+In the server the output objects are paired with a *downloadHandler* function. This is a special kind of server function that will take two arguments that are both functions.
+  - The 'filename' argument takes  no arguments and returns a string that will be the filename
+  - The 'content' argument is a function that takes one argument named *file* that will be a temporary file path to write the file to, and the function contains code to generate and save the file.
+  - Reactive values can be used inside of the 'content' function. 
+  
+
+``` r
+server &lt;- function(input, output){
+  volcano_plot_reac &lt;- reactive(ggplot(de_table, aes(x = log2FoldChange, y = negLog10_pval, text = Symbol)) + geom_point() + theme_bw())
+  
+  output$volcano_plotly = renderPlotly(ggplotly(volcano_plot_reac(), source = "volcano_plot")) 
+  
+* output$download_volcano_plot &lt;- downloadHandler(
+*   filename = function() {
+*     "volcanoplot.pdf"
+*   }, content = function(file) {
+*     ggsave(filename = file, plot = volcano_plot_reac(), width = 7, height = 7)
+*   }
+* )
+}
+```
+
+---
+## Downloading plots - Launch app
+
+
+``` r
+shinyApp(ui, server)
+```
+
+&lt;img src="imgs/download_small.png"height="350" width="500"&gt;
+
+---
+class: inverse, center, middle
+
 # Advanced interactivity with tables and plots
 
 &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=720px&gt;&lt;/html&gt; 
 
 ---
+
+
 
 ## Selecting rows in a DT datatable
 
@@ -955,13 +1129,13 @@ If we change the 'selection' argument to 'single' in the *datatable* function, t
 In this simple app we print *input$all_data_rows_selected* and the gene in the selected row
 
 ``` r
-ui_rowSelect &lt;- page_fluid(
+ui &lt;- page_fluid(
   dataTableOutput(outputId = "all_data"),
   
   textOutput("selected_row_info")
 )
 
-server_rowSelect &lt;- function(input, output){
+server &lt;- function(input, output){
   output$all_data = renderDataTable({
     datatable(de_table,
 *             selection = "single",
@@ -985,7 +1159,7 @@ server_rowSelect &lt;- function(input, output){
 
 
 ``` r
-shinyApp(ui_rowSelect, server_rowSelect)
+shinyApp(ui, server)
 ```
 
 .pull-left[
@@ -1013,13 +1187,13 @@ In this case, 'input$plot_click' would be a list that contains the coordinates o
 Here we show a table with the row of the clicked point in the server using the *nearPoints* function. The 'threshold' argument sets the distance (in y value space) from the point that is detected, and we also only return the closest point by setting 'maxpoints' to be one. 
 
 ``` r
-ui_pointClick &lt;- page_fluid(
+ui &lt;- page_fluid(
 * plotOutput("volcano_plot", click = "volcano_click"),
   
   tableOutput("selected_point_table"),
 )
 
-server_pointClick &lt;- function(input, output){
+server &lt;- function(input, output){
   volcano_plot_reac &lt;- reactive({
         ggplot(de_table, aes(x = log2FoldChange, y = negLog10_pval)) +
           geom_point() +
@@ -1040,7 +1214,7 @@ server_pointClick &lt;- function(input, output){
 
 
 ``` r
-shinyApp(ui_pointClick, server_pointClick)
+shinyApp(ui, server)
 ```
 
 &lt;img src="imgs/clicked_points.png"height="450" width="850"&gt;
@@ -1053,13 +1227,13 @@ A brush can be used in a similar way as the click. The 'brush' argument is set i
 
 
 ``` r
-ui_pointBrush &lt;- page_fluid(
+ui &lt;- page_fluid(
 * plotOutput("volcano_plot", brush = "volcano_brush"),
   
   tableOutput("selected_brush_table")
 )
 
-server_pointBrush &lt;- function(input, output){
+server &lt;- function(input, output){
   
   volcano_plot_reac &lt;- reactive({
         ggplot(de_table, aes(x = log2FoldChange, y = negLog10_pval)) +
@@ -1081,7 +1255,7 @@ server_pointBrush &lt;- function(input, output){
 
 
 ``` r
-shinyApp(ui_pointBrush, server_pointBrush)
+shinyApp(ui, server)
 ```
 
 &lt;img src="imgs/brushed_points.png"height="400" width="500"&gt;
@@ -1092,11 +1266,11 @@ shinyApp(ui_pointBrush, server_pointBrush)
 
 ``` r
 library(plotly)
-ui_plotly &lt;- page_fluid(
+ui &lt;- page_fluid(
 * plotlyOutput("volcano_plotly"),
 )
 
-server_plotly &lt;- function(input, output){
+server &lt;- function(input, output){
   volcano_plot_reac &lt;- reactive({
         ggplot(de_table, aes(x = log2FoldChange, y = negLog10_pval, text = Symbol)) +
           geom_point() +
@@ -1114,7 +1288,7 @@ server_plotly &lt;- function(input, output){
 
 
 ``` r
-shinyApp(ui_plotly, server_plotly)
+shinyApp(ui, server)
 ```
 
 &lt;img src="imgs/plotly.png"height="400" width="600"&gt;
@@ -1124,7 +1298,7 @@ shinyApp(ui_plotly, server_plotly)
 
 We can also pull out the row associated with the point that is clicked on when using plotly. Plotly has a function called *event_data* that returns a dataframe with the x and y values of the point that is highlighted when a cursor click occurs. 
 
-The plot and click event can be linked with the 'source' argument given to both the *ggplotly* and *event_data* funcitons. We can use the x and y values returned by *event_data* to get the row of our table that represented the point that was clicked on. 
+The plot and click event can be linked with the 'source' argument given to both the *ggplotly* and *event_data* functions. We can use the x and y values returned by *event_data* to get the row of our table that represented the point that was clicked on. 
 
 
 ---
@@ -1133,13 +1307,13 @@ The plot and click event can be linked with the 'source' argument given to both 
 
 ``` r
 library(plotly)
-ui_plotly &lt;- page_fluid(
+ui &lt;- page_fluid(
   plotlyOutput("volcano_plotly"),
   
   tableOutput("plotly_click_row")
 )
 
-server_plotly &lt;- function(input, output){
+server &lt;- function(input, output){
   volcano_plot_reac &lt;- reactive({
     ggplot(de_table, aes(x = log2FoldChange, y = negLog10_pval, text = Symbol)) + geom_point() + theme_bw() 
   })
@@ -1165,104 +1339,31 @@ server_plotly &lt;- function(input, output){
 
 
 ``` r
-shinyApp(ui_plotly, server_plotly)
+shinyApp(ui, server)
 ```
 &lt;img src="imgs/plotly_clicked_point.png"height="400" width="500"&gt;
 
 ---
 ## Other packages for interactivity
 
-* [Highcharter](https://jkunst.com/highcharter/) similar use case as plotly for general purpose plotting with a slightly different feel and some additional functionality. 
+- [Highcharter](https://jkunst.com/highcharter/) similar use case as plotly for general purpose plotting with a slightly different feel and some additional functionality. 
   + highcharter plots oftern look a bit better with smoother animations, but plotly integrates well with ggplot2 and usually allows for more customizations
-* [Leaflet package](https://rstudio.github.io/leaflet/articles/shiny.html) for interactive maps
-* [Dygraph pacakge](https://rstudio.github.io/dygraphs/shiny.html) for time series plots
+- [Leaflet package](https://rstudio.github.io/leaflet/articles/shiny.html) for interactive maps
+- [Dygraph pacakge](https://rstudio.github.io/dygraphs/shiny.html) for time series plots
 
----
-class: inverse, center, middle
-
-# Downloading and uploading files
-
-&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=720px&gt;&lt;/html&gt; 
-
----
-
-## Downloading plots - UI
-
-Shiny makes it easy to download components of the app in the same way you would save any R object. To do this we use a special kind of button, called a *downloadButton*. 
-
-
-
-``` r
-library(plotly)
-ui_download &lt;- page_fluid(
-  plotlyOutput("volcano_plotly"),
-  
-* downloadButton("download_volcano_plot", "Download volcano plot", style = "width:40%;")
-)
-```
-
----
-## In line CSS to style button
-
-NOTE: the download button does not have a 'width' argument like the action button, so we set this by giving inline CSS commands to the 'style' argument. We won't get into CSS much in this course, but it can be a powerful way to highly customize any UI components in your Shiny app if you know how to use it. You will also likely often see people using it on message boards.
-
-
-``` r
-library(plotly)
-ui_download &lt;- page_fluid(
-  plotlyOutput("volcano_plotly"),
-  
-* downloadButton("download_volcano_plot", "Download volcano plot", style = "width:40%;")
-)
-```
-
----
-## Downloading plots - server
-
-In the server the output objects are paired with a *downloadHandler* function. This is a special kind of server function that will take two arguments that are both functions.
-  * The 'filename' argument takes  no arguments and returns a string that will be the filename
-  * The 'content' argument is a function that takes one argument named *file* that will be a temporary file path to write the file to, and the function contains code to generate and save the file.
-  *Reactive values can be used inside of the 'content' function. 
-  
-
-``` r
-server_download &lt;- function(input, output){
-  volcano_plot_reac &lt;- reactive(ggplot(de_table, aes(x = log2FoldChange, y = negLog10_pval, text = Symbol)) + geom_point() + theme_bw())
-  
-  output$volcano_plotly = renderPlotly(ggplotly(volcano_plot_reac(), source = "volcano_plot")) 
-  
-* output$download_volcano_plot &lt;- downloadHandler(
-*   filename = function() {
-*     "volcanoplot.pdf"
-*   }, content = function(file) {
-*     ggsave(filename = file, plot = volcano_plot_reac())
-*   }
-* )
-}
-```
-
----
-## Downloading plots - Launch app
-
-
-``` r
-shinyApp(ui_download, server_download)
-```
-
-&lt;img src="imgs/download_small.png"height="350" width="500"&gt;
 
 ---
 
 ## Add interactivity to main app - UI
 
 Recap of changes to UI:
-  * Add value boxes to the sidebar (note the use of br(), which creates a new line to add space between inputs)
-  * Make scatter plots interactive outputs by using *plotlyOutput*
-  * Add download button for each plot
+- Add value boxes to the sidebar (note the use of br(), which creates a new line to add space between inputs)
+- Make scatter plots interactive outputs by using *plotlyOutput*
+- Add download button for each plot
 
 
 ``` r
-ui_session2 &lt;- page_navbar(
+ui &lt;- page_navbar(
   title = "RNAseq tools",
   theme = custom_theme,
   nav_panel(
@@ -1319,14 +1420,14 @@ ui_session2 &lt;- page_navbar(
 ## Add interactivity to main app - server
 
 Recap of changes to server:
-  * Add reactive expressions that return the number of genes passing user provided thresholds
-  * outputs that render the number of genes as text in the value boxes
-  * use *renderPlotly* and wrap ggplot objects in *ggplotly* to make plots interactive.
-  * Add download handlers for each download button
+  - Add reactive expressions that return the number of genes passing user provided thresholds
+  - outputs that render the number of genes as text in the value boxes
+  - use *renderPlotly* and wrap ggplot objects in *ggplotly* to make plots interactive.
+  - Add download handlers for each download button
   
 
 ``` r
-server_session2 = function(input, output) {
+server = function(input, output) {
  
   output$all_data = renderDataTable({
     datatable(de_table,
@@ -1417,7 +1518,7 @@ server_session2 = function(input, output) {
 
 
 ``` r
-shinyApp(ui = ui_session2, server = server_session2)
+shinyApp(ui = ui, server = server)
 ```
 &lt;img src="imgs/add_interactivity.png"height="500" width="550"&gt;
 

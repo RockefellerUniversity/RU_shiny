@@ -41,7 +41,8 @@ if(params$isSlides == "yes"){
 
 
 ## ----text_boxes, echo=T, eval=F-----------------------------------------------
-# ui_textInputs = page_fluid(
+# ui = page_fluid(
+# 
 #   textInput(inputId = "text_box", label = "Experiment name:"),
 #   textAreaInput(inputId = "big_text_box", "Describe your experiment:", rows = 3)
 # )
@@ -49,10 +50,10 @@ if(params$isSlides == "yes"){
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# shinyApp(ui = ui_textInputs, server = function(input, output){})
+# shinyApp(ui = ui, server = function(input, output){})
 
 
-## ----echo=F, eval=T, message = F----------------------------------------------
+## ----echo=F, eval=T, message = F, warning=F-----------------------------------
 library(shiny)
 library(bslib)
 library(ggplot2)
@@ -61,7 +62,7 @@ library(rio)
 
 
 ## ----dropdowns, echo=T, eval=T------------------------------------------------
-ui_selInputs <- page_fluid(
+ui <- page_fluid(
   selectInput("dropdown", "Select a gene:", 
               choices = c("TP53", "PTEN", "HRAS", "PI3K")),
   
@@ -76,11 +77,11 @@ ui_selInputs <- page_fluid(
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# shinyApp(ui = ui_selInputs, server = function(input, output){})
+# shinyApp(ui = ui, server = function(input, output){})
 
 
 ## ----pickInputs, echo=T, eval=T-----------------------------------------------
-ui_pickInputs <- page_fluid(
+ui <- page_fluid(
 
   "If you want the user to only select one option from a list, radioButtons work well",
   radioButtons("radio", "Select only one gene from the radio selections:", 
@@ -98,11 +99,11 @@ ui_pickInputs <- page_fluid(
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# shinyApp(ui = ui_pickInputs, server = function(input, output){})
+# shinyApp(ui = ui, server = function(input, output){})
 
 
 ## ----numInputs, echo=T, eval=T------------------------------------------------
-ui_numInputs <- page_fluid(
+ui <- page_fluid(
   
   numericInput("numeric", "Number of samples", value = 1, min = 0, max = 100),
   
@@ -115,11 +116,11 @@ ui_numInputs <- page_fluid(
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# shinyApp(ui = ui_numInputs, server = function(input, output){})
+# shinyApp(ui = ui, server = function(input, output){})
 
 
 ## ----dateInputs, echo=T, eval=T-----------------------------------------------
-ui_dateInputs <- page_fluid(
+ui <- page_fluid(
   dateInput("date", "Choose a date:"),
   
   dateRangeInput("date_range", "Choose a range of dates:")
@@ -128,18 +129,18 @@ ui_dateInputs <- page_fluid(
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# shinyApp(ui = ui_dateInputs, server = function(input, output){})
+# shinyApp(ui = ui, server = function(input, output){})
 
 
 ## ----echo=T, eval=T-----------------------------------------------------------
-ui_button <- page_fluid(
+ui <- page_fluid(
   actionButton("button", "Click me!"),
 )
 
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# shinyApp(ui = ui_button, server = function(input, output){})
+# shinyApp(ui = ui, server = function(input, output){})
 
 
 ## ----results='asis',include=TRUE,echo=FALSE-----------------------------------
@@ -165,7 +166,7 @@ if(params$isSlides == "yes"){
 
 
 ## ----echo=T, eval=T-----------------------------------------------------------
-ui_gene <- page_fluid(
+ui <- page_fluid(
   radioButtons("gene", "Select only one gene from the radio selections:", 
               choices = c("TP53", "PTEN", "HRAS", "PI3K"), 
               selected = "HRAS"),
@@ -173,7 +174,7 @@ ui_gene <- page_fluid(
   textOutput("gene_text")
 )
 
-server_gene = function(input, output){
+server = function(input, output){
    output$gene_text <- renderText({
      paste0("We will study ", input$gene)
    })
@@ -183,23 +184,32 @@ server_gene = function(input, output){
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
 # 
-# shinyApp(ui = ui_gene, server = server_gene)
+# shinyApp(ui = ui, server = server)
+
+
+## ----echo=T, eval=F, out.width="75%"------------------------------------------
+# 
+# shinyApp(ui = ui, server = server)
 
 
 ## ----echo=T, eval=F-----------------------------------------------------------
+# ui <- page_fluid(
+#   radioButtons("gene", "Select only one gene from the radio selections:",
+#               choices = c("TP53", "PTEN", "HRAS", "PI3K"),
+#               selected = "HRAS"))
 # 
-# server_geneBad = function(input, output){
+# server = function(input, output){
 #     print(paste0("We will study ", input$gene))
 #  }
 # 
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# shinyApp(ui = ui_gene, server = server_geneBad)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----echo=T, eval=T-----------------------------------------------------------
-ui_gene2 <- page_fluid(
+ui <- page_fluid(
   radioButtons("gene", "Select only one gene from the radio selections:", 
               choices = c("TP53", "PTEN", "HRAS", "PI3K"), 
               selected = "HRAS"),
@@ -211,37 +221,60 @@ ui_gene2 <- page_fluid(
   textOutput("study_summary")
 )
 
-server_gene2 = function(input, output){
+server = function(input, output){
    output$study_summary <- renderText({
-     paste0("We will study ", input$gene, " and use ", input$conditions, " samples, with ", input$replicates, " replicates of each. This will give ", input$conditions*input$replicates, " total samples.")
+     paste0("We will study ", input$gene, " and there will be ", input$conditions*input$replicates, " total samples.")
    })
  }
 
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# shinyApp(ui = ui_gene2, server = server_gene2)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----echo=T, eval=T-----------------------------------------------------------
-server_geneGood = function(input, output){
+server = function(input, output){
   
   total_samples <- reactive({
-    input$conditions*input$replicates
-  })
+    input$conditions*input$replicates #<<
+  }) 
   
    output$study_summary <- renderText({
-     paste0("We will study ", input$gene, " and use ", input$conditions, " samples, with ", input$replicates, " replicates of each. This will give ", total_samples(), " total samples.")
+     paste0("We will study ", input$gene, " and there will be ", total_samples(), " total samples.")
    })
 }
 
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# shinyApp(ui = ui_gene2, server = server_geneGood)
+# shinyApp(ui = ui, server = server)
+
+
+## ----echo=T, eval=F-----------------------------------------------------------
+# # read in table
+# de_table <- read.csv("data/shP53_vs_control_DEG.csv")
+# de_table$negLog10_pval <- -log10(de_table$pvalue)
+# 
+# ui <- page_fluid(
+#    dataTableOutput(outputId = "all_data") #<<
+# )
+# 
+# server <- function(input, output){
+#   output$al_data = renderDataTable(datatable(de_table_in())) #<<
+# }
+# 
+# shinyApp(ui = ui, server = server)
+# 
 
 
 ## ----echo=F, eval=T, out.width="75%"------------------------------------------
+library(shiny)
+library(bslib)
+library(dplyr)
+library(ggplot2)
+library(DT)
+
 # grab the custom theme from the previous session
 custom_css <- "
   .card-header {
@@ -272,7 +305,7 @@ custom_theme <- bs_theme(
 de_table <- read.csv("data/shP53_vs_control_DEG.csv")
 de_table$negLog10_pval <- -log10(de_table$pvalue)
 
-ui_custom <- page_navbar(title = "RNAseq tools", theme = custom_theme, 
+ui <- page_navbar(title = "RNAseq tools", theme = custom_theme, 
   nav_panel(
     title = "DE Analysis",
     layout_sidebar(
@@ -293,7 +326,7 @@ ui_custom <- page_navbar(title = "RNAseq tools", theme = custom_theme,
   )
 )
 
-server_data = function(input, output) {
+server = function(input, output) {
   output$app_info = renderText("This is an app showing differential gene expression data")
   
   output$de_data = renderDataTable({
@@ -315,14 +348,18 @@ server_data = function(input, output) {
 
 ## ----echo=T, eval=T-----------------------------------------------------------
 
-ui_filter <- page_fluid(
+# read in table
+de_table <- read.csv("data/shP53_vs_control_DEG.csv")
+de_table$negLog10_pval <- -log10(de_table$pvalue)
+
+ui <- page_fluid(
   numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005), #<<
   numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1), #<<
   
   dataTableOutput(outputId = "de_data")
 )
 
-server_filter = function(input, output){ 
+server = function(input, output){ 
   filtered_de <- reactive(de_table %>% dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter))
 
   output$de_data = renderDataTable(datatable(filtered_de()))
@@ -332,14 +369,18 @@ server_filter = function(input, output){
 
 ## ----echo=T, eval=T-----------------------------------------------------------
 
-ui_filter <- page_fluid(
+# read in table
+de_table <- read.csv("data/shP53_vs_control_DEG.csv")
+de_table$negLog10_pval <- -log10(de_table$pvalue)
+
+ui <- page_fluid(
   numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005), 
   numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1), 
   
   dataTableOutput(outputId = "de_data")
 )
 
-server_filter = function(input, output){ 
+server = function(input, output){ 
   filtered_de <- reactive(de_table %>% dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter)) #<< 
 
   output$de_data = renderDataTable(datatable(filtered_de())) #<< 
@@ -348,12 +389,12 @@ server_filter = function(input, output){
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# shinyApp(ui = ui_filter, server = server_filter)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----echo=T, eval=T-----------------------------------------------------------
 
-ui_filter_value <- page_fluid(
+ui <- page_fluid(
   numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005), 
   numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1), 
   
@@ -362,7 +403,7 @@ ui_filter_value <- page_fluid(
       value_box(title = "Number of genes that go down:", value = textOutput("num_down"), showcase = icon("arrow-down"), theme = value_box_theme(bg ="#c34020" )), #<<
       col_widths = c(2,2)))
 
-server_filter_value = function(input, output){ 
+server = function(input, output){ 
   filtered_de <- reactive(de_table %>% dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter))
   
   num_up_genes <- reactive(filtered_de() %>% dplyr::filter(log2FoldChange > 0 & padj < 0.05) %>% nrow) 
@@ -375,7 +416,7 @@ server_filter_value = function(input, output){
 
 ## ----echo=T, eval=T-----------------------------------------------------------
 
-ui_filter_value <- page_fluid(
+ui <- page_fluid(
   numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005), 
   numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1), 
   
@@ -384,7 +425,7 @@ ui_filter_value <- page_fluid(
       value_box(title = "Number of genes that go down:", value = textOutput("num_down"), showcase = icon("arrow-down"), theme = value_box_theme(bg ="#c34020" )), 
       col_widths = c(2,2)))
 
-server_filter_value = function(input, output){ 
+server = function(input, output){ 
   filtered_de <- reactive(de_table %>% dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter))
   
   num_up_genes <- reactive(filtered_de() %>% dplyr::filter(log2FoldChange > 0 & padj < 0.05) %>% nrow) #<<
@@ -395,19 +436,19 @@ server_filter_value = function(input, output){
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# shinyApp(ui = ui_filter_value, server = server_filter_value)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----echo=T, eval=T-----------------------------------------------------------
 
-ui_filterButton <- page_fluid(theme = custom_theme,
+ui <- page_fluid(theme = custom_theme,
   numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005), 
   numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1), 
   actionButton("de_filter", "Apply filter"), #<<
   card(card_header("Filtered data"), dataTableOutput(outputId = "de_data"), min_height = "750px")
 )
 
-server_filterButton = function(input, output){ 
+server = function(input, output){ 
   filtered_de <- reactive(de_table %>% dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter))  %>%
     bindEvent(input$de_filter) #<<
 
@@ -417,19 +458,19 @@ server_filterButton = function(input, output){
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# shinyApp(ui = ui_filterButton, server = server_filterButton)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----echo=T, eval=T-----------------------------------------------------------
 
-ui_filterButton <- page_fluid(theme = custom_theme,
+ui <- page_fluid(theme = custom_theme,
   numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005), 
   numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1), 
   actionButton("de_filter", "Apply filter"), 
   card(card_header("Filtered data"), dataTableOutput(outputId = "de_data"), min_height = "750px")
 )
 
-server_filterButton2 = function(input, output){ 
+server = function(input, output){ 
   filtered_de <- reactive(de_table %>% dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter))  %>%
     bindEvent(input$de_filter, ignoreNULL = FALSE) #<<
 
@@ -439,12 +480,12 @@ server_filterButton2 = function(input, output){
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# shinyApp(ui = ui_filterButton, server = server_filterButton2)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----echo=T, eval=T-----------------------------------------------------------
 
-ui_tab <- page_fluid(theme = custom_theme,
+ui <- page_fluid(theme = custom_theme,
   numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005), 
   numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1), 
   actionButton("de_filter", "Apply filter"), 
@@ -453,7 +494,7 @@ ui_tab <- page_fluid(theme = custom_theme,
                   nav_panel(card_header("All genes"), dataTableOutput(outputId = "all_data"))), #<<
 )
 
-server_tab = function(input, output){ 
+server = function(input, output){ 
   output$all_data = renderDataTable(datatable(de_table)) #<<
   
   filtered_de <- reactive(de_table %>% dplyr::filter(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter))  %>%
@@ -465,12 +506,13 @@ server_tab = function(input, output){
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# shinyApp(ui = ui_tab, server = server_tab)
+# shinyApp(ui = ui, server = server)
 
 
 ## ----echo=T, eval=T-----------------------------------------------------------
 
-ui_colorDE <- page_fluid(theme = custom_theme,
+ui <- page_fluid(theme = custom_theme,
+                 
   numericInput("padj_filter", label = "Cutoff for padj:", value = 0.05, min = 0, max = 1, step = 0.005), 
   numericInput("lfc_filter", label = "Cutoff for log2 FC:", value = 0, min = 0, step = 0.1), 
   actionButton("de_filter", "Apply filter"), 
@@ -481,7 +523,7 @@ ui_colorDE <- page_fluid(theme = custom_theme,
 
 ## ----echo=T, eval=T-----------------------------------------------------------
 
-server_colorDE = function(input, output){ 
+server = function(input, output){ 
   ma_plot_reac <- reactive({ #<<
     de_table %>% #<<
       dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>% #<< 
@@ -498,7 +540,7 @@ server_colorDE = function(input, output){
 
 ## ----echo=T, eval=T-----------------------------------------------------------
 
-server_colorDE = function(input, output){ 
+server = function(input, output){ 
   ma_plot_reac <- reactive({ 
     de_table %>% 
       dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>% 
@@ -515,8 +557,8 @@ server_colorDE = function(input, output){
 
 ## ----echo=T, eval=T-----------------------------------------------------------
 
-server_colorDE = function(input, output){ 
-  ma_plot_reac <- reactive({ #<<
+server = function(input, output){ 
+  ma_plot_reac <- reactive({ 
     de_table %>% 
       dplyr::mutate(sig = ifelse(padj < input$padj_filter & abs(log2FoldChange) > input$lfc_filter, "DE", "Not_DE")) %>% 
       ggplot(aes(x = baseMean, y = log2FoldChange, color = sig)) + geom_point() + scale_x_log10() +
@@ -531,11 +573,11 @@ server_colorDE = function(input, output){
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# shinyApp(ui = ui_colorDE, server = server_colorDE)
+# shinyApp(ui = ui, server = server)
 
 
 ## -----------------------------------------------------------------------------
-ui_filterMain <- page_navbar(
+ui <- page_navbar(
   title = "RNAseq tools",
   theme = custom_theme,
   nav_panel(
@@ -583,7 +625,7 @@ ui_filterMain <- page_navbar(
 ## ----echo=T, eval=T, out.width="75%"------------------------------------------
 
 
-server_filterMain = function(input, output) {
+server = function(input, output) {
   output$all_data = renderDataTable({ # >>>>>>>>>>>>>>>
     datatable(de_table,
               selection = "none",
@@ -638,7 +680,69 @@ server_filterMain = function(input, output) {
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# shinyApp(ui = ui_filterMain, server = server_filterMain)
+# shinyApp(ui = ui, server = server)
+
+
+## ----results='asis',include=TRUE,echo=FALSE-----------------------------------
+if(params$isSlides == "yes"){
+  cat("class: inverse, center, middle
+
+# Downloading files
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
+
+---
+"    
+  )
+}else{
+  cat("# Downloading files
+
+---
+"    
+  )
+  
+}
+
+
+
+## ----echo=T, eval=T, message=F------------------------------------------------
+library(plotly)
+ui <- page_fluid(
+  plotlyOutput("volcano_plotly"),
+  
+  downloadButton("download_volcano_plot", "Download volcano plot", style = "width:40%;") #<<
+)
+
+
+
+## ----echo=T, eval=T, message=F------------------------------------------------
+library(plotly)
+ui <- page_fluid(
+  plotlyOutput("volcano_plotly"),
+  
+  downloadButton("download_volcano_plot", "Download volcano plot", style = "width:40%;") #<<
+)
+
+
+
+## ----echo=T, eval=T, message=F------------------------------------------------
+server <- function(input, output){
+  volcano_plot_reac <- reactive(ggplot(de_table, aes(x = log2FoldChange, y = negLog10_pval, text = Symbol)) + geom_point() + theme_bw())
+  
+  output$volcano_plotly = renderPlotly(ggplotly(volcano_plot_reac(), source = "volcano_plot")) 
+  
+  output$download_volcano_plot <- downloadHandler( #<<
+    filename = function() { #<<
+      "volcanoplot.pdf" #<<
+    }, content = function(file) { #<<
+      ggsave(filename = file, plot = volcano_plot_reac(), width = 7, height = 7) #<<
+    } #<<
+  ) #<<
+}
+
+
+## ----echo=T, eval=F-----------------------------------------------------------
+# shinyApp(ui, server)
 
 
 ## ----results='asis',include=TRUE,echo=FALSE-----------------------------------
@@ -664,13 +768,13 @@ if(params$isSlides == "yes"){
 
 
 ## ----echo=T, eval=F-----------------------------------------------------------
-# ui_rowSelect <- page_fluid(
+# ui <- page_fluid(
 #   dataTableOutput(outputId = "all_data"),
 # 
 #   textOutput("selected_row_info")
 # )
 # 
-# server_rowSelect <- function(input, output){
+# server <- function(input, output){
 #   output$all_data = renderDataTable({
 #     datatable(de_table,
 #               selection = "single", #<<
@@ -690,17 +794,17 @@ if(params$isSlides == "yes"){
 
 
 ## ----echo=T, eval=F-----------------------------------------------------------
-# shinyApp(ui_rowSelect, server_rowSelect)
+# shinyApp(ui, server)
 
 
 ## ----echo=T, eval=T-----------------------------------------------------------
-ui_pointClick <- page_fluid(
+ui <- page_fluid(
   plotOutput("volcano_plot", click = "volcano_click"), #<<
   
   tableOutput("selected_point_table"),
 )
 
-server_pointClick <- function(input, output){
+server <- function(input, output){
   volcano_plot_reac <- reactive({
         ggplot(de_table, aes(x = log2FoldChange, y = negLog10_pval)) +
           geom_point() +
@@ -717,17 +821,17 @@ server_pointClick <- function(input, output){
 
 
 ## ----echo=T, eval=F-----------------------------------------------------------
-# shinyApp(ui_pointClick, server_pointClick)
+# shinyApp(ui, server)
 
 
 ## ----echo=T, eval=T-----------------------------------------------------------
-ui_pointBrush <- page_fluid(
+ui <- page_fluid(
   plotOutput("volcano_plot", brush = "volcano_brush"), #<<
   
   tableOutput("selected_brush_table")
 )
 
-server_pointBrush <- function(input, output){
+server <- function(input, output){
   
   volcano_plot_reac <- reactive({
         ggplot(de_table, aes(x = log2FoldChange, y = negLog10_pval)) +
@@ -745,16 +849,16 @@ server_pointBrush <- function(input, output){
 
 
 ## ----echo=T, eval=F-----------------------------------------------------------
-# shinyApp(ui_pointBrush, server_pointBrush)
+# shinyApp(ui, server)
 
 
 ## ----echo=T, eval=T, message = F----------------------------------------------
 library(plotly)
-ui_plotly <- page_fluid(
+ui <- page_fluid(
   plotlyOutput("volcano_plotly"), #<<
 )
 
-server_plotly <- function(input, output){
+server <- function(input, output){
   volcano_plot_reac <- reactive({
         ggplot(de_table, aes(x = log2FoldChange, y = negLog10_pval, text = Symbol)) +
           geom_point() +
@@ -768,18 +872,18 @@ server_plotly <- function(input, output){
 
 
 ## ----echo=T, eval=F-----------------------------------------------------------
-# shinyApp(ui_plotly, server_plotly)
+# shinyApp(ui, server)
 
 
 ## ----echo=T, eval=T, message = F----------------------------------------------
 library(plotly)
-ui_plotly <- page_fluid(
+ui <- page_fluid(
   plotlyOutput("volcano_plotly"),
   
   tableOutput("plotly_click_row")
 )
 
-server_plotly <- function(input, output){
+server <- function(input, output){
   volcano_plot_reac <- reactive({
     ggplot(de_table, aes(x = log2FoldChange, y = negLog10_pval, text = Symbol)) + geom_point() + theme_bw() 
   })
@@ -801,73 +905,11 @@ server_plotly <- function(input, output){
 
 
 ## ----echo=T, eval=F-----------------------------------------------------------
-# shinyApp(ui_plotly, server_plotly)
-
-
-## ----results='asis',include=TRUE,echo=FALSE-----------------------------------
-if(params$isSlides == "yes"){
-  cat("class: inverse, center, middle
-
-# Downloading and uploading files
-
-<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
-
----
-"    
-  )
-}else{
-  cat("# Downloading and uploading files
-
----
-"    
-  )
-  
-}
-
-
-
-## ----echo=T, eval=T, message=F------------------------------------------------
-library(plotly)
-ui_download <- page_fluid(
-  plotlyOutput("volcano_plotly"),
-  
-  downloadButton("download_volcano_plot", "Download volcano plot", style = "width:40%;") #<<
-)
-
-
-
-## ----echo=T, eval=T, message=F------------------------------------------------
-library(plotly)
-ui_download <- page_fluid(
-  plotlyOutput("volcano_plotly"),
-  
-  downloadButton("download_volcano_plot", "Download volcano plot", style = "width:40%;") #<<
-)
-
-
-
-## ----echo=T, eval=T, message=F------------------------------------------------
-server_download <- function(input, output){
-  volcano_plot_reac <- reactive(ggplot(de_table, aes(x = log2FoldChange, y = negLog10_pval, text = Symbol)) + geom_point() + theme_bw())
-  
-  output$volcano_plotly = renderPlotly(ggplotly(volcano_plot_reac(), source = "volcano_plot")) 
-  
-  output$download_volcano_plot <- downloadHandler( #<<
-    filename = function() { #<<
-      "volcanoplot.pdf" #<<
-    }, content = function(file) { #<<
-      ggsave(filename = file, plot = volcano_plot_reac()) #<<
-    } #<<
-  ) #<<
-}
-
-
-## ----echo=T, eval=F-----------------------------------------------------------
-# shinyApp(ui_download, server_download)
+# shinyApp(ui, server)
 
 
 ## ----echo=T, eval=T-----------------------------------------------------------
-ui_session2 <- page_navbar(
+ui <- page_navbar(
   title = "RNAseq tools",
   theme = custom_theme,
   nav_panel(
@@ -923,7 +965,7 @@ ui_session2 <- page_navbar(
 
 ## ----echo=T, eval=T, out.width="75%"------------------------------------------
 
-server_session2 = function(input, output) {
+server = function(input, output) {
  
   output$all_data = renderDataTable({
     datatable(de_table,
@@ -1012,5 +1054,5 @@ server_session2 = function(input, output) {
 
 
 ## ----echo=T, eval=F, out.width="75%"------------------------------------------
-# shinyApp(ui = ui_session2, server = server_session2)
+# shinyApp(ui = ui, server = server)
 
