@@ -14,7 +14,6 @@ ui <- page_fluid(
 server <- function(input, output){
   de_table_in <- reactive({
     req(input$de_file)
-    print(input$de_file)
     rio::import(input$de_file) %>% dplyr::mutate(negLog10_pval = -log10(pvalue))})
   
   output$all_data_UI <- renderUI({ 

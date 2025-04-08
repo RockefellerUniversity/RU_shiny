@@ -625,9 +625,9 @@ server = function(input, output) {
 ---
 ## Add reactivity to RNAseq app
 
-We will eventually add reactivity to our RNAseq analysis app, which currently displays some nice information, but does not respoind to the user in any way (current app is below). 
+We will eventually add reactivity to our RNAseq analysis app, which currently displays some nice information, but does not respond to the user in any way (current app is below). 
 
-We will go through some useful modifications with small example apps before adding them to the app we built in Session 1.
+We will go through some useful modifications with small example apps before adding them to the app we built in Session 1. The previous app state is saved as a Rscript in the 'data' folder called 'app_endSess1.R'. 
 
 
 <img src="imgs/custom_theme.png"height="500" width="650">
@@ -774,9 +774,14 @@ You'll notice the table is reacting in real time as we change the values. Reacti
 
 We can to this by pairing an *actionButton* with a new function, *bindEvent*. This modifies the reactive expression and instead of updating when any reactive value it depends on changes, it will only update based on a specific event (e.g. when a button is pressed)
 
+.pull-left[
 <img src="imgs/de_app_button.png"height="300" width="400">
+]
 
 
+.pull-right[
+Note: there is another function called *eventReactive* that was used in older versions of shiny, so you might see this in forums and tutorials. It still works, and is essentially the same as reactive + bindEvent with different implementation.
+]
 ---
 ## Add button to app UI
 
@@ -1013,6 +1018,7 @@ In the app we built in Session 1, we have a blank sidebar and this would be a go
 ## Add filters and tabs to main app UI
 
 Recap of changes to UI:
+
   - In the sidebar, add inputs for padj and log2FC filter values and the button to control when those changes happen
   - Make a *navset_card_tab* that will have two tabs, one for the filtered data based on the user inputs and another showing the entire data set. 
 ```{r}
@@ -1065,6 +1071,7 @@ ui <- page_navbar(
 ## Add filters and tabs to main app server 
 
 Recap of changes to server:
+
   - Add a reactive expression that returns the filtered table and then use that table as an output in the *renderDataTable* function.
   - Add an output and *renderDataTable* function for the whole data set.
   - Convert the ggplot objects into reactive expressions and add a column to the data indicating whether a gene should be colored as passing filters from user. These reactives are used in the *renderPlot* functions.
@@ -1194,6 +1201,7 @@ ui <- page_fluid(
 ## Downloading plots - server
 
 In the server the output objects are paired with a *downloadHandler* function. This is a special kind of server function that will take two arguments that are both functions.
+
   - The 'filename' argument takes  no arguments and returns a string that will be the filename
   - The 'content' argument is a function that takes one argument named *file* that will be a temporary file path to write the file to, and the function contains code to generate and save the file.
   - Reactive values can be used inside of the 'content' function. 
@@ -1473,10 +1481,10 @@ shinyApp(ui, server)
 ---
 ## Other packages for interactivity
 
-- [Highcharter](https://jkunst.com/highcharter/) similar use case as plotly for general purpose plotting with a slightly different feel and some additional functionality. 
-  + highcharter plots oftern look a bit better with smoother animations, but plotly integrates well with ggplot2 and usually allows for more customizations
-- [Leaflet package](https://rstudio.github.io/leaflet/articles/shiny.html) for interactive maps
-- [Dygraph pacakge](https://rstudio.github.io/dygraphs/shiny.html) for time series plots
+  - [Highcharter](https://jkunst.com/highcharter/) similar use case as plotly for general purpose plotting with a slightly different feel and some additional functionality. 
+   + highcharter plots oftern look a bit better with smoother animations, but plotly integrates well with ggplot2 and usually allows for more customizations
+  - [Leaflet package](https://rstudio.github.io/leaflet/articles/shiny.html) for interactive maps
+  - [Dygraph pacakge](https://rstudio.github.io/dygraphs/shiny.html) for time series plots
 
 
 ---
@@ -1484,9 +1492,10 @@ shinyApp(ui, server)
 ## Add interactivity to main app - UI
 
 Recap of changes to UI:
-- Add value boxes to the sidebar (note the use of br(), which creates a new line to add space between inputs)
-- Make scatter plots interactive outputs by using *plotlyOutput*
-- Add download button for each plot
+
+  - Add value boxes to the sidebar (note the use of br(), which creates a new line to add space between inputs)
+  - Make scatter plots interactive outputs by using *plotlyOutput*
+  - Add download button for each plot
 
 ```{r, echo=T, eval=T}
 ui <- page_navbar(
@@ -1547,6 +1556,7 @@ ui <- page_navbar(
 ## Add interactivity to main app - server
 
 Recap of changes to server:
+
   - Add reactive expressions that return the number of genes passing user provided thresholds
   - outputs that render the number of genes as text in the value boxes
   - use *renderPlotly* and wrap ggplot objects in *ggplotly* to make plots interactive.
