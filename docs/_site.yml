@@ -24,24 +24,24 @@ navbar:
         href: presentations/r_code/Session2.R
   - text: Exercises
     menu:
-    - text: MyExercise1
+    - text: shiny_exercise1
       menu:
       - text: Exercise
-        href: exercises/exercises/MyExercise1_exercise.html
+        href: exercises/exercises/shiny_exercise1_exercise.html
       - text: Solution
-        href: exercises/answers/MyExercise1_answers.html
-    - text: MyExercise2
+        href: exercises/answers/shiny_exercise1_answers.html
+    - text: shiny_exercise2
       menu:
       - text: Exercise
-        href: exercises/exercises/MyExercise2_exercise.html
+        href: exercises/exercises/shiny_exercise2_exercise.html
       - text: Solution
-        href: exercises/answers/MyExercise2_answers.html
-    - text: MyExercise3
+        href: exercises/answers/shiny_exercise2_answers.html
+    - text: shiny_exercise3
       menu:
       - text: Exercise
-        href: exercises/exercises/MyExercise3_exercise.html
+        href: exercises/exercises/shiny_exercise3_exercise.html
       - text: Solution
-        href: exercises/answers/MyExercise3_answers.html
+        href: exercises/answers/shiny_exercise3_answers.html
   right:
   - text: Getting help!
     href: https://github.com//RockefellerUniversity/RU_shiny/issues
