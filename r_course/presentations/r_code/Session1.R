@@ -281,7 +281,7 @@ server = function(input, output) {
 if(params$isSlides == "yes"){
   cat("class: inverse, center, middle
 
-# Building our own app from scratch
+# Build our own RNAseq app
 
 <html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
 
@@ -289,7 +289,7 @@ if(params$isSlides == "yes"){
 "    
   )
 }else{
-  cat("# Building our own app from scratch
+  cat("# Build our own RNAseq app
 
 ---
 "    
