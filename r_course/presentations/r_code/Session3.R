@@ -583,9 +583,7 @@ if(params$isSlides == "yes"){
 
 
 ## ----echo=T, eval=T-----------------------------------------------------------
-ui <- page_fluid(
-  fileInput("de_file", "Upload a DE file", accept = c(".csv", ".tsv", "xlsx", "xls")), 
-  uiOutput("all_data_UI")
+ui <- page_fluid(fileInput("de_file", "Upload a DE file", accept = c(".csv", ".tsv", "xlsx", "xls")), uiOutput("all_data_UI")
 )
 
 server <- function(input, output){
@@ -596,7 +594,6 @@ server <- function(input, output){
                   message = "You must have the following columns: 'baseMean', 'log2FoldChange', 'lfcSE', 'stat', 'pvalue', 'padj'")) #<<
     file_in %>% dplyr::mutate(negLog10_pval = -log10(pvalue))
   })
-  
   output$all_data_UI <- renderUI({
     if(is.null(input$de_file)) {
       div("You must load data!", style = "color: #273449; font-weight: bold;")
@@ -604,7 +601,6 @@ server <- function(input, output){
       navset_card_tab(nav_panel(card_header("All genes"), dataTableOutput(outputId = "all_data")))
     }
   })
-  
   output$all_data = renderDataTable(datatable(de_table_in()))
 }
 

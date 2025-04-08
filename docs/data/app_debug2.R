@@ -18,7 +18,6 @@ server_debug <- function(input, output){
   
   output$all_data_UI <- renderUI({ 
     req(de_table_in)
-    browser()
     card(card_header("All genes"), dataTableOutput(outputId = "all_data"))
   }) 
   

@@ -37,7 +37,6 @@ Bioinformatics Resource Center - Rockefeller University
 
 
 
----
 
 
 class: inverse, center, middle
@@ -64,7 +63,7 @@ class: inverse, center, middle
     
   - **Session 3** - 
     + uploading files and conditional UIs 
-    + observers
+    + observers/user feedback
     + publishing apps
     + basic debugging
 
@@ -72,7 +71,7 @@ class: inverse, center, middle
 
 ## Upload a file
 
-We will pick up wih the app we built in Sessions 1 and 2 (below).  
+We will pick up wih the app we built in Sessions 1 and 2 (below).  This is saved as a Rscript in the 'data' folder called 'app_endSess2.R'. 
 
 The app contains some nice reactive elements, but this app would be more useful if you could use any file on your computer with differential expression results as opposed to having to change the path in our app to look at a different set of results. 
 
@@ -598,6 +597,7 @@ shinyApp(ui = ui, server = server)
 ## Update main app
 
 Recap of changes:
+
   - use *uiOutput/renderUI* to make the filter inputs and button from the sidebar conditional on the table being uploaded
   - use *uiOutput/renderUI* to display a message if there is no datapath loaded and only show the DE table one a valid table is read into the app.
 
@@ -810,9 +810,7 @@ We use *validate* in the server function to check for the key columns in the tab
 
 
 ``` r
-ui &lt;- page_fluid(
-  fileInput("de_file", "Upload a DE file", accept = c(".csv", ".tsv", "xlsx", "xls")), 
-  uiOutput("all_data_UI")
+ui &lt;- page_fluid(fileInput("de_file", "Upload a DE file", accept = c(".csv", ".tsv", "xlsx", "xls")), uiOutput("all_data_UI")
 )
 
 server &lt;- function(input, output){
@@ -823,7 +821,6 @@ server &lt;- function(input, output){
 *                 message = "You must have the following columns: 'baseMean', 'log2FoldChange', 'lfcSE', 'stat', 'pvalue', 'padj'"))
     file_in %&gt;% dplyr::mutate(negLog10_pval = -log10(pvalue))
   })
-  
   output$all_data_UI &lt;- renderUI({
     if(is.null(input$de_file)) {
       div("You must load data!", style = "color: #273449; font-weight: bold;")
@@ -831,7 +828,6 @@ server &lt;- function(input, output){
       navset_card_tab(nav_panel(card_header("All genes"), dataTableOutput(outputId = "all_data")))
     }
   })
-  
   output$all_data = renderDataTable(datatable(de_table_in()))
 }
 ```
@@ -850,19 +846,27 @@ shinyApp(ui = ui, server = server)
 
 Sometimes we might want our app to react to a change in an input, but we don't need to return a value like *reactive* or we don't need to change one of the outputs. Maybe we want to write to a database when a button is clicked, or notify the user that something has happened. 
 
-Often the *observe* function is used for this purpose, to perform a side effect when an input changes.
+Often the *observe* function is used for this purpose, to **perform a side effect when an input changes**.
 
-Like the *reactive* function or an output, *observe* creates a reactive context that takes dependencies on inputs. 
-
-Though unlike a reactive expression, an observer does not return a value and is eager in its evaluation, meaning that it will evaluate the code **every time** an input it depends on changes. 
-
+ - Like the *reactive* function or an output, *observe* **creates a reactive context** that takes dependencies on inputs or reactives. 
+ - Unlike a reactive expression, an observer **does not return a value** 
+ - Also different from reactive, it is **eager in its evaluation**
+    + this means that it will evaluate the code **every time** a dependency changes. 
+ - *bindEvent* can be used to control when it runs
+ 
+Note: there is another function called *observeEvent* that was used in older versions of shiny, so you might see this in forums and tutorials. It still works, and is essentially the same as observe + bindEvent with different implementation.
 
 ---
 ## Observers - notification for user
 
 We will add a nice message for the user to notify them that a new data set has been loaded.
 
-To do this we use the Shiny function *showNotification*. This takes text that will be the message, a duration in seconds for the notification to remain open, and a 'type' argument, which will control the color. We set 'duration' to be NULL, which means the user will have to click to close the notification, guaranteeing they will see it.
+To do this we use the Shiny function *showNotification*. This takes a few key arguments:
+  - text that will be the message
+  - 'duration' - the seconds for the notification to remain open
+  - 'type' - control the color. 
+  
+We set 'duration' to be NULL, which means the user will have to click to close the notification, guaranteeing they will see it.
 
 This function is within an *observe* function call in the server and takes a dependency on the input table with *bindEvent*. Notice we don't set the result to be a variable because an observer returns nothing, it just runs the code it contains. 
 
@@ -1023,6 +1027,7 @@ shinyApp(ui = ui, server = server)
 ## Update main app
 
 Recap of changes:
+
   - add *validate* + *need* to the reactive expression where we read in the table from the user to make sure a valid input file was used
   - add notification to user that a table has been uploaded
   - add modal dialog to confirm download and get filename
