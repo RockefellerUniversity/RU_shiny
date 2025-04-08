@@ -66,7 +66,9 @@ shinyApp(ui, server)
   + HINT: see sample code below for how to make a histogram, pie chart, and survival curve in the code chunk below.
 * Put the table and plots in separate cards and make the card that has the table collapsable.
 
-```{r, echo=T, out.width="50%"}
+```{r, echo=T, eval=F}
+# SAMPLE CODE FOR PLOTS:
+
 data_in <- rio::import("data/msk_2024_clinical_Pancreatic_rev.csv")
 
 # Sample code for pie chart:
