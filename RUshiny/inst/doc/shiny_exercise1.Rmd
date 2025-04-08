@@ -1,5 +1,5 @@
 ---
-title: "Shiny Exercise 2"
+title: "Shiny Exercise 1"
 author: "Rockefeller University, Bioinformatics Resource Centre"
 date: "https://rockefelleruniversity.github.io/RU_shiny/"
 output: 
@@ -35,7 +35,10 @@ library(survival)
 data_in <- rio::import("data/msk_2024_clinical_Pancreatic_rev.csv")
 
 ui <- page_fluid(
-  DT::dataTableOutput("data_in")
+  card(
+    card_header("Clinical Data"),
+    DT::dataTableOutput("data_in")
+    )
 )
 
 server <- function(input, output){
@@ -53,15 +56,17 @@ server <- function(input, output){
 shinyApp(ui, server)
 ```
 
+<img src="imgs/ex1.png"height="400" width="800">
+
 2) Add some figures to the page, including a plot that:
 
 * displays a histogram showing the distribution of the ages of patients
 * displays three pie charts showing the break down of the following columns: Sex, Sample_Type, and Smoking_History_NLP
 * displays one Kaplan Meier survival curve showing any difference in survival based on the Smoking_History_NLP column
   + HINT: see sample code below for how to make a histogram, pie chart, and survival curve in the code chunk below.
-* Put the table and plots in separate cards and make the card that has the table collapseable.
+* Put the table and plots in separate cards and make the card that has the table collapsable.
 
-```{r, echo=T}
+```{r, echo=T, out.width="50%"}
 data_in <- rio::import("data/msk_2024_clinical_Pancreatic_rev.csv")
 
 # Sample code for pie chart:
@@ -117,7 +122,7 @@ surv_df <- data.frame(
   group = rep(names(fit_smokes$strata), fit_smokes$strata)
 )
 
-ui_ex2 <- page_fluid(
+ui <- page_fluid(
   card(
     card_header("Clinical Data"),
     DT::dataTableOutput("data_in")),
@@ -135,7 +140,7 @@ ui_ex2 <- page_fluid(
        plotOutput("cancerType_pie_chart"))
 )
 
-server_ex2 <- function(input, output){
+server <- function(input, output){
   
   output$data_in <- renderDataTable({
     datatable(data_in)
@@ -194,8 +199,10 @@ server_ex2 <- function(input, output){
 ```
 
 ```{r,echo=toMessage, eval=F}
-shinyApp(ui_ex2, server_ex2)
+shinyApp(ui, server)
 ```
+
+<img src="imgs/ex2.png"height="500" width="800">
 
 3) Make the app have multiple pages, with the first page containing all of the plots and the second page containing the table. 
 
@@ -225,7 +232,7 @@ surv_df <- data.frame(
 )
 
 
-ui_ex3 <- page_navbar(
+ui <- page_navbar(
   title = "Cancer data",
   theme = bs_theme(version = 5, bootswatch = "pulse"),
   nav_panel(
@@ -284,7 +291,7 @@ ui_ex3 <- page_navbar(
   )
 )
 
-server_ex3 <- function(input, output){
+server <- function(input, output){
   
   output$data_in <- renderDataTable({
     datatable(data_in)
@@ -347,8 +354,10 @@ server_ex3 <- function(input, output){
 ```
 
 ```{r, echo=toMessage, eval=F}
-shinyApp(ui_ex3, server_ex3)
+shinyApp(ui, server)
 ```
+
+<img src="imgs/ex3.png"height="500" width="800">
 
 
 

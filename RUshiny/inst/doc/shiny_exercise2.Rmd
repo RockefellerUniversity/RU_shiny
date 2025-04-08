@@ -1,5 +1,5 @@
 ---
-title: "Shiny Exercise 1"
+title: "Shiny Exercise 2"
 author: "Rockefeller University, Bioinformatics Resource Centre"
 date: "https://rockefelleruniversity.github.io/RU_shiny/"
 output: 
@@ -23,12 +23,12 @@ These exercises are about [using reactivity in our apps](https://rockefelleruniv
 **Exercises for Shiny session 2**
 
 
-4) Startign from the app made in quations #3 of the exercises from Session 1, add a sidebar so that it is present on all pages of the app and add the following inputs:
+4) Starting from the app made in question #3 of the exercises from Session 1, add a sidebar so that it is present on all pages of the app and add the following inputs:
 
 * a slider input to control the number of bins in the histogram
 * a dropdown that allows the user to choose which column to use for the Kaplan Meier survival curve, allowing them to see the difference in survival between the levels of that particular column. 
   + use the four columns used for the pie charts, and feel free to try any more columns that might be of interest or have an impact of patient survival.
-  + HINT: for the 'survfit' function with fitting the survival curve, to use a variable in the formula, use the 'as.formula' function and 'paste' to make the formula, like this: fit <- survfit(as.formula(paste0("surv_obj ~ ", input$survival_column)), data = data_in)
+  + HINT: for the 'survfit' function with fitting the survival curve, to use a variable in the formula, use the 'as.formula' function and 'paste' to make the formula, like this: `fit <- survfit(as.formula(paste0("surv_obj ~ ", input$survival_column)), data = data_in)`
 
 ```{r,echo=toMessage}
 library(ggplot2)
@@ -42,7 +42,7 @@ library(survival)
 data_in <- rio::import("data/msk_2024_clinical_Pancreatic_rev.csv")
 
 
-ui_ex4 <- page_navbar(
+ui <- page_navbar(
   title = "Cancer data",
   theme = bs_theme(version = 5, bootswatch = "pulse"),
   sidebar = sidebar(
@@ -108,7 +108,7 @@ ui_ex4 <- page_navbar(
   )
 )
 
-server_ex4 <- function(input, output){
+server <- function(input, output){
   
   output$data_in <- renderDataTable({
     datatable(data_in)
@@ -192,8 +192,10 @@ server_ex4 <- function(input, output){
 ```
 
 ```{r,echo=toMessage, eval=F}
-shiny::shinyApp(ui_ex4, server_ex4)
+shiny::shinyApp(ui, server)
 ```
+
+<img src="imgs/ex4.png"height="600" width="600">
 
 5) Add a button to the sidebar and make it so the histogram and survival curve don't update with the new input values until the button is pressed.
 
@@ -209,7 +211,7 @@ library(survival)
 data_in <- rio::import("data/msk_2024_clinical_Pancreatic_rev.csv")
 
 # add button to UI
-ui_ex5 <- page_navbar(
+ui <- page_navbar(
   title = "Cancer data",
   theme = bs_theme(version = 5, bootswatch = "pulse"),
   sidebar = sidebar(
@@ -276,7 +278,7 @@ ui_ex5 <- page_navbar(
   )
 )
 
-server_ex5 <- function(input, output){
+server <- function(input, output){
   
   output$data_in <- renderDataTable({
     datatable(data_in)
@@ -362,8 +364,10 @@ server_ex5 <- function(input, output){
 ```
 
 ```{r,echo=toMessage, eval=F}
-shiny::shinyApp(ui_ex5, server_ex5)
+shiny::shinyApp(ui, server)
 ```
+
+<img src="imgs/ex5.png"height="600" width="600">
 
 
 

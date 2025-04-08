@@ -35,7 +35,7 @@ library(DT)
 library(survival)
 
 
-ui_ex6 <- page_navbar(
+ui <- page_navbar(
   title = "Cancer data",
   theme = bs_theme(version = 5, bootswatch = "pulse"),
   sidebar = sidebar(
@@ -101,7 +101,7 @@ ui_ex6 <- page_navbar(
   )
 )
 
-server_ex6 <- function(input, output){
+server <- function(input, output){
   
   # make a reactive to take in the input path and make a data frame
   # we also have to change all of the reactive contexts that use this data frame to now use the table from this reactive
@@ -213,8 +213,10 @@ server_ex6 <- function(input, output){
 ```
 
 ```{r,echo=toMessage, eval=F}
-shiny::shinyApp(ui_ex6, server_ex6)
+shiny::shinyApp(ui, server)
 ```
+
+<img src="imgs/ex6.png"height="500" width="800">
 
 
 7. Modify the app so that the user does not initially see the blank cards or the inputs for the plots (sliderInput and selectInput), and then once they load in the table, the plots and cards are then rendered. 
@@ -231,7 +233,7 @@ library(DT)
 library(survival)
 
 
-ui_ex7 <- page_navbar(
+ui <- page_navbar(
   title = "Cancer data",
   theme = bs_theme(version = 5, bootswatch = "pulse"),
   sidebar = sidebar(
@@ -261,7 +263,7 @@ ui_ex7 <- page_navbar(
   )
 )
 
-server_ex7 <- function(input, output){
+server <- function(input, output){
   
   de_table_in <- reactive({
     req(input$upload_file$datapath)
@@ -424,8 +426,10 @@ server_ex7 <- function(input, output){
 ```
 
 ```{r,echo=toMessage, eval=F}
-shiny::shinyApp(ui_ex7, server_ex7)
+shiny::shinyApp(ui, server)
 ```
+
+<img src="imgs/ex7.png"height="500" width="800">
 
 8. Put in some safeguards to let the user know when an improper file has been uploaded. Validate the input file by doing some simple checks to make sure required columns are present. 
 
@@ -440,7 +444,7 @@ library(DT)
 library(survival)
 
 
-ui_ex8 <- page_navbar(
+ui <- page_navbar(
   title = "Cancer data",
   theme = bs_theme(version = 5, bootswatch = "pulse"),
   sidebar = sidebar(
@@ -470,7 +474,7 @@ ui_ex8 <- page_navbar(
   )
 )
 
-server_ex8 <- function(input, output){
+server <- function(input, output){
   
   # add the validate function to the reactive where we read in the table
   de_table_in <- reactive({
@@ -644,12 +648,14 @@ server_ex8 <- function(input, output){
 ```
 
 ```{r,echo=toMessage, eval=F}
-shiny::shinyApp(ui_ex8, server_ex8)
+shiny::shinyApp(ui, server)
 ```
+
+<img src="imgs/ex8.png"height="500" width="800">
 
 9. Allow the user to download the survival curve that is currently present in their app session
 
-```{rr,echo=toMessage}
+```{r,echo=toMessage}
 library(ggplot2)
 library(dplyr)
 library(shiny)
@@ -657,7 +663,7 @@ library(bslib)
 library(DT)
 library(survival)
 
-ui_ex9 <- page_navbar(
+ui <- page_navbar(
   title = "Cancer data",
   theme = bs_theme(version = 5, bootswatch = "pulse"),
   sidebar = sidebar(
@@ -687,7 +693,7 @@ ui_ex9 <- page_navbar(
   )
 )
 
-server_ex9 <- function(input, output){
+server <- function(input, output){
   
   de_table_in <- reactive({
     req(input$upload_file)
@@ -870,6 +876,8 @@ server_ex9 <- function(input, output){
 ```
 
 ```{r,echo=toMessage, eval=F}
-shiny::shinyApp(ui_ex9, server_ex9)
+shiny::shinyApp(ui, server)
 ```
+
+<img src="imgs/ex9.png"height="500" width="500">
 
