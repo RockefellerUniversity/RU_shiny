@@ -339,7 +339,7 @@ shinyApp(ui = ui, server = server)
 The top part of a Shiny R script contains any packages that a required, and any global code/variables. 
 
 - The code that is in this section will only be run once when the app is initialized, and cannot be updated once the app starts.
-- The variables after this code is run are available in the environment, and can be used in the server function.
+- The variables from this section are in the global environment, and can be used in the server function.
 - If an app is deployed in a server, the global environment is only loaded once and shared between users. Can help if data is large. 
 ]
 
@@ -588,15 +588,14 @@ There's a convention when setting up that folder as follows:
 
 
 Then once you have this folder, you can use the *runApp* function from Shiny with the path to the folder (e.g. `runApp("/path/to/app")`), and it will launch the app with access to all of these support files. 
+
 ---
-
-
 
 ```{r, results='asis',include=TRUE,echo=FALSE}
 if(params$isSlides == "yes"){
   cat("class: inverse, center, middle
 
-# Building our own app from scratch
+# Build our own RNAseq app
 
 <html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
 
@@ -604,7 +603,7 @@ if(params$isSlides == "yes"){
 "    
   )
 }else{
-  cat("# Building our own app from scratch
+  cat("# Build our own RNAseq app
 
 ---
 "    
