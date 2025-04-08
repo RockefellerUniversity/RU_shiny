@@ -1556,7 +1556,7 @@ shinyApp(ui = ui, server = server)
 ---
 ## Time for an exercise!
 
-Exercises for Session 1 are [here](../../exercises/exercises/shiny_exercise1_exercises.html)
+Exercises for Session 1 are [here](../../exercises/exercises/shiny_exercise1_exercise.html)
 
 ---
 ## Answers to exercise
