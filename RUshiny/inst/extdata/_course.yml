@@ -5,4 +5,4 @@ Presentations:
     titles: Session1 Session2
     PresRmd: Session1.Rmd Session2.Rmd Session3.Rmd
     PresOverviewRmd: Session1Overview.Rmd Session2Overview.Rmd Session3Overview.Rmd
-    Exercises: MyExercise1.Rmd MyExercise2.Rmd MyExercise3.Rmd
+    Exercises: shiny_exercise1.Rmd shiny_exercise2.Rmd shiny_exercise3.Rmd
